@@ -12,6 +12,6 @@ RouteLoader = ({ app }) => {
 
     app.use(`/${ route.toLowerCase() }`, router);
   });
-}
+};
 
 module.exports = RouteLoader;
