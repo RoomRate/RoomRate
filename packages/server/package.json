@@ -6,7 +6,9 @@
   "scripts": {
     "start": "cross-env NODE_ENV=dev node index.js",
     "start:dev": "cross-env NODE_ENV=dev nodemon index.js",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint src --ext .js,.jsx",
+    "lint:fix": "npm run lint -- --fix"
   },
   "contributors": [
     {
@@ -22,6 +24,9 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "eslint": "^8.24.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
     "nodemon": "^2.0.20"
   }
 }

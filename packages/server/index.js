@@ -9,5 +9,6 @@ const port = config.get(`port`);
 RouteLoader({ app });
 
 app.listen(port, () => {
-    console.log(`Listening on port ${ port }`);
+  // eslint-disable-next-line no-console
+  console.log(`Listening on port ${ port }`);
 })
