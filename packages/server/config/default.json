@@ -2,5 +2,14 @@
     "server": {
         "url": "http://localhost:3000",
         "port": 3000
+    },
+    "redis": {
+        "host": "http://localhost",
+        "port": 6379,
+        "tls": false,
+        "ttl": "24 hours"
+    },
+    "session": {
+        "secret": ""
     }
 }
