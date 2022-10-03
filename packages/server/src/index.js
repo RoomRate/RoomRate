@@ -14,7 +14,7 @@ const duration = require(`parse-duration`);
 const { v4 } = require(`uuid`);
 
 const RouteLoader = require(`./utils/RouteLoader`);
-const ErrorHandler = require(`./utils/ErrorHandler`);
+// const ErrorHandler = require(`./utils/ErrorHandler`);
 
 const app = express();
 const port = config.get(`server.port`);
