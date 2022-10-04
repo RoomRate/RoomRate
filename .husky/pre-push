@@ -2,4 +2,4 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 npm run lint --workspaces -if-present &&
-npm run test --workspaces -if-present
+# npm run test --workspaces -if-present
