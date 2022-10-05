@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/Uni-Home/Uni-Home#readme",
   "workspaces": [
-    "packages/server"
+    "packages/server",
+    "packages/client"
   ],
   "devDependencies": {
     "husky": "^8.0.1"

@@ -27,4 +27,14 @@ router.post(`/login`, async (req, res, next) => {
   });
 });
 
+router.get(`/logout`, (req, res) => {
+  req.session.destroy(err => {
+    if (err){
+      // add error handler here
+    } else {
+      res.send(`Session is destroyed`);
+    }
+  });
+});
+
 module.exports = router;
