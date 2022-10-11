@@ -6,7 +6,8 @@
     "mongodb": {
         "url": "",
         "username": "",
-        "password": ""
+        "password": "",
+        "ttl": ""
     },
     "session": {
         "secret": ""
