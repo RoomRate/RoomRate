@@ -27,14 +27,15 @@ router.post(`/login`, async (req, res, next) => {
   });
 });
 
-router.get(`/logout`, (req, res) => {
-  req.session.destroy(err => {
-    if (err){
-      // add error handler here
-    } else {
-      res.send(`Session is destroyed`);
-    }
-  });
+router.get(`/logout`, (req, res, next) => {
+  try {
+    req.logout();
+    req.session.destroy();
+    res.status(200).json(`Successfully logged out`);
+  } 
+  catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
