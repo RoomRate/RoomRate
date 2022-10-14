@@ -1,30 +1,26 @@
 const express = require(`express`);
 const router = express.Router();
 const { BadRequestError } = require(`restify-errors`);
-const UserService = require(`../../libs/UserService`);
+const UserService = require(`../../libs/User`);
+const passport = require(`passport`);
 
 router.post(`/login`, async (req, res, next) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const { username, password, confirmPassword } = req.body;
+  try {
+    const { username, password } = req.body;
     
-      if (!username) {
-        reject(new BadRequestError(`Username not provided`));
-      }
-      if (!password) {
-        reject(new BadRequestError(`Password not provided`));
-      }
-      if (password !== confirmPassword) {
-        reject(new BadRequestError(`Passwords do not match`));
-      }
-
-      UserService.login({ username, password });
-      
-      res.status(200).json(req.token);
-    } catch (err) {
-      next(err);
+    if (!username) {
+      reject(new BadRequestError(`Username not provided`));
     }
-  });
+    if (!password) {
+      reject(new BadRequestError(`Password not provided`));
+    }
+
+    // await UserService.login({ username, password });
+      
+    res.status(200).json(req.token);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.get(`/logout`, (req, res, next) => {
@@ -36,6 +32,10 @@ router.get(`/logout`, (req, res, next) => {
   catch (err) {
     next(err);
   }
+});
+
+router.get(`/cheese`, passport.authenticate(`local`), (req, res, next) => {
+  res.send(`cheese`);
 });
 
 module.exports = router;

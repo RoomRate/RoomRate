@@ -1,3 +1,0 @@
-// exports.login = ({ username, password }) => {
-
-// };

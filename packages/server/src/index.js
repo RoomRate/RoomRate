@@ -12,7 +12,9 @@ const duration = require(`parse-duration`);
 const { v4 } = require(`uuid`);
 const passport = require(`passport`);
 const LocalStrategy = require(`passport-local`);
+const bcrypt = require(`bcrypt`);
 
+const UserService = require(`./libs/User`);
 const RouteLoader = require(`./utils/RouteLoader`);
 // const ErrorHandler = require(`./utils/ErrorHandler`);
 
@@ -38,40 +40,34 @@ app.use(session({
   })
 }));
 
-function validPassword(password, hash, salt) {
-  var hashVerify = crypto.pbkdf2Sync(password, salt, 10000, 64, `sha512`).toString(`hex`);
-  return hash === hashVerify;
-}
+passport.use(new LocalStrategy(async (username, password, cb) => {
+  const user = await UserService.getUserByUsername({ username });
 
-passport.use(new LocalStrategy(
-  function(username, password, cb) {
-    User.findOne({ username: username })
-      .then((user) => {
-        if (!user) { return cb(null, false); }
-              
-        // Function defined at bottom of app.js
-        const isValid = validPassword(password, user.hash, user.salt);
-              
-        if (isValid) {
-          return cb(null, user);
-        } else {
-          return cb(null, false);
-        }
-      })
-      .catch((err) => {   
-        cb(err);
-      });
-  }));
+  if (!user) {
+    return cb(null, false);
+  }
 
-passport.serializeUser(function(user, cb) {
+  const isValidPassword = await bcrypt.compare(password, user.password);
+
+  if (isValidPassword) {
+    return cb(null, user);
+  } 
+
+  return cb(null, false);
+}));
+
+passport.serializeUser((user, cb) => {
   cb(null, user.id);
 });
 
-passport.deserializeUser(function(id, cb) {
-  User.findById(id, function (err, user) {
-    if (err) { return cb(err); }
-    cb(null, user);
-  });
+passport.deserializeUser(async (id, cb) => {
+  const user = UserService.getUserById({ id });
+
+  if (err) { 
+    return cb(err); 
+  }
+
+  cb(null, user);
 });
 
 app.use(passport.initialize());
