@@ -33,6 +33,7 @@
     "parse-duration": "^1.0.2",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "pg": "^8.8.0",
     "restify-errors": "^8.0.2",
     "uuid": "^9.0.0"
   },
