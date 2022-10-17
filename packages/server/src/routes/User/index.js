@@ -16,6 +16,7 @@ router.post(`/login`, passport.authenticate(`local`), async (req, res) => {
     }
 
     const user = await UserService.login({ username, password });
+    delete user.password;
 
     return res
       .status(200)
