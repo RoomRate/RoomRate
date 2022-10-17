@@ -1,4 +1,4 @@
-const db = require(`../Database`);
+const knex = require(`../Database`);
 const bcrypt = require(`bcrypt`);
 const { UnauthorizedError, InvalidCredentialsError, BadRequestError } = require(`restify-errors`);
 
@@ -37,12 +37,9 @@ exports.getUserByUsername = async ({ username }) => {
     throw new BadRequestError(`No username provided`);
   }
 
-  // const cheese = await db.query(`
-  //   SELECT *
-  //   FROM users
-  //   WHERE username = $1
-  //   LIMIT 1;
-  // `, [ username ]);
+  // const user = await knex(`users`)
+  //   .whereRaw(`LOWER(username) = ?`, [ username.toLowerCase() ])
+  //   .first();
 
   const user = testUser;
 

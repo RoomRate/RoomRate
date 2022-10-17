@@ -5,10 +5,13 @@
     },
     "database": {
         "host": "",
-        "user": "",
+        "username": "",
         "password": "",
         "name": "",
-        "port": ""
+        "dialect": "pg",
+        "port": 5432,
+        "minConnections": 2,
+        "maxConnections": 10
     },
     "mongodb": {
         "url": "",
