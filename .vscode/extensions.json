@@ -1,6 +1,16 @@
 {
 	"recommendations": [
 		"cweijan.vscode-office",
-		"dbaeumer.vscode-eslint"
+		"dbaeumer.vscode-eslint",
+		"aaron-bond.better-comments",
+		"formulahendry.auto-rename-tag",
+		"streetsidesoftware.code-spell-checker",
+		"EditorConfig.EditorConfig",
+		"eamodio.gitlens",
+		"VisualStudioExptTeam.vscodeintellicode",
+		"VisualStudioExptTeam.intellicode-api-usage-examples",
+		"christian-kohler.npm-intellisense",
+		"christian-kohler.path-intellisense",
+		"Gruntfuggly.todo-tree"
 	]
 }
