@@ -4,15 +4,15 @@ const { BadRequestError } = require(`restify-errors`);
 const UserService = require(`../../libs/User`);
 const passport = require(`passport`);
 
-router.post(`/login`, passport.authenticate(`local`), async (req, res) => {
+router.post(`/login`, passport.authenticate(`local`), async (req, res, next) => {
   try {
     const { username, password } = req.body;
 
     if (!username) {
-      throw new BadRequestError(`Username not provided`);
+      next(new BadRequestError(`Username not provided`));
     }
     if (!password) {
-      throw new BadRequestError(`Password not provided`);
+      next(new BadRequestError(`Password not provided`));
     }
 
     const user = await UserService.login({ username, password });
@@ -25,7 +25,7 @@ router.post(`/login`, passport.authenticate(`local`), async (req, res) => {
         data: user,
       });
   } catch (err) {
-    throw new Error(`An error occurred when attempting to login`);
+    return next(err);
   }
 });
 
@@ -36,7 +36,9 @@ router.get(`/logout`, (req, res, next) => {
     }
 
     req.session.destroy();
-    res.status(200).json(`Successfully logged out`);
+    res.status(200).json({
+      message: `Successfully logged out`,
+    });
   });
 });
 
