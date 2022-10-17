@@ -17,7 +17,7 @@ const cookieParser = require(`cookie-parser`);
 
 const UserService = require(`./libs/User`);
 const RouteLoader = require(`./utils/RouteLoader`);
-// const ErrorHandler = require(`./utils/ErrorHandler`);
+const { ErrorHandler } = require(`./utils/ErrorHandler`);
 
 const app = express();
 const port = config.get(`server.port`);
@@ -86,7 +86,7 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, `../logs/acces
 app.use(morgan(`combined`, { stream: accessLogStream }));
 
 RouteLoader({ app });
-// app.use(ErrorHandler);
+app.use(ErrorHandler);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console

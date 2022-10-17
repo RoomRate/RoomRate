@@ -1,4 +1,5 @@
 const bcrypt = require(`bcrypt`);
+const { UnauthorizedError, InvalidCredentialsError, BadRequestError } = require(`restify-errors`);
 
 const testUser = {
   id: 1,
@@ -7,49 +8,49 @@ const testUser = {
 };
 
 exports.login = async ({ username, password }) => {
-  try {
-    const user = await this.getUserByUsername({ username });
-
-    if (!user) {
-      throw new Error(`Could not find user`);
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-
-    if (isValidPassword) {
-      return user;
-    }
-
-    throw new Error(`Invalid username or password`);
-  } catch (err) {
-    throw new Error(`An error occurred when attempting to login`);
+  if (!username) {
+    throw new BadRequestError(`No username provided`);
   }
+
+  if (!password) {
+    throw new BadRequestError(`No password provided`);
+  }
+
+  const user = await this.getUserByUsername({ username });
+
+  if (!user) {
+    throw new InvalidCredentialsError(`Invalid username or password`);
+  }
+
+  const isValidPassword = await bcrypt.compare(password, user.password);
+
+  if (isValidPassword) {
+    return user;
+  }
+
+  throw new InvalidCredentialsError(`Invalid username or password`);
 };
 
 exports.getUserByUsername = async ({ username }) => {
-  try {
-    const user = testUser;
-
-    if (!user) {
-      throw new Error(`Could not find user`);
-    }
-
-    return user;
-  } catch (err) {
-    throw new Error(`Failed to fetch user by username`);
+  if (!username) {
+    throw new BadRequestError(`No username provided`);
   }
+
+  const user = testUser;
+
+  return user;
 };
 
 exports.getUserById = async ({ id }) => {
-  try {
-    const user = testUser;
-
-    if (!user) {
-      throw new Error(`Could not find user`);
-    }
-
-    return user;
-  } catch (err) {
-    throw new Error(`Failed to fetch user by id`);
+  if (!id) {
+    throw new BadRequestError(`No username provided`);
   }
+
+  const user = testUser;
+
+  if (!user) {
+    throw new UnauthorizedError(`Invalid username or password`);
+  }
+
+  return user;
 };
