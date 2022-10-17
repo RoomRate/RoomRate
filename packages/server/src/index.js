@@ -13,6 +13,7 @@ const { v4 } = require(`uuid`);
 const passport = require(`passport`);
 const LocalStrategy = require(`passport-local`);
 const bcrypt = require(`bcrypt`);
+const cookieParser = require(`cookie-parser`);
 
 const UserService = require(`./libs/User`);
 const RouteLoader = require(`./utils/RouteLoader`);
@@ -20,6 +21,13 @@ const RouteLoader = require(`./utils/RouteLoader`);
 
 const app = express();
 const port = config.get(`server.port`);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cors());
+app.use(helmet());
+app.use(compression());
+app.use(cookieParser(config.get(`session.secret`)));
 
 app.use((req, res, next) => {
   req.reqId = v4();
@@ -31,13 +39,13 @@ app.use(session({
   secret: config.get(`session.secret`),
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true },
+  // cookie: { secure: true },
   unset: `destroy`,
   store: MongoStore.create({
     mongoUrl: config.get(`mongodb.url`),
     ttl: duration(config.get(`mongodb.ttl`), `sec`),
-    autoRemove: `native` 
-  })
+    autoRemove: `native`,
+  }),
 }));
 
 passport.use(new LocalStrategy(async (username, password, cb) => {
@@ -51,33 +59,27 @@ passport.use(new LocalStrategy(async (username, password, cb) => {
 
   if (isValidPassword) {
     return cb(null, user);
-  } 
+  }
 
   return cb(null, false);
 }));
 
 passport.serializeUser((user, cb) => {
-  cb(null, user.id);
+  cb(null, user);
 });
 
-passport.deserializeUser(async (id, cb) => {
-  const user = UserService.getUserById({ id });
+passport.deserializeUser(async (req, user, done) => {
+  try {
+    const _user = await UserService.getUserById({ id: user.id });
 
-  if (err) { 
-    return cb(err); 
+    done(null, _user);
+  } catch (err) {
+    return done(err);
   }
-
-  cb(null, user);
 });
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cors());
-app.use(helmet());
-app.use(compression());
 
 // Logging
 const accessLogStream = fs.createWriteStream(path.join(__dirname, `../logs/access.log`), { flags: `a` });

@@ -4,38 +4,43 @@ const { BadRequestError } = require(`restify-errors`);
 const UserService = require(`../../libs/User`);
 const passport = require(`passport`);
 
-router.post(`/login`, async (req, res, next) => {
+router.post(`/login`, passport.authenticate(`local`), async (req, res) => {
   try {
     const { username, password } = req.body;
-    
+
     if (!username) {
-      reject(new BadRequestError(`Username not provided`));
+      throw new BadRequestError(`Username not provided`);
     }
     if (!password) {
-      reject(new BadRequestError(`Password not provided`));
+      throw new BadRequestError(`Password not provided`);
     }
 
-    // await UserService.login({ username, password });
-      
-    res.status(200).json(req.token);
+    const user = await UserService.login({ username, password });
+
+    return res
+      .status(200)
+      .json({
+        message: `Successfully logged in`,
+        data: user,
+      });
   } catch (err) {
-    next(err);
+    throw new Error(`An error occurred when attempting to login`);
   }
 });
 
 router.get(`/logout`, (req, res, next) => {
-  try {
-    req.logout();
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+
     req.session.destroy();
     res.status(200).json(`Successfully logged out`);
-  } 
-  catch (err) {
-    next(err);
-  }
+  });
 });
 
-router.get(`/cheese`, passport.authenticate(`local`), (req, res, next) => {
-  res.send(`cheese`);
+router.get(`/cheese`, (req, res) => {
+  res.send(`If you can see this page, you are logged in`);
 });
 
 module.exports = router;

@@ -1,8 +1,6 @@
 const express = require(`express`);
 const router = express.Router();
 
-router.get(`/`, (req, res) => {
-  return res.json(`pong`);
-});
+router.get(`/`, (req, res) => res.json(`pong`));
 
 module.exports = router;
