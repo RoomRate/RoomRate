@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6",
+    "module": "commonjs",
+    "lib":[ "esnext" ],
+    "outDir": "build",
+    "sourceMap": true,
+
+    /* Module Resolution */
+    "moduleResolution": "node",
+    "baseUrl": "src",
+    "esModuleInterop": true,
+
+    /* Experimental Options */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    /* Others */
+    "preserveConstEnums": true,
+    "resolveJsonModule": true,
+    "pretty": true,
+
+    "typeRoots": [
+      "@types",
+      "node_modules/@types"
+    ],
+
+    "allowJs": true,
+    "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": true,
+    "isolatedModules": true
+  },
+  "include": ["src", "@types"],
+  "exclude": ["node_modules"]
+}
