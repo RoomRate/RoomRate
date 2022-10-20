@@ -21,10 +21,10 @@ jobs:
           node-version: '16.x'
 
       - name: Move into client folder
-        run: cd packages/client
-        run: npm ci
-        run: npm run build
-        run: npm run start
+      - run: cd packages/client
+      - run: npm ci
+      - run: npm run build
+      - run: npm run start
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
