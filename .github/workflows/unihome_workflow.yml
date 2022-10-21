@@ -47,7 +47,6 @@ jobs:
       - name: npm install, build, and test
         working-directory: ./packages/server
         run: |
-          cd packages/server
           npm ci
 
       - name: Upload artifact for deployment job
@@ -70,14 +69,13 @@ jobs:
           name: node-app
 
       - name: 'Deploy to Azure Web App'
-        working-directory: ./packages/client
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'Unihome-Frontend'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B255D5B7C7404D2E94A5A3D14AB55A93 }}
-          package: .
+          package: ./packages/client
 
   deploy-backend:
     runs-on: ubuntu-latest
@@ -93,11 +91,10 @@ jobs:
           name: node-app
 
       - name: 'Deploy to Azure Web App'
-        working-directory: ./packages/server
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'Unihome-API'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_755003C1096D4275929C7F6C56A821F4 }}
-          package: .
+          package: ./packages/server
