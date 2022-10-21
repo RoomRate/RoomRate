@@ -65,7 +65,6 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        working-directory: ./packages/client
         uses: actions/download-artifact@v2
         with:
           name: node-app
@@ -89,7 +88,6 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        working-directory: ./packages/server
         uses: actions/download-artifact@v2
         with:
           name: node-app
