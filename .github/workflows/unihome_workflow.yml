@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-frontend, build-backend, deploy-frontend]
     environment:
-      name: 'Development'
+      name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -94,6 +94,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'Unihome-API'
-          slot-name: 'Development'
+          slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F2CE93D310114A3EA6BFCF9E34FCE104 }}
           package: .
