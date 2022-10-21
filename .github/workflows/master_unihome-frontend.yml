@@ -23,6 +23,7 @@ jobs:
       - name: npm install, build, and test
         run: |
           cd packages/client
+          npm run build
           npm ci
 
       - name: Upload artifact for deployment job
