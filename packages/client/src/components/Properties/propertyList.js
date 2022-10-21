@@ -1,11 +1,11 @@
 import { React, useState, useEffect } from "react";
 import { Card } from "react-bootstrap"
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import { Icon, L } from 'leaflet';
+import { Icon } from 'leaflet';
 import { PropertyService } from "../../shared/services";
 import MARKER_ICON from "assets/images/marker-icon.png"
 
-export const PropertyList = ({}) => {
+export const PropertyList = () => {
   const [ properties, setProperties ] = useState([]);
 
   const fetchData = async () => {
@@ -14,6 +14,7 @@ export const PropertyList = ({}) => {
   useEffect(() => {
     fetchData();
     console.log(properties);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);  
 
   const renderPropertyMarkers = () => {

@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import "../src/scss/custom.scss"
 import { PropertyList } from "../src//components/Properties/propertyList"
