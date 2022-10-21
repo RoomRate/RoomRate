@@ -51,4 +51,4 @@ jobs:
           app-name: 'Unihome-Frontend'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B255D5B7C7404D2E94A5A3D14AB55A93 }}
-          package: ./packages/client
+          package: .
