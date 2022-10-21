@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  build-front-end:
+  build-frontend:
     runs-on: ubuntu-latest
 
     steps:
