@@ -2,7 +2,8 @@ name: Build and deploy Node.js app to Azure Web App - Unihome-Frontend
 
 on:
   push:
-    paths: ./packages/client/**
+    paths: 
+      - ./packages/client/**
     branches:
       - master
 
