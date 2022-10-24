@@ -1,4 +1,13 @@
-exports.getPropertyList = () => {
+const NodeGeocoder = require(`node-geocoder`);
+
+const options = {
+  provider: `google`,
+  apiKey: `AIzaSyD57Cr3iJeGL2RlcokSm-v_T96C1NzW2Ts`,
+};
+
+const geocoder = NodeGeocoder(options);
+
+exports.getPropertyList = async () => {
   let properties = [];
 
   // query to fetch data from the database goes here
@@ -8,88 +17,64 @@ exports.getPropertyList = () => {
       id: 1,
       name: `Property 1`,
       description: `This is a property`,
-      street1: `123st`,
+      street1: `315 Terrace Ave`,
       street2: `Apt 2`,
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.141750,
-        longitude: -84.520098,
-      },
     },
     {
       id: 2,
       name: `Property 2`,
       description: `This is a property`,
-      street1: `315 Terrace Ave`,
+      street1: `404 Ludlow Ave`,
       street2: `Apt 6`,
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.141627,
-        longitude: -84.514498,
-      },
     },
     {
       id: 3,
       name: `Property 1`,
       description: `This is a property`,
-      street1: `456st`,
+      street1: `531 Lowell Ave`,
       street2: `Apt 6`,
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.136873,
-        longitude: -84.522130,
-      },
     },
     {
       id: 4,
       name: `Property 1`,
       description: `This is a property`,
-      street1: `318 Terrace Ave`,
+      street1: `362 Probasco St`,
       street2: `Apt 6`,
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.125750,
-        longitude: -84.520098,
-      },
     },
     {
       id: 5,
       name: `Property 1`,
       description: `This is a property`,
-      street1: `318 Terrace Ave`,
+      street1: `261 W McMillan St`,
       street2: `Apt 6`,
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.141890,
-        longitude: -84.520098,
-      },
     },
     {
       id: 6,
       name: `Property 1`,
       description: `This is a property`,
-      street1: `318 Terrace Ave`,
+      street1: `108 Calhoun St`,
       street2: `Apt 6`,
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.141580,
-        longitude: -84.521098,
-      },
     },
     {
-      id: 1,
+      id: 7,
       name: `Property 1`,
       description: `This is a property`,
       street1: `318 Terrace Ave`,
@@ -97,13 +82,9 @@ exports.getPropertyList = () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.141750,
-        longitude: -84.523098,
-      },
     },
     {
-      id: 1,
+      id: 8,
       name: `Property 1`,
       description: `This is a property`,
       street1: `318 Terrace Ave`,
@@ -111,13 +92,9 @@ exports.getPropertyList = () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.141750,
-        longitude: -84.526098,
-      },
     },
     {
-      id: 1,
+      id: 9,
       name: `Property 1`,
       description: `This is a property`,
       street1: `318 Terrace Ave`,
@@ -125,13 +102,9 @@ exports.getPropertyList = () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.141860,
-        longitude: -84.525098,
-      },
     },
     {
-      id: 1,
+      id: 10,
       name: `Property 1`,
       description: `This is a property`,
       street1: `318 Terrace Ave`,
@@ -139,13 +112,9 @@ exports.getPropertyList = () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.141950,
-        longitude: -84.520698,
-      },
     },
     {
-      id: 1,
+      id: 11,
       name: `Property 1`,
       description: `This is a property`,
       street1: `318 Terrace Ave`,
@@ -153,13 +122,9 @@ exports.getPropertyList = () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.141550,
-        longitude: -84.520498,
-      },
     },
     {
-      id: 1,
+      id: 12,
       name: `Property 1`,
       description: `This is a property`,
       street1: `318 Terrace Ave`,
@@ -167,13 +132,9 @@ exports.getPropertyList = () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.141150,
-        longitude: -84.527098,
-      },
     },
     {
-      id: 1,
+      id: 13,
       name: `Property 1`,
       description: `This is a property`,
       street1: `318 Terrace Ave`,
@@ -181,16 +142,16 @@ exports.getPropertyList = () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
-      coords: {
-        latitude: 39.141950,
-        longitude: -84.520998,
-      },
     },
   ];
 
-  properties = dummyData;
+  properties = await Promise.all(dummyData.map(async (p) => {
+    const returned = await geocoder.geocode(`${ p.street1 }, ${ p.city }, ${ p.state }, ${ p.zip }`);
+    p.lat = returned[0].latitude;
+    p.lng = returned[0].longitude;
 
-  // geocoderAPI key: AIzaSyD57Cr3iJeGL2RlcokSm-v_T96C1NzW2Ts
+    return p;
+  }));
 
   return properties;
 };
