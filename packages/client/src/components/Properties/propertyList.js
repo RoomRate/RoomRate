@@ -2,26 +2,25 @@ import { React, useState, useEffect } from "react";
 import { Card } from "react-bootstrap"
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Icon } from 'leaflet';
+import { Link } from 'react-router-dom';
 import { PropertyService } from "../../shared/services";
 import MARKER_ICON from "assets/images/marker-icon.png"
 
 export const PropertyList = () => {
-  const [ properties, setProperties ] = useState([]);
+  const [properties, setProperties] = useState([]);
 
   const fetchData = async () => {
     setProperties(await PropertyService.getPropertyList({ all: true }));
   }
   useEffect(() => {
     fetchData();
-    console.log(properties);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);  
+  }, []);
 
   const renderPropertyMarkers = () => {
     const PROGRAM_ADDRESS = new Icon({
-      iconAnchor: [ 14, 21 ],
+      iconAnchor: [14, 21],
       iconUrl: MARKER_ICON,
-      popupAnchor: [ -2, -25 ],
+      popupAnchor: [-2, -25],
     });
 
     return properties.map(p => {
@@ -72,24 +71,26 @@ export const PropertyList = () => {
         <div id="propertyList" style={{ maxHeight: `90vh`, overflow: `scroll` }}>
           {
             properties.map(property =>
-              <Card>
-                <Card.Body>
-                  <div className="row">
-                    <div className="col-md-3">
-                      <h1>Property Thumbnail</h1>
+                <Card>
+                  <Card.Body>
+                    <div className="row">
+                      <div className="col-md-3">
+                        <h1>Property Thumbnail</h1>
+                      </div>
+                      <div className="col-md-8">
+                        <h1>{property.name}</h1>
+                        <p>{property.description}</p>
+                      </div>
+                      <div className="col-md-1">
+                        <Link to={`/property/${property.id}/detail`}>
+                        <button>
+                          Details
+                        </button>
+                        </Link>
+                      </div>
                     </div>
-                    <div className="col-md-8">
-                      <h1>{property.name}</h1>
-                      <p>{property.description}</p>
-                    </div>
-                    <div className="col-md-1">
-                      <button>
-                        Details
-                      </button>
-                    </div>
-                  </div>
-                </Card.Body>
-              </Card>
+                  </Card.Body>
+                </Card>
             )
           }
         </div>
