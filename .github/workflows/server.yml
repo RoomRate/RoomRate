@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'Unihome-API'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_755003C1096D4275929C7F6C56A821F4 }}
+          publish-profile: ${{ secrets.API_PUBLISH_PROFILE }}
           package: .
