@@ -1,11 +1,6 @@
+const knex = require(`../Database`);
 const bcrypt = require(`bcrypt`);
-const { UnauthorizedError, InvalidCredentialsError, BadRequestError } = require(`restify-errors`);
-
-const testUser = {
-  id: 1,
-  username: `cheese`,
-  password: `$2a$10$qCAOuXFxJoSoV5x0GDNPeexumwyLgCn06RAsiA4QaDl0vlrVU/.FS`,
-};
+const { InvalidCredentialsError, BadRequestError } = require(`restify-errors`);
 
 exports.login = async ({ username, password }) => {
   if (!username) {
@@ -36,9 +31,14 @@ exports.getUserByUsername = async ({ username }) => {
     throw new BadRequestError(`No username provided`);
   }
 
-  const user = testUser;
+  const user = await knex.raw(`
+    SELECT first_name, last_name, email, username
+    FROM users
+    WHERE username = ?
+    LIMIT 1;
+  `, [ username ]);
 
-  return user;
+  return user.rows[0];
 };
 
 exports.getUserById = async ({ id }) => {
@@ -46,11 +46,12 @@ exports.getUserById = async ({ id }) => {
     throw new BadRequestError(`No username provided`);
   }
 
-  const user = testUser;
+  const user = await knex.raw(`
+    SELECT first_name, last_name, email, username
+    FROM users
+    WHERE id = ?
+    LIMIT 1;
+  `, [ id ]);
 
-  if (!user) {
-    throw new UnauthorizedError(`Invalid username or password`);
-  }
-
-  return user;
+  return user.rows[0];
 };
