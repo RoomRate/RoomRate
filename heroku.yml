@@ -3,7 +3,7 @@ run:
     cd packages/client && 
     npm install && 
     npm run build
-    npm start
+    npm run start
   server: 
     cd packages/server && 
     npm install && 
