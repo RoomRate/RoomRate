@@ -16,7 +16,6 @@ router.post(`/login`, passport.authenticate(`local`), async (req, res, next) => 
     }
 
     const user = await UserService.login({ username, password });
-    delete user.password;
 
     return res
       .status(200)
@@ -44,6 +43,18 @@ router.get(`/logout`, (req, res, next) => {
 
 router.get(`/cheese`, (req, res) => {
   res.send(`If you can see this page, you are logged in`);
+});
+
+router.get(`/:id`, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const user = await UserService.getUserById({ id });
+
+    return res.status(200).json(user);
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

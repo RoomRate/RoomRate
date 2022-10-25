@@ -37,6 +37,7 @@ if (process.env.NODE_ENV === `test`) {
       password,
       database: name,
       charset: `utf8`,
+      ssl: { rejectUnauthorized: false },
     },
     pool: {
       min: minConnections || 2,
