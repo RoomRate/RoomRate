@@ -1,0 +1,22 @@
+// Import Bootstrap and its default variables
+@import '~bootstrap/scss/bootstrap.scss';
+@import 'leaflet/dist/leaflet.css';
+
+.block-content {
+  min-height: 33em;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-radius: 3px;
+  background: #fff;
+  margin-top: 30px;
+
+  .overflow-content {
+    overflow: scroll;
+    height: 27em;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}

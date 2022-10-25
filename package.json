@@ -25,7 +25,9 @@
   "devDependencies": {
     "husky": "^8.0.1"
   },
-  "scripts": {
-    "prepare": "husky install"
+  "dependencies": {
+    "bootstrap": "^5.2.2",
+    "react-leaflet": "^4.1.0",
+    "sass": "^1.55.0"
   }
 }

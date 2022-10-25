@@ -1,0 +1,8 @@
+run:
+  web: 
+    npm install &&
+    cd packages/client &&
+    npm run build &&
+    npm start &&
+    cd ../server &&
+    npm run start
