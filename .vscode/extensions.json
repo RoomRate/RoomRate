@@ -5,12 +5,13 @@
 		"aaron-bond.better-comments",
 		"formulahendry.auto-rename-tag",
 		"streetsidesoftware.code-spell-checker",
-		"EditorConfig.EditorConfig",
+		"editorconfig.editorconfig",
 		"eamodio.gitlens",
-		"VisualStudioExptTeam.vscodeintellicode",
-		"VisualStudioExptTeam.intellicode-api-usage-examples",
+		"visualstudioexptteam.vscodeintellicode",
+		"visualstudioexptteam.intellicode-api-usage-examples",
 		"christian-kohler.npm-intellisense",
 		"christian-kohler.path-intellisense",
-		"Gruntfuggly.todo-tree"
+		"gruntfuggly.todo-tree",
+		"benspaulding.procfile"
 	]
 }

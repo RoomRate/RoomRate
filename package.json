@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.2.2",
+    "cross-env": "^7.0.3",
     "react-leaflet": "^4.1.0",
     "sass": "^1.55.0"
   }
