@@ -1,1 +1,1 @@
-web: cross-env NODE_ENV=dev && node packages/server/src/index.js
+web: cross-env NODE_ENV=dev && node packages/server/src/test-process.js
