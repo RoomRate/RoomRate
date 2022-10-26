@@ -20,14 +20,14 @@ const RouteLoader = require(`./utils/RouteLoader`);
 const { ErrorHandler } = require(`./utils/ErrorHandler`);
 
 const app = express();
-const port = config.get(`server.port`);
+const port = config.get(`server.port`) || process.env.PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(helmet());
 app.use(compression());
-app.use(cookieParser(config.get(`session.secret`)));
+app.use(cookieParser(config.get(`session.secret`) || process.env.SESSION_SECRET));
 
 app.use((req, res, next) => {
   req.reqId = v4();
@@ -36,14 +36,14 @@ app.use((req, res, next) => {
 
 app.use(session({
   name: `sessionId`,
-  secret: config.get(`session.secret`),
+  secret: config.get(`session.secret`) || process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   // cookie: { secure: true },
   unset: `destroy`,
   store: MongoStore.create({
-    mongoUrl: config.get(`mongodb.url`),
-    ttl: duration(config.get(`mongodb.ttl`), `sec`),
+    mongoUrl: config.get(`mongodb.url`) || process.env.MONGODB_URL,
+    ttl: duration(config.get(`mongodb.ttl`) || process.env.MONGODB_TTL, `sec`),
     autoRemove: `native`,
   }),
 }));

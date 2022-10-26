@@ -16,17 +16,14 @@ if (process.env.NODE_ENV === `test`) {
 
   knex.processFlag = `test`;
 } else {
-  const database = config.get(`database`);
-  const {
-    dialect,
-    host,
-    maxConnections,
-    minConnections,
-    name,
-    password,
-    port,
-    username,
-  } = database;
+  const dialect = config.get(`database.dialect`) || process.env.DATABASE_DIALECT;
+  const host = config.get(`database.host`) || process.env.DATABASE_HOST;
+  const maxConnections = config.get(`database.maxConnections`) || process.env.DATABASE_MAX_CONNECTIONS;
+  const minConnections = config.get(`database.minConnections`) || process.env.MIN_CONNECTIONS;
+  const name = config.get(`database.name`) || process.env.DATABASE_NAME;
+  const password = config.get(`database.PASSWORD`) || process.env.DATABASE_PASSWORD;
+  const port = config.get(`database.port`) || process.env.DATABASE_PORT;
+  const username = config.get(`database.username`) || process.env.DATABASE_USERNAME;
 
   knex = _knex({
     client: dialect,
