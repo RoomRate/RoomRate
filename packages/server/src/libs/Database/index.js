@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === `test`) {
   const maxConnections = config.get(`database.maxConnections`) || process.env.DATABASE_MAX_CONNECTIONS;
   const minConnections = config.get(`database.minConnections`) || process.env.MIN_CONNECTIONS;
   const name = config.get(`database.name`) || process.env.DATABASE_NAME;
-  const password = config.get(`database.PASSWORD`) || process.env.DATABASE_PASSWORD;
+  const password = config.get(`database.password`) || process.env.DATABASE_PASSWORD;
   const port = config.get(`database.port`) || process.env.DATABASE_PORT;
   const username = config.get(`database.username`) || process.env.DATABASE_USERNAME;
 
