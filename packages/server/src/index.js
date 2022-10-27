@@ -22,6 +22,10 @@ const { ErrorHandler } = require(`./utils/ErrorHandler`);
 const app = express();
 const port = config.get(`server.port`) || process.env.PORT;
 
+if (process.env.PRODUCTION) {
+  app.use(express.static(path.resolve(__dirname, `../../client/build`)));
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());

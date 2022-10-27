@@ -1,1 +1,0 @@
-web: mkdir config && cp packages/server/config/default.json config/default.json && node packages/server/src/index.js

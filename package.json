@@ -6,6 +6,10 @@
     "type": "git",
     "url": "git+https://github.com/Uni-Home/Uni-Home.git"
   },
+  "scripts": {
+    "start": "node packages/server/scr/index.js",
+    "heroku-postbuild": "cd packages/client && npm install && npm run build"
+  },
   "contributors": [
     {
       "name": "Justin Tracy",
