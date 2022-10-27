@@ -20,7 +20,7 @@ const RouteLoader = require(`./utils/RouteLoader`);
 const { ErrorHandler } = require(`./utils/ErrorHandler`);
 
 const app = express();
-const port = process.env.port || config.get(`server.port`) || 3000;
+const port = process.env.PORT || config.get(`server.port`) || 3000;
 
 if (process.env.PRODUCTION) {
   app.use(express.static(path.resolve(__dirname, `../../client/build`)));
