@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node packages/server/scr/index.js",
-    "heroku-postbuild": "cd packages/client && npm install && npm run build"
+    "heroku-postbuild": "npm install && cd packages/client && npm install && npm run build"
   },
   "contributors": [
     {
