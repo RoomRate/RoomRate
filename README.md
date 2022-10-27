@@ -13,7 +13,7 @@ Future IT Expo winner
 3. ``npm run start``
 
 # Start Development Server
-1. ``npm install`` (from the root of the project)
+1. ``npm install`` (from the root of the project) if you haven't already
 2. ``cd packages/server``
 3. create dev.json file in config folder
 4. ``npm run start:dev``
