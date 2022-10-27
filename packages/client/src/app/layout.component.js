@@ -1,3 +1,4 @@
+import React from 'react';
 import {LeftMenuComponent} from "./";
 import { Element } from "react-scroll";
 
