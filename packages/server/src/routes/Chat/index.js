@@ -5,7 +5,7 @@ const ChatService = require(`../../libs/Chat`);
 
 router.get(`/list`, async (req, res, next) => {
   try {
-    const { user_id } = req.body;
+    const { user_id } = req.query;
 
     const chats = await ChatService.getChatsForUser({ user_id });
 

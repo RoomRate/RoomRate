@@ -1,22 +1,17 @@
 import { Axios } from "shared/utils";
 
-const user_id = 1; // we change this once we get the auth provider setup
-
 export class ChatService {
     static async getChatsForUser() {
       try {
         const response = await Axios({
           method: `GET`,
-          url: `/chat/list`,
-          data: {
-            user_id,
-          }
+          url: `/chat/list?user_id=${ 13 }`, //TODO Eventually we need to grab this from the auth strategy
         });
 
-        return response.data.data.properties;
+        return response.data.data;
       }
       catch (err) {
-        throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+        throw new Error(`Failed to fetch chat list`);
       }
     }
   };

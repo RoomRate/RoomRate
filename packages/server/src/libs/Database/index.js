@@ -40,7 +40,7 @@ if (process.env.NODE_ENV === `test`) {
       min: minConnections || 2,
       max: maxConnections || 10,
     },
-    debug: true, // REMOVE THIS
+    debug: false,
   });
 }
 

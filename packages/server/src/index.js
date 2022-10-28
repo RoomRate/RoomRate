@@ -43,7 +43,7 @@ app.use(session({
   secret: config.get(`session.secret`) || process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  // cookie: { secure: true },
+  cookie: { secure: process.env.PRODUCTION || false },
   unset: `destroy`,
   store: MongoStore.create({
     mongoUrl: config.get(`mongodb.url`) || process.env.MONGODB_URL,
