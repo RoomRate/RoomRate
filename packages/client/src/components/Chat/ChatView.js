@@ -12,6 +12,7 @@ export const ChatView = () => {
       <div className="col" style={{ overflowY: `scroll` }}>
         <Card>
           <Card.Title>Current Chat</Card.Title>
+          <Card.Body></Card.Body>
         </Card>
       </div>
     </div>
