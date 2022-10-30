@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, ListGroup } from 'react-bootstrap';
 import { ChatService } from '../../shared/services';
 
-export const ChatList = () => {
+export const ChatList = ({ onChatSelect }) => {
   const [ chatList, setChatList ] = useState([]);
 
   useEffect(() => {
@@ -13,9 +13,25 @@ export const ChatList = () => {
     fetchData();
   }, []);
 
+  const getChatMessages = async ({ chat_id }) => {
+    const messages = await ChatService.getMessagesForChat({ chat_id });
+    const users = await ChatService.getChatUsers({ chat_id });
+    console.log(users)
+    const chatInfo = await ChatService.getChatById({ chat_id });
+
+    const chat = {
+      id: chat_id,
+      title: chatInfo.title,
+      messages,
+      users,
+    };
+
+    onChatSelect({ chat })
+  };
+
   return (
     <Card>
-      <Card.Title>Current Chats</Card.Title>
+      <Card.Title>Ongoing Chats</Card.Title>
       <Card.Body>
         <ListGroup>
           {
@@ -23,7 +39,7 @@ export const ChatList = () => {
               <>
               {
                   chatList.map(chat => 
-                    <ListGroup.Item action>
+                    <ListGroup.Item action onClick={() => getChatMessages({ chat_id: chat.chat_id })}>
                       <div className='row'>
                         <dt>Title: </dt>
                         <dd>{chat.chat_title}</dd>

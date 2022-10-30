@@ -55,3 +55,54 @@ exports.getChatsForUser = async ({ user_id }) => {
 
   return chats;
 };
+
+exports.getMessagesForChat = async ({ chat_id }) => {
+  const { rows: messages } = await knex.raw(`
+    SELECT *
+    FROM chat_messages
+    JOIN users on chat_messages.created_by = users.id
+    WHERE chat_messages.chat_id = ?
+    ORDER BY chat_messages.created_at ASC;
+  `, [ chat_id ]);
+
+  return messages;
+};
+
+exports.sendMessage = async ({ message, chat_id, user_id }) => {
+  const response = await knex.raw(`
+    INSERT INTO chat_messages(chat_id, message, created_by)
+    VALUES(?, ?, ?)
+    RETURNING *;
+  `, [ chat_id, message, user_id ]);
+
+  const [ sentMessage ] = response.rows;
+
+  const newMessage = {
+    message: sentMessage.message,
+    chat_id: sentMessage.chat_id,
+    created_by: sentMessage.created_by,
+  };
+
+  return newMessage;
+};
+
+exports.getChatUsers = async ({ chat_id }) => {
+  const { rows: users } = await knex.raw(`
+    SELECT users.first_name, users.last_name
+    FROM users
+    JOIN chat_users ON users.id = chat_users.user_id
+    WHERE chat_users.chat_id = ?;
+  `, [ chat_id ]);
+
+  return users;
+};
+
+exports.getChatById = async ({ chat_id }) => {
+  const response = await knex.raw(`
+    SELECT *
+    FROM chats
+    WHERE id = ?
+  `, [ chat_id ]);
+
+  return response.rows[0];
+};
