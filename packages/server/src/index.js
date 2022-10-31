@@ -92,6 +92,10 @@ app.use(morgan(`combined`, { stream: accessLogStream }));
 RouteLoader({ app });
 app.use(ErrorHandler);
 
+app.get(`*`, (req, res) => {
+  res.sendFile(path.join(__dirname, `../../client/build/index.html`));
+});
+
 app.listen(port, () => {
   // eslint-disable-next-line no-console
   console.log(`Listening on port ${ port }`);
