@@ -32,6 +32,8 @@
   "dependencies": {
     "bootstrap": "^5.2.2",
     "cross-env": "^7.0.3",
+    "react-bootstrap": "^2.5.0",
+    "react-hook-form": "^7.38.0",
     "react-leaflet": "^4.1.0",
     "sass": "^1.55.0"
   }
