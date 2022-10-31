@@ -1,34 +1,35 @@
-import { React, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "react-bootstrap"
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import { Icon } from 'leaflet';
 import { Link } from 'react-router-dom';
-import Geocode from "react-geocode";
 import { PropertyService } from "../../shared/services";
-import MARKER_ICON from "assets/images/marker-icon.png"
+import { MarkerIcon } from "../../shared/A-UI"
 
 export const PropertyList = () => {
   const [properties, setProperties] = useState([]);
-
-  Geocode.setApiKey("AIzaSyD57Cr3iJeGL2RlcokSm-v_T96C1NzW2Ts");
-
-  const PROGRAM_ADDRESS = new Icon({
-    iconAnchor: [14, 21],
-    iconUrl: MARKER_ICON,
-    popupAnchor: [-2, -25],
-  });
-
-  const fetchData = async () => {
-    setProperties(await PropertyService.getPropertyList({ all: true }))
-  }
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchData();
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+        const properties = await PropertyService.getPropertyList({ all: true })
+        setProperties(properties)
+      }
+
+      catch (err) {
+        throw new Error(err)
+      }
+      finally {
+        setLoading(false)
+      }
+    };
+    fetchData()
   }, []);
 
   const renderPropertyMarkers = () => properties.map(p => <Marker
-        key={parseInt.id}
-        icon={PROGRAM_ADDRESS}
+        key={p.id}
+        icon={MarkerIcon}
         position={[p.lat, p.lng]}>
         <Popup>
           <div>
@@ -45,8 +46,9 @@ export const PropertyList = () => {
     );
 
 
-  return <div className="container-fluid block-content" >
-    <div className="row" style={{ maxHeight: `98vh` }}>
+  return ( isLoading ? null : 
+  <div className="container-fluid block-content" >
+    <div className="row" style={{ maxHeight: `97vh` }}>
       <div className="col-md-6">
         <div id="propertyMap" style={{ maxHeight: `90vh`, overflow: `hidden` }}>
           <MapContainer
@@ -67,7 +69,7 @@ export const PropertyList = () => {
         <div id="propertyList" style={{ maxHeight: `90vh`, overflow: `scroll` }}>
           {
             properties.map(property =>
-              <Card>
+              <Card key={property.id}>
                 <Card.Body>
                   <div className="row">
                     <div className="col-md-3">
@@ -93,4 +95,4 @@ export const PropertyList = () => {
       </div>
     </div>
   </div>
-}
+)}
