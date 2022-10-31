@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Form } from 'react-bootstrap';
+import { Button, Card, Form } from 'react-bootstrap';
 import { ChatList } from './ChatList';
 import { useForm } from 'react-hook-form';
 import { ChatService } from 'shared/services';
@@ -9,17 +9,26 @@ const user_id = 13; // TODO grab this from the auth strategy
 
 export const ChatView = () => {
   const [ chat, setChat ] = useState();
-  const { register, handleSubmit } = useForm();
+  const { register, reset, handleSubmit } = useForm();
+
+  useEffect(() => {
+    document.title = `Uni-Home - Chats`;
+  });
 
   const setCurrentChat = ({ chat }) => setChat(chat);
 
   const sendMessage = async ({ message }) => {
-    if (message) {
-      const { id: chat_id } = chat;
-
-      const sentMessage = await ChatService.sendMessage({ message, user_id, chat_id });
-
-       chat.messages.push(sentMessage);
+    try {
+      if (message) {
+        const { id: chat_id } = chat;
+  
+        const sentMessage = await ChatService.sendMessage({ message, user_id, chat_id });
+  
+        chat.messages.push(sentMessage);
+        reset();
+      }
+    } catch (err) {
+      throw new Error(err);
     }
   };
 
@@ -64,12 +73,13 @@ export const ChatView = () => {
                       placeholder="Type a message..." />
 
                     <div className="input-group-append">
-                      <button
-                        className="btn btn-outline-primary"
+                      <Button
+                        variant='outline-primary'
+                        onClick={handleSubmit(sendMessage)}
                         id="send-button"
                         type="button">
                         Send
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </Form>

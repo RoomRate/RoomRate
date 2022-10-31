@@ -4,29 +4,40 @@ import { ChatService } from '../../shared/services';
 
 export const ChatList = ({ onChatSelect }) => {
   const [ chatList, setChatList ] = useState([]);
+  const [ activeChat, setActiveChat ] = useState(parseInt(localStorage.getItem(`lastOpenedChat`)));
 
   useEffect(() => {
     const fetchData = async () => {
-      setChatList(await ChatService.getChatsForUser());
+      try {
+        setChatList(await ChatService.getChatsForUser());
+      } catch (err) {
+        throw new Error(err);
+      }
     }
 
     fetchData();
   }, []);
 
   const getChatMessages = async ({ chat_id }) => {
-    const messages = await ChatService.getMessagesForChat({ chat_id });
-    const users = await ChatService.getChatUsers({ chat_id });
-    console.log(users)
-    const chatInfo = await ChatService.getChatById({ chat_id });
-
-    const chat = {
-      id: chat_id,
-      title: chatInfo.title,
-      messages,
-      users,
-    };
-
-    onChatSelect({ chat })
+    try {
+      //TODO consolidate all these requests into one
+      const messages = await ChatService.getMessagesForChat({ chat_id });
+      const users = await ChatService.getChatUsers({ chat_id });
+      const chatInfo = await ChatService.getChatById({ chat_id });
+  
+      const chat = {
+        id: chat_id,
+        title: chatInfo.title,
+        messages,
+        users,
+      };
+  
+      // localStorage.setItem(`lastOpenedChat`, chat_id);
+      setActiveChat(chat_id);
+      onChatSelect({ chat });
+    } catch (err) {
+      throw new Error(err);
+    }
   };
 
   return (
@@ -39,11 +50,18 @@ export const ChatList = ({ onChatSelect }) => {
               <>
               {
                   chatList.map(chat => 
-                    <ListGroup.Item action onClick={() => getChatMessages({ chat_id: chat.chat_id })}>
-                      <div className='row'>
-                        <dt>Title: </dt>
-                        <dd>{chat.chat_title}</dd>
-                      </div>
+                    <ListGroup.Item
+                    action 
+                    onClick={() => getChatMessages({ chat_id: chat.chat_id })}
+                    active={chat.chat_id === activeChat}>
+                      {
+                        chat.title &&
+                          <div className='row'>
+                            <dt>Title: </dt>
+                            <dd>{chat.chat_title}</dd>
+                          </div>
+                      }
+                      {console.log(localStorage.getItem(`lastOpenedChat`))}
                       <div className='row'>
                         <dt>Other users: </dt>
                         <dd>

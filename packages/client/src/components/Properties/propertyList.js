@@ -24,6 +24,8 @@ export const PropertyList = () => {
         setLoading(false)
       }
     };
+
+    document.title = `Uni-Home - Properties`;
     fetchData()
   }, []);
 
