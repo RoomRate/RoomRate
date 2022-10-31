@@ -15,4 +15,32 @@ export class PropertyService {
         throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
       }
     }
-  };
+
+    static async getPropertyDetails({ id }) {
+      try {
+        const response = await Axios({
+          method: `GET`,
+          url: `/property/${ id }/detail`
+        });
+
+        return response.data.data.property;
+      }
+      catch (err) {
+        throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+      }
+    }
+
+  static async getReviews({ id }) {
+    try {
+      const response = await Axios({
+        method: `GET`,
+        url: `/property/${ id }/reviews`
+      });
+
+      return response.data.data.reviews;
+    }
+    catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
+};

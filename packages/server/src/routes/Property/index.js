@@ -9,8 +9,36 @@ router.get(`/list`, async (req, res, next) => {
 
     ResponseHandler(
       res,
-      `Got case load`,
+      `Got property list`,
       { properties },
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get(`/:id/detail`, async (req, res, next) => {
+  try {
+    const property = await PropertyService.getPropertyDetail({ id: req.params.id });
+
+    ResponseHandler(
+      res,
+      `Got property detail`,
+      { property },
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get(`/:id/reviews`, async (req, res, next) => {
+  try {
+    const reviews = await PropertyService.getReviews({ id: req.params.id });
+
+    ResponseHandler(
+      res,
+      `Got property reviews`,
+      { reviews },
     );
   } catch (err) {
     next(err);

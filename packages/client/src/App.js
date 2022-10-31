@@ -5,7 +5,7 @@ import { RoutesComponent } from './app/routes.component';
 function App() {
   return (
     <>
-      <h1 className="justify-content-center">Welcome to UniHome</h1>
+      <h1>Welcome to UniHome</h1>
       <div className="App">
         <RoutesComponent />
       </div>
