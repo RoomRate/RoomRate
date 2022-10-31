@@ -8,7 +8,9 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import Rating from "react-rating";
 import { BsStarFill, BsStar} from "react-icons/bs";
 import { MarkerIcon } from "../../shared/A-UI";
+import Lottie from 'lottie-react';
 import PROPERTY_IMAGE from "assets/images/placeholderproperty.jpg";
+import loadingIcon from "assets/images/loadingIcon.json";
 
 export const PropertyDetails = () => {
   const { id } = useParams();
@@ -47,7 +49,12 @@ export const PropertyDetails = () => {
   };
 
   return (
-    isLoading ? null :
+    isLoading ? 
+    <div className="d-flex justify-content-center align-items-center" style={{ height: `75vh` }}>
+    <div style={{ maxHeight: `300px`, maxWidth: `300px` }}>
+      <Lottie animationData={loadingIcon} loop={true} />
+    </div>
+  </div> :
       <div>
         <h1>Property Details</h1>
         <br />
