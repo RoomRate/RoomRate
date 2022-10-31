@@ -15,6 +15,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 2,
@@ -25,6 +27,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 3,
@@ -35,6 +39,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 4,
@@ -45,6 +51,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 5,
@@ -55,6 +63,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 6,
@@ -65,6 +75,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 7,
@@ -75,6 +87,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 8,
@@ -85,6 +99,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 9,
@@ -95,6 +111,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 10,
@@ -105,6 +123,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 11,
@@ -115,6 +135,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 12,
@@ -125,6 +147,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
     {
       id: 13,
@@ -135,6 +159,8 @@ exports.getPropertyList = async () => {
       city: `Cincinnati`,
       state: `OH`,
       zip: `45220`,
+      bed: 2,
+      bath: 1,
     },
   ];
 

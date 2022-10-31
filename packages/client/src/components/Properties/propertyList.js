@@ -4,6 +4,8 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 import { PropertyService } from "../../shared/services";
 import { MarkerIcon } from "../../shared/A-UI"
+import { Image } from 'react-extras';
+import PROPERTY_IMAGE from "assets/images/placeholderproperty.jpg";
 
 export const PropertyList = () => {
   const [properties, setProperties] = useState([]);
@@ -35,10 +37,6 @@ export const PropertyList = () => {
         position={[p.lat, p.lng]}>
         <Popup>
           <div>
-            <div className="tooltip-header">
-              {p.name}
-            </div>
-            <hr />
             {p.street1}<br />
             {p.street2 ? <>{p.street2}<br /></> : ``}
             {p.city}, {p.state_name} {p.zip}
@@ -75,11 +73,11 @@ export const PropertyList = () => {
                 <Card.Body>
                   <div className="row">
                     <div className="col-md-3">
-                      <h1>Property Thumbnail</h1>
+                      <Image url={PROPERTY_IMAGE} alt="propertyimg" className="w-100" />
                     </div>
                     <div className="col-md-8">
-                      <h1>{property.name}</h1>
-                      <p>{property.description}</p>
+                      <h1>{property.street1} {property.street2 ? `, ${property.street2}` : ``}</h1>
+                      <p>{property.bed} bed, {property.bath} bath</p>
                     </div>
                     <div className="col-md-1">
                       <Link to={`/property/${property.id}/detail`}>
