@@ -7,7 +7,7 @@ import { Form } from "react-bootstrap";
 import { Row } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export async function PropertyForm() {
+export const PropertyForm = () => {
     const { register, handleSubmit } = useForm();
 
     return (
