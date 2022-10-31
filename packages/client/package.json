@@ -15,6 +15,8 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
     "react-dom": "^18.2.0",
+    "react-geocode": "^0.2.3",
+    "react-hook-form": "^7.38.0",
     "react-extras": "^3.0.0",
     "react-icons": "^4.6.0",
     "react-leaflet": "^4.1.0",
@@ -28,7 +30,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "node --max_old_space_size=2048 ../../node_modules/.bin/react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -33,6 +33,8 @@ export const PropertyDetails = () => {
         setLoading(false)
       }
     };
+
+    document.title = `Uni-Home - Property Details`;
     fetchData()
   }, [id]);
 
