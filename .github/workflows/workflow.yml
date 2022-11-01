@@ -19,7 +19,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-      working-directory: ./packages/client
+    - run: cd packages/client
     - run: npm ci
     - run: npm run lint
     - run: npm run build --if-present
@@ -36,7 +36,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-      working-directory: ./packages/server
+    - run: cd packages/server
     - run: npm ci
     - run: npm run lint
     - run: npm run build --if-present
