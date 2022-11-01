@@ -169,7 +169,7 @@ exports.getPropertyList = async () => {
   return properties;
 };
 
-exports.getPropertyDetail = async ({ id }) => {
+exports.getPropertyDetail = async () => {
   const dummyData = [{
     id: 1,
     name: `Property 1`,
@@ -198,7 +198,7 @@ exports.getPropertyDetail = async ({ id }) => {
   return property[0];
 };
 
-exports.getReviews = ({ id }) => {
+exports.getReviews = () => {
   let reviews = [];
 
   // query to fetch data from the database goes here

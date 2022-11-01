@@ -1,22 +1,20 @@
-exports.AuthMiddleware = (req, res, next) => {
-  return next();
+exports.AuthMiddleware = (req, res, next) =>
+  next();
+// const unauthenticatedRoutes = [
+//   `/user/login`,
+// ];
 
-  const unauthenticatedRoutes = [
-    `/user/login`,
-  ];
+// if (unauthenticatedRoutes.includes(req.originalUrl)) {
+//   return next();
+// }
 
-  if (unauthenticatedRoutes.includes(req.originalUrl)) {
-    return next();
-  }
+// if (req.isAuthenticated()) {
+//   return next();
+// }
 
-  if (req.isAuthenticated()) {
-    return next();
-  }
-
-  return res
-    .status(403)
-    .json({
-      message: `Forbidden`,
-      status: `FORBIDDEN`,
-    });
-};
+// return res
+//   .status(403)
+//   .json({
+//     message: `Forbidden`,
+//     status: `FORBIDDEN`,
+//   });
