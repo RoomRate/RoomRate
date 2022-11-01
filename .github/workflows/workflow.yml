@@ -13,9 +13,9 @@ jobs:
       matrix:
         node-version: [16.x]
     steps:
-    - working-directory: ./packages/client
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
+      working-directory: ./packages/client
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
@@ -30,10 +30,10 @@ jobs:
       matrix:
         node-version: [16.x]
     steps:
-    - working-directory: ./packages/server
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
+      working-directory: ./packages/server
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
