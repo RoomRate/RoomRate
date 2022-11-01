@@ -6,7 +6,7 @@ import Slider from "react-slick";
 import { Link } from 'react-router-dom';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import Rating from "react-rating";
-import { BsStarFill, BsStar} from "react-icons/bs";
+import { BsStarFill, BsStar } from "react-icons/bs";
 import { MarkerIcon } from "../../shared/A-UI";
 import Lottie from 'lottie-react';
 import PROPERTY_IMAGE from "assets/images/placeholderproperty.jpg";
@@ -14,47 +14,45 @@ import loadingIcon from "assets/images/loadingIcon.json";
 
 export const PropertyDetails = () => {
   const { id } = useParams();
-  const [isLoading, setLoading] = useState(true);
-  const [property, setProperty] = useState();
-  const [reviews, setReviews] = useState([]);
+  const [ isLoading, setLoading ] = useState(true);
+  const [ property, setProperty ] = useState();
+  const [ reviews, setReviews ] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true)
-        const property = await PropertyService.getPropertyDetails({ id })
-        const reviews = await PropertyService.getReviews({id})
-        setProperty(property)
-        setReviews(reviews)
+        setLoading(true);
+        setProperty(await PropertyService.getPropertyDetails({ id }));
+        setReviews(await PropertyService.getReviews({ id }));
       }
 
       catch (err) {
-        throw new Error(err)
+        throw new Error(err);
       }
       finally {
-        setLoading(false)
+        setLoading(false);
       }
     };
 
     document.title = `Uni-Home - Property Details`;
-    fetchData()
-  }, [id]);
+    fetchData();
+  }, [ id ]);
 
   const settings = {
     dots: true,
     infinite: false,
     speed: 500,
     slidesToShow: 5,
-    slidesToScroll: 1
+    slidesToScroll: 1,
   };
 
   return (
-    isLoading ? 
-    <div className="d-flex justify-content-center align-items-center" style={{ height: `75vh` }}>
-    <div style={{ maxHeight: `300px`, maxWidth: `300px` }}>
-      <Lottie animationData={loadingIcon} loop={true} />
-    </div>
-  </div> :
+    isLoading ?
+      <div className="d-flex justify-content-center align-items-center" style={{ height: `75vh` }}>
+        <div style={{ maxHeight: `300px`, maxWidth: `300px` }}>
+          <Lottie animationData={loadingIcon} loop={true} />
+        </div>
+      </div> :
       <div>
         <h1>Property Details</h1>
         <br />
@@ -105,8 +103,8 @@ export const PropertyDetails = () => {
           <div id="propertyMap" style={{ maxHeight: `90vh`, overflow: `hidden` }}>
             <h4>Map</h4>
             <MapContainer
-              style={{ height: '40vh' }}
-              center={[property.lat, property.lng]}
+              style={{ height: `40vh` }}
+              center={[ property.lat, property.lng ]}
               zoom={20}
             >
               <TileLayer
@@ -115,7 +113,7 @@ export const PropertyDetails = () => {
               />
               <Marker
                 icon={MarkerIcon}
-                position={[property?.lat, property?.lng]}>
+                position={[ property?.lat, property?.lng ]}>
                 <Popup>
                   <div>
                     <div className="tooltip-header">
@@ -142,13 +140,13 @@ export const PropertyDetails = () => {
                     fullSymbol={<BsStarFill />}
                     initialRating={review.rating}
                     readonly
-                    />
+                  />
                   <p>{review.review}</p>
-                </div>
-              )}
+                </div>)
+            }
 
           </div>
         </div>
       </div>
-  )
-}
+  );
+};

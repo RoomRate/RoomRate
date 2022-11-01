@@ -1,1 +1,1 @@
-export * from './mapMarkerIcon'
+export * from './mapMarkerIcon';

@@ -7,7 +7,7 @@
     "start": "cross-env NODE_ENV=dev node src/index.js",
     "start:dev": "cross-env NODE_ENV=dev nodemon src/index.js",
     "test": "jest --verbose ./tests",
-    "lint": "eslint src --ext .js,.jsx",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "npm run lint -- --fix"
   },
   "contributors": [

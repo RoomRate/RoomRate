@@ -32,6 +32,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "node --max_old_space_size=2048 ../../node_modules/.bin/react-scripts build",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "npm run lint -- --fix",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

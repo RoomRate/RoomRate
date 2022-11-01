@@ -1,42 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { Card } from "react-bootstrap"
+import { Card } from "react-bootstrap";
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 import { PropertyService } from "../../shared/services";
-import { MarkerIcon } from "../../shared/A-UI"
+import { MarkerIcon } from "../../shared/A-UI";
 import { Image } from 'react-extras';
 import Lottie from 'lottie-react';
 import PROPERTY_IMAGE from "assets/images/placeholderproperty.jpg";
 import loadingIcon from "assets/images/loadingIcon.json";
 
 export const PropertyList = () => {
-  const [properties, setProperties] = useState([]);
-  const [isLoading, setLoading] = useState(true);
+  const [ properties, setProperties ] = useState([]);
+  const [ isLoading, setLoading ] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true)
-        const properties = await PropertyService.getPropertyList({ all: true })
-        setProperties(properties)
+        setLoading(true);
+        setProperties(await PropertyService.getPropertyList({ all: true }));
       }
 
       catch (err) {
-        throw new Error(err)
+        throw new Error(err);
       }
       finally {
-        setLoading(false)
+        setLoading(false);
       }
     };
 
     document.title = `Uni-Home - Properties`;
-    fetchData()
+    fetchData();
   }, []);
 
   const renderPropertyMarkers = () => properties.map(p => <Marker
     key={p.id}
     icon={MarkerIcon}
-    position={[p.lat, p.lng]}>
+    position={[ p.lat, p.lng ]}>
     <Popup>
       <div>
         {p.street1}<br />
@@ -44,11 +43,9 @@ export const PropertyList = () => {
         {p.city}, {p.state_name} {p.zip}
       </div>
     </Popup>
-  </Marker>
-  );
+  </Marker>);
 
-
-  return (isLoading ?
+  return isLoading ?
     <div className="d-flex justify-content-center align-items-center" style={{ height: `75vh` }}>
       <div style={{ maxHeight: `300px`, maxWidth: `300px` }}>
         <Lottie animationData={loadingIcon} loop={true} />
@@ -59,8 +56,8 @@ export const PropertyList = () => {
         <div className="col-md-6">
           <div id="propertyMap" style={{ maxHeight: `90vh`, overflow: `hidden` }}>
             <MapContainer
-              style={{ height: '100vh', width: '50wh' }}
-              center={[39.130949, -84.51746]}
+              style={{ height: `100vh`, width: `50wh` }}
+              center={[ 39.130949, -84.51746 ]}
               zoom={15}
             >
               <TileLayer
@@ -95,12 +92,11 @@ export const PropertyList = () => {
                       </div>
                     </div>
                   </Card.Body>
-                </Card>
-              )
+                </Card>)
             }
           </div>
         </div>
       </div>
-    </div>
-  )
-}
+    </div>;
+
+};

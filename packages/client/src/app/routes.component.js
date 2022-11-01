@@ -4,9 +4,8 @@ import { Routes, Route } from 'react-router-dom';
 import { PropertyDetails } from '../components/Properties/propertyDetail';
 import { PropertyList } from '../components/Properties/propertyList';
 import { ChatView } from 'components/Chat/ChatView';
-import { PropertyForm } from '../components/Properties/propertyForm'
-import { UserForm } from '../components/Users/userForm'
-
+import { PropertyForm } from '../components/Properties/propertyForm';
+import { UserForm } from '../components/Users/userForm';
 
 export const RoutesComponent = () =>
   <Routes>

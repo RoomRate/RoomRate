@@ -1,9 +1,8 @@
 import React from 'react';
-import {LeftMenuComponent} from "./";
+import { LeftMenuComponent } from "./";
 import { Element } from "react-scroll";
 
-export const Layout = ({children}) => {
-  return <>
+export const Layout = ({ children }) => <>
   <aside id="leftMenu">
     <LeftMenuComponent />
   </aside>
@@ -12,5 +11,4 @@ export const Layout = ({children}) => {
       {children}
     </Element>
   </aside>
-  </>
-}
+</>;

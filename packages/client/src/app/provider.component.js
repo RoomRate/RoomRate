@@ -5,10 +5,10 @@ import { BrowserRouter } from 'react-router-dom';
 export const Providers = ({ children }) =>
   <React.StrictMode>
     <BrowserRouter>
-        {children}
+      {children}
     </BrowserRouter>
   </React.StrictMode>;
-  
+
 Providers.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.element, PropTypes.arrayOf(PropTypes.element),

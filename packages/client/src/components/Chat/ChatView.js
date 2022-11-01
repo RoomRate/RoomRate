@@ -15,15 +15,15 @@ export const ChatView = () => {
     document.title = `Uni-Home - Chats`;
   });
 
-  const setCurrentChat = ({ chat }) => setChat(chat);
+  const setCurrentChat = (selected) => setChat(selected.chat);
 
   const sendMessage = async ({ message }) => {
     try {
       if (message) {
         const { id: chat_id } = chat;
-  
+
         const sentMessage = await ChatService.sendMessage({ message, user_id, chat_id });
-  
+
         chat.messages.push(sentMessage);
         reset();
       }
@@ -45,22 +45,20 @@ export const ChatView = () => {
                 {
                   chat.title ?
                     <div>{chat.title}</div> :
-                    chat.users.map((user, index, array) => 
-                      `${ user.first_name } ${ user.last_name }${ index + 1 !== array.length ? `, ` : `` }`  
-                    )
+                    chat.users.map((user, index, array) =>
+                      `${user.first_name} ${user.last_name}${index + 1 !== array.length ? `, ` : ``}`)
                 }
               </Card.Title>
               <Card.Body>
                 {
                   chat.messages?.length ?
-                    chat.messages.map(message => 
-                      <div className={`${ user_id === message.created_by ? `mine` : `yours` } messages`}>
+                    chat.messages.map(message =>
+                      <div className={`${user_id === message.created_by ? `mine` : `yours`} messages`}>
                         <div className="message">
                           {message.message}
                         </div>
-                      </div> 
-                  ) :
-                  `There doesn't seem to be anything here`
+                      </div>) :
+                    `There doesn't seem to be anything here`
                 }
 
                 <Form onSubmit={handleSubmit(sendMessage)}>
@@ -74,7 +72,7 @@ export const ChatView = () => {
 
                     <div className="input-group-append">
                       <Button
-                        variant='outline-primary'
+                        variant="outline-primary"
                         onClick={handleSubmit(sendMessage)}
                         id="send-button"
                         type="button">
@@ -90,4 +88,4 @@ export const ChatView = () => {
       </div>
     </div>
   );
-}
+};
