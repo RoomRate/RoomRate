@@ -9,11 +9,26 @@ const user_id = 13; // TODO grab this from the auth strategy
 
 export const ChatView = () => {
   const [ chat, setChat ] = useState();
+  const [ webSocketServer, setWebSocketServer ] = useState();
   const { register, reset, handleSubmit } = useForm();
 
   useEffect(() => {
     document.title = `Uni-Home - Chats`;
-  });
+
+    let ws;
+    if (ws) {
+      ws.onerror = ws.onopen = ws.onclose = null;
+      ws.close();
+    }
+
+    ws = new WebSocket(`ws://localhost:4567`);
+    ws.onopen = () => {
+      console.log(`Connection opened!`);
+    };
+    ws.onmessage = ({ data }) => console.log(data);
+    ws.onclose = () => ws = null;
+    setWebSocketServer(ws);
+  }, []);
 
   const setCurrentChat = (selected) => setChat(selected.chat);
 
@@ -23,6 +38,10 @@ export const ChatView = () => {
         const { id: chat_id } = chat;
 
         const sentMessage = await ChatService.sendMessage({ message, user_id, chat_id });
+
+        if (webSocketServer) {
+          webSocketServer.send(JSON.stringify(message));
+        }
 
         chat.messages.push(sentMessage);
         reset();
