@@ -1,5 +1,5 @@
 {
-  "name": "uni-home",
+  "name": "roomrate",
   "version": "0.0.0",
   "description": "Future IT Expo winner",
   "repository": {
@@ -19,9 +19,9 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Uni-Home/Uni-Home/issues"
+    "url": "https://github.com/RoomRate/RoomRate/issues"
   },
-  "homepage": "https://github.com/Uni-Home/Uni-Home#readme",
+  "homepage": "https://github.com/RoomRate/RoomRate#readme",
   "workspaces": [
     "packages/server",
     "packages/client"
