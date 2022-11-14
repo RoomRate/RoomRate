@@ -1,6 +1,6 @@
 const WebSocket = require(`ws`);
 
-exports.setUpWebSocketServer = ({ server }) => {
+exports.setUpWebSocketServer2 = ({ server }) => {
   const wss = new WebSocket.Server({ server });
 
   wss.on(`connection`, (ws) => {
@@ -11,4 +11,4 @@ exports.setUpWebSocketServer = ({ server }) => {
       ws.send(JSON.stringify(message));
     });
   });
-};
+}
