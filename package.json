@@ -4,7 +4,7 @@
   "description": "Future IT Expo winner",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Uni-Home/Uni-Home.git"
+    "url": "git+https://github.com/RoomRate/RoomRate.git"
   },
   "scripts": {
     "start": "node --optimize_for_size --max_old_space_size=460 packages/server/src/index.js",
