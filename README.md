@@ -1,4 +1,4 @@
-# Uni-Home
+# Roomrate
 https://uni-home.herokuapp.com/
 
 Future IT Expo winner
