@@ -8,12 +8,24 @@ import './chat.scss';
 const user_id = 13; // TODO grab this from the auth strategy
 
 export const ChatView = () => {
+  document.title = `Uni-Home - Chats`;
   const [ chat, setChat ] = useState();
   const { register, reset, handleSubmit } = useForm();
+  const [ wss, setWss ] = useState(new WebSocket(`ws://localhost:4567`));
 
   useEffect(() => {
-    document.title = `Uni-Home - Chats`;
-  });
+    if (wss) {
+      wss.onopen = () => {
+        wss.onmessage = data => {
+          console.log(chat);
+          const message = JSON.parse(data.data.toString());
+          chat.messages.push(message);
+        };
+      };
+    } else {
+      setWss(new WebSocket(`ws://localhost:4567`));
+    }
+  }, [ wss, chat, chat?.messages ]);
 
   const setCurrentChat = (selected) => setChat(selected.chat);
 
@@ -26,6 +38,8 @@ export const ChatView = () => {
 
         chat.messages.push(sentMessage);
         reset();
+
+        wss.send(JSON.stringify({ chat_id, user_id, message }));
       }
     } catch (err) {
       throw new Error(err);
