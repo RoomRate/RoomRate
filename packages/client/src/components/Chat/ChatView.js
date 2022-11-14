@@ -12,7 +12,7 @@ export const ChatView = () => {
   const { register, reset, handleSubmit } = useForm();
 
   useEffect(() => {
-    document.title = `Uni-Home - Chats`;
+    document.title = `RoomRate - Chats`;
   });
 
   const setCurrentChat = (selected) => setChat(selected.chat);
