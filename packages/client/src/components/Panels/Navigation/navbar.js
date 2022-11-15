@@ -3,7 +3,7 @@ import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 
 export const Navigation = () =>
   <Navbar bg="dark" variant="dark">
-    <Navbar.Brand href="/">Uni-Home</Navbar.Brand>
+    <Navbar.Brand href="/">RoomRate</Navbar.Brand>
     <Nav className="me-auto">
       <NavDropdown title="Properties">
         <NavDropdown.Item href="/">List</NavDropdown.Item>

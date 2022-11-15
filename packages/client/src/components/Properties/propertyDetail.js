@@ -34,7 +34,7 @@ export const PropertyDetails = () => {
       }
     };
 
-    document.title = `Uni-Home - Property Details`;
+    document.title = `RoomRate - Property Details`;
     fetchData();
   }, [ id ]);
 

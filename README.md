@@ -1,5 +1,5 @@
-# Uni-Home
-https://uni-home.herokuapp.com/
+# Roomrate
+https://room-rate.herokuapp.com/
 
 Future IT Expo winner
 
@@ -20,4 +20,4 @@ Future IT Expo winner
 
 # When adding new config values
 1. If it is on the server, make sure that you add an empty value for it in default.json (heroku doesn't like it if you don't)
-2. Make sure that you add the config value to the project on heroku (https://dashboard.heroku.com/apps/uni-home/settings)
+2. Make sure that you add the config value to the project on heroku (https://dashboard.heroku.com/apps/room-rate/settings)

@@ -28,7 +28,7 @@ export const PropertyList = () => {
       }
     };
 
-    document.title = `Uni-Home - Properties`;
+    document.title = `RoomRate - Properties`;
     fetchData();
   }, []);
 

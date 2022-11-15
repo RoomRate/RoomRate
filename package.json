@@ -1,10 +1,10 @@
 {
-  "name": "uni-home",
+  "name": "roomrate",
   "version": "0.0.0",
   "description": "Future IT Expo winner",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Uni-Home/Uni-Home.git"
+    "url": "git+https://github.com/RoomRate/RoomRate.git"
   },
   "scripts": {
     "start": "node --optimize_for_size --max_old_space_size=460 packages/server/src/index.js",
@@ -19,9 +19,9 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Uni-Home/Uni-Home/issues"
+    "url": "https://github.com/RoomRate/RoomRate/issues"
   },
-  "homepage": "https://github.com/Uni-Home/Uni-Home#readme",
+  "homepage": "https://github.com/RoomRate/RoomRate#readme",
   "workspaces": [
     "packages/server",
     "packages/client"
