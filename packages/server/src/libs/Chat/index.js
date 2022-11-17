@@ -58,7 +58,13 @@ exports.getChatsForUser = async ({ user_id }) => {
 
 exports.getMessagesForChat = async ({ chat_id }) => {
   const { rows: messages } = await knex.raw(`
-    SELECT *
+    SELECT 
+      chat_messages.*,
+      users.id,
+      users.first_name,
+      users.last_name,
+      users.username,
+      users.email
     FROM chat_messages
     JOIN users on chat_messages.created_by = users.id
     WHERE chat_messages.chat_id = ?

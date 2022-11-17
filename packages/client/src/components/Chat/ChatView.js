@@ -8,24 +8,31 @@ import './chat.scss';
 const user_id = 13; // TODO grab this from the auth strategy
 
 export const ChatView = () => {
-  document.title = `Uni-Home - Chats`;
+  document.title = `Roomrate - Chats`;
   const [ chat, setChat ] = useState();
   const { register, reset, handleSubmit } = useForm();
-  const [ wss, setWss ] = useState(new WebSocket(`ws://localhost:4567`));
+
+  const HOST = process.env.NODE_ENV === `production` ?
+    window.location.origin.replace(/^http/, `ws`) :
+    `ws://localhost:4567`;
+
+  const [ wss, setWss ] = useState(new WebSocket(HOST));
 
   useEffect(() => {
-    if (wss) {
-      wss.onopen = () => {
-        wss.onmessage = data => {
-          console.log(chat);
-          const message = JSON.parse(data.data.toString());
-          chat.messages.push(message);
-        };
-      };
-    } else {
-      setWss(new WebSocket(`ws://localhost:4567`));
+    if (!wss) {
+      setWss(new WebSocket(HOST));
     }
-  }, [ wss, chat, chat?.messages ]);
+
+    if (chat) {
+      wss.onmessage = data => {
+        const message = JSON.parse(data.data.toString());
+        if (user_id !== data.created_by) {
+          chat.messages.push(message);
+          setChat({ ...chat });
+        }
+      };
+    }
+  }, [ wss, chat ]);
 
   const setCurrentChat = (selected) => setChat(selected.chat);
 
@@ -39,7 +46,11 @@ export const ChatView = () => {
         chat.messages.push(sentMessage);
         reset();
 
-        wss.send(JSON.stringify({ chat_id, user_id, message }));
+        wss.send(JSON.stringify({
+          chat_id,
+          created_by: user_id,
+          message,
+        }));
       }
     } catch (err) {
       throw new Error(err);
