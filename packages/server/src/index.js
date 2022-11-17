@@ -18,6 +18,7 @@ const cookieParser = require(`cookie-parser`);
 const UserService = require(`./libs/User`);
 const RouteLoader = require(`./utils/RouteLoader`);
 const { ErrorHandler } = require(`./utils/ErrorHandler`);
+const { setUpWebSocketServer } = require(`./utils/WebSocketServer`);
 
 const app = express();
 const port = process.env.PORT || config.get(`server.port`) || 3000;
@@ -96,7 +97,9 @@ app.get(`*`, (req, res) => {
   res.sendFile(path.join(__dirname, `../../client/build/index.html`));
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
   console.log(`Listening on port ${ port }`);
 });
+
+setUpWebSocketServer({ server });

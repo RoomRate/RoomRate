@@ -8,12 +8,31 @@ import './chat.scss';
 const user_id = 13; // TODO grab this from the auth strategy
 
 export const ChatView = () => {
+  document.title = `Roomrate - Chats`;
   const [ chat, setChat ] = useState();
   const { register, reset, handleSubmit } = useForm();
 
+  const HOST = process.env.NODE_ENV === `production` ?
+    window.location.origin.replace(/^http/, `ws`) :
+    `ws://localhost:4567`;
+
+  const [ wss, setWss ] = useState(new WebSocket(HOST));
+
   useEffect(() => {
-    document.title = `RoomRate - Chats`;
-  });
+    if (!wss) {
+      setWss(new WebSocket(HOST));
+    }
+
+    if (chat) {
+      wss.onmessage = data => {
+        const message = JSON.parse(data.data.toString());
+        if (user_id !== data.created_by) {
+          chat.messages.push(message);
+          setChat({ ...chat });
+        }
+      };
+    }
+  }, [ wss, chat ]);
 
   const setCurrentChat = (selected) => setChat(selected.chat);
 
@@ -26,6 +45,12 @@ export const ChatView = () => {
 
         chat.messages.push(sentMessage);
         reset();
+
+        wss.send(JSON.stringify({
+          chat_id,
+          created_by: user_id,
+          message,
+        }));
       }
     } catch (err) {
       throw new Error(err);

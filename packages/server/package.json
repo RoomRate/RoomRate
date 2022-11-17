@@ -37,7 +37,8 @@
     "passport-local": "^1.0.0",
     "pg": "^8.8.0",
     "restify-errors": "^8.0.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ws": "^8.11.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
