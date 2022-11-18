@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Form } from 'react-bootstrap';
 import { ChatList } from './ChatList';
@@ -5,11 +7,10 @@ import { useForm } from 'react-hook-form';
 import { ChatService } from 'shared/services';
 import './chat.scss';
 
-const user_id = 13; // TODO grab this from the auth strategy
-
 export const ChatView = () => {
   document.title = `Roomrate - Chats`;
   const [ chat, setChat ] = useState();
+  const [ user_id, set_user_id ] = useState(13); // TODO grab this from the auth strategy
   const { register, reset, handleSubmit } = useForm();
 
   const HOST = process.env.NODE_ENV === `production` ?
@@ -26,13 +27,13 @@ export const ChatView = () => {
     if (chat) {
       wss.onmessage = data => {
         const message = JSON.parse(data.data.toString());
-        if (user_id !== data.created_by) {
+        if (user_id !== message.created_by) {
           chat.messages.push(message);
           setChat({ ...chat });
         }
       };
     }
-  }, [ wss, chat ]);
+  }, [ wss, chat, HOST, user_id ]);
 
   const setCurrentChat = (selected) => setChat(selected.chat);
 
@@ -57,6 +58,11 @@ export const ChatView = () => {
     }
   };
 
+  // This can be used for demo purposes
+  const changeUser = () => {
+    set_user_id(user_id === 13 ? 14 : 13);
+  };
+
   return (
     <div className="row" style={{ height: `100vh` }}>
       <div className="col-3">
@@ -67,12 +73,14 @@ export const ChatView = () => {
           chat ?
             <Card style={{ height: `100vh` }}>
               <Card.Title>
-                {
-                  chat.title ?
-                    <div>{chat.title}</div> :
-                    chat.users.map((user, index, array) =>
-                      `${user.first_name} ${user.last_name}${index + 1 !== array.length ? `, ` : ``}`)
-                }
+                <div onClick={() => changeUser()}>
+                  {
+                    chat.title ?
+                      <p>{chat.title}</p> :
+                      chat.users.map((user, index, array) =>
+                        `${user.first_name} ${user.last_name}${index + 1 !== array.length ? `, ` : ``}`)
+                  }
+                </div>
               </Card.Title>
               <Card.Body>
                 {

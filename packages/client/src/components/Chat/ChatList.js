@@ -10,6 +10,10 @@ export const ChatList = ({ onChatSelect }) => {
     const fetchData = async () => {
       try {
         setChatList(await ChatService.getChatsForUser());
+
+        if (activeChat) {
+          await getChatMessages({ chat_id: activeChat });
+        }
       } catch (err) {
         throw new Error(err);
       }
@@ -32,7 +36,7 @@ export const ChatList = ({ onChatSelect }) => {
         users,
       };
 
-      // localStorage.setItem(`lastOpenedChat`, chat_id);
+      localStorage.setItem(`lastOpenedChat`, chat_id);
       setActiveChat(chat_id);
       onChatSelect({ chat });
     } catch (err) {
@@ -55,7 +59,7 @@ export const ChatList = ({ onChatSelect }) => {
                       onClick={() => getChatMessages({ chat_id: chat.chat_id })}
                       active={chat.chat_id === activeChat}>
                       {
-                        chat.title &&
+                        chat.chat_title &&
                           <div className="row">
                             <dt>Title: </dt>
                             <dd>{chat.chat_title}</dd>
