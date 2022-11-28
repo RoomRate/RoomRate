@@ -62,33 +62,13 @@ export const PropertyDetails = () => {
               <div className="justify-content-center" >
                 <Image url={PROPERTY_IMAGE} alt="propertyimg" className="w-100" />
                 <Slider {...settings}>
-                  <div >
-                    <h3 style={{ height: `50px`, backgroundColor: `#5f9ea0` }}>1</h3>
-                  </div>
-                  <div>
-                    <h3 style={{ height: `50px` }}>2</h3>
-                  </div>
-                  <div>
-                    <h3 style={{ height: `50px`, backgroundColor: `#5f9ea0` }}>3</h3>
-                  </div>
-                  <div>
-                    <h3 style={{ height: `50px` }}>4</h3>
-                  </div>
-                  <div>
-                    <h3 style={{ height: `50px`, backgroundColor: `#5f9ea0` }}>5</h3>
-                  </div>
-                  <div>
-                    <h3 style={{ height: `50px` }}>6</h3>
-                  </div>
-                  <div>
-                    <h3 style={{ height: `50px`, backgroundColor: `#5f9ea0` }}>7</h3>
-                  </div>
-                  <div>
-                    <h3 style={{ height: `50px` }}>8</h3>
-                  </div>
-                  <div>
-                    <h3 style={{ height: `50px`, backgroundColor: `#5f9ea0` }}>9</h3>
-                  </div>
+                  {
+                    property.images?.map(image =>
+                      <div>
+                        <img src={`data:image/jpeg;base64, ${image}`} alt="property_image" />
+                      </div>)
+
+                  }
                 </Slider>
               </div>
             </div>

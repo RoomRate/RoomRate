@@ -1,45 +1,54 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 import { Button } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { Row } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { LoadingIcon } from '../../shared/A-UI';
+import { PropertyService } from 'shared/services';
+import Select from 'react-select';
 
 export const PropertyForm = () => {
-  const { register, handleSubmit } = useForm();
+  const { control, register, handleSubmit } = useForm();
+  const [ states, setStates ] = useState();
+  const [ isLoading, setLoading ] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setStates(await PropertyService.getStates());
+      }
+
+      catch (err) {
+        throw new Error(err);
+      }
+      finally {
+        setLoading(false);
+      }
+    };
+
+    document.title = `RoomRate - New Property`;
+    fetchData();
+  }, []);
+
+  const createNewProperty = async (data) => {
+    const formData = new FormData();
+    for (const file of data.pictures) {
+      formData.append(`pictures`, file);
+    }
+    formData.append(`data`, JSON.stringify(data));
+    const newProperty = await PropertyService.createProperty(formData);
+
+    console.log(newProperty);
+  };
 
   return (
-    <>
+    isLoading ? <LoadingIcon /> : <>
       <div className="container">
         <h1>Register Your Property:</h1>
-        <form onSubmit={handleSubmit((data) => {
-          console.log(data);
-        })}>
-
-          <Row>
-            <Form.Group as={Col}>
-              <label htmlFor="propertyName">Property Name: </label>
-              <input type="text" className="form-control"{...register(`propertyName`, { required: true })} />
-            </Form.Group>
-          </Row>
-
-          <Row>
-            <Form.Group as={Col}>
-              <label htmlFor="owner">Owner: </label>
-              <input type="text" className="form-control"{...register(`owner`, { required: true })} />
-            </Form.Group>
-            <Form.Group as={Col}>
-              <labe htmlFor="email">Email: </labe>
-              <input type="text" className="form-control"{...register(`email`, { required: true })} />
-            </Form.Group>
-            <Form.Group as={Col}>
-              <label htmlFor="phoneNumber">Phone Number: </label>
-              <input type="text" className="form-control"{...register(`phoneNumber`, { required: true })} />
-            </Form.Group>
-          </Row>
-
+        <form onSubmit={handleSubmit(createNewProperty)}>
           <Form.Group>
             <label htmlFor="address">Address</label>
             <input
@@ -69,60 +78,18 @@ export const PropertyForm = () => {
 
             <Form.Group as={Col}>
               <label htmlFor="state">State: </label>
-              <Form.Select defaultValue="Choose..."{...register(`state`, { required: true })} >
-                <option>Choose...</option>
-                <option value="AL">Alabama</option>
-                <option value="AK">Alaska</option>
-                <option value="AZ">Arizona</option>
-                <option value="AR">Arkansas</option>
-                <option value="CA">California</option>
-                <option value="CO">Colorado</option>
-                <option value="CT">Connecticut</option>
-                <option value="DE">Delaware</option>
-                <option value="DC">District Of Columbia</option>
-                <option value="FL">Florida</option>
-                <option value="GA">Georgia</option>
-                <option value="HI">Hawaii</option>
-                <option value="ID">Idaho</option>
-                <option value="IL">Illinois</option>
-                <option value="IN">Indiana</option>
-                <option value="IA">Iowa</option>
-                <option value="KS">Kansas</option>
-                <option value="KY">Kentucky</option>
-                <option value="LA">Louisiana</option>
-                <option value="ME">Maine</option>
-                <option value="MD">Maryland</option>
-                <option value="MA">Massachusetts</option>
-                <option value="MI">Michigan</option>
-                <option value="MN">Minnesota</option>
-                <option value="MS">Mississippi</option>
-                <option value="MO">Missouri</option>
-                <option value="MT">Montana</option>
-                <option value="NE">Nebraska</option>
-                <option value="NV">Nevada</option>
-                <option value="NH">New Hampshire</option>
-                <option value="NJ">New Jersey</option>
-                <option value="NM">New Mexico</option>
-                <option value="NY">New York</option>
-                <option value="NC">North Carolina</option>
-                <option value="ND">North Dakota</option>
-                <option value="OH">Ohio</option>
-                <option value="OK">Oklahoma</option>
-                <option value="OR">Oregon</option>
-                <option value="PA">Pennsylvania</option>
-                <option value="RI">Rhode Island</option>
-                <option value="SC">South Carolina</option>
-                <option value="SD">South Dakota</option>
-                <option value="TN">Tennessee</option>
-                <option value="TX">Texas</option>
-                <option value="UT">Utah</option>
-                <option value="VT">Vermont</option>
-                <option value="VA">Virginia</option>
-                <option value="WA">Washington</option>
-                <option value="WV">West Virginia</option>
-                <option value="WI">Wisconsin</option>
-                <option value="WY">Wyoming</option>
-              </Form.Select>
+              <Controller
+                control={control}
+                name="state"
+                render={({ field }) => <Select
+                  {...field}
+                  classNamePrefix="react-select"
+                  options={states.map(state => ({ label: state.name, value: state.id }))}
+                />}
+                rules={{
+                  required: `Please select a state`,
+                }}
+              />
             </Form.Group>
 
             <Form.Group as={Col}>
@@ -147,9 +114,12 @@ export const PropertyForm = () => {
               <input type="number" className="form-control"{...register(`bathrooms`, { required: true })} />
             </Form.Group>
           </Row>
-
+          <Form.Group as={Col}>
+            <label htmlFor="description">A brief description of the property: </label>
+            <textarea rows={5} className="form-control" {...register(`description`)} />
+          </Form.Group>
           <b>Upload Pictures: </b>
-          <input className="form-control" type="file" multiple {...register(`pictures`)} />
+          <input className="form-control" type="file" accept="image/*" multiple {...register(`pictures`)} />
 
           <br />
           <b>Policies: </b>

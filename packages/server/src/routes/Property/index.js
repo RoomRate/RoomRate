@@ -2,6 +2,9 @@ const express = require(`express`);
 const router = express.Router();
 const PropertyService = require(`../../libs/Property`);
 const { ResponseHandler } = require(`../../utils/ResponseHandler`);
+const multer = require(`multer`);
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 router.get(`/list`, async (req, res, next) => {
   try {
@@ -19,7 +22,11 @@ router.get(`/list`, async (req, res, next) => {
 
 router.get(`/:id/detail`, async (req, res, next) => {
   try {
-    const property = await PropertyService.getPropertyDetail({ id: req.params.id });
+    const [ property, images ] = await Promise.all([
+      await PropertyService.getPropertyDetail({ id: req.params.id }),
+      await PropertyService.getPropertyImages({ id: req.params.id }),
+    ]);
+    property.images = images;
 
     ResponseHandler(
       res,
@@ -41,6 +48,37 @@ router.get(`/:id/reviews`, async (req, res, next) => {
       { reviews },
     );
   } catch (err) {
+    next(err);
+  }
+});
+
+router.get(`/states`, async (req, res, next) => {
+  try {
+    const states = await PropertyService.getStates();
+
+    ResponseHandler(
+      res,
+      `Got property reviews`,
+      { states },
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post(`/new`, upload.array(`pictures`, 10), async (req, res, next) => {
+  try {
+    const { id } = await PropertyService.createProperty({ property: JSON.parse(req.body.data) });
+    await PropertyService.uploadImages({ images: req.files, propertyId: id });
+
+    ResponseHandler(
+      res,
+      `Created New Property`,
+      {},
+    );
+  }
+  catch (err) {
+    console.log(err);
     next(err);
   }
 });
