@@ -1,8 +1,10 @@
 const { attachCoordinates } = require(`../../utils/Geocoder`);
+const knex = require(`../Database`);
+const { s3download, s3Upload } = require(`../../utils/S3`);
+const { v4: uuidv4 } = require(`uuid`);
 
 exports.getPropertyList = async () => {
-  let properties = [];
-
+  let properties;
   // query to fetch data from the database goes here
 
   const dummyData = [
@@ -164,12 +166,25 @@ exports.getPropertyList = async () => {
     },
   ];
 
+  const propertiesQueried = await knex.raw(`
+    SELECT *
+    FROM properties
+  `);
+
   properties = await attachCoordinates({ properties: dummyData });
 
   return properties;
 };
 
-exports.getPropertyDetail = async () => {
+exports.getPropertyDetail = async ({ id }) => {
+  const propertyQueried = await knex.raw(`
+    SELECT *
+    FROM properties
+    JOIN users ON users.id = properties.landlord_id
+    JOIN states ON states.id = properties.state_id
+    WHERE properties.id = ?
+  `, [ id ]);
+
   const dummyData = [{
     id: 1,
     name: `Property 1`,
@@ -227,4 +242,58 @@ exports.getReviews = () => {
   reviews = dummyReviews;
 
   return reviews;
+};
+
+exports.getStates = async () => {
+  const states = await knex.raw(
+    `
+    SELECT *
+    FROM states`,
+  );
+
+  return states.rows;
+};
+
+exports.getPropertyImages = async ({ id }) => {
+  const propertyImageKeys = await knex.raw(`
+    SELECT image_key
+    FROM property_images
+    JOIN properties ON properties.id = property_images.property_id
+    WHERE property_images.property_id = ?
+  `, [ id ]);
+
+  const propertyImages = await Promise.all(propertyImageKeys.rows.map(async key => await s3download(key.image_key)));
+
+  return propertyImages;
+};
+
+exports.createProperty = async ({ property }) => {
+  const newProperty = await knex.insert({
+    street_1: property.address,
+    street_2: property.addressTwo,
+    details: property.description,
+    city: property.city,
+    state_id: property.state.value,
+    zip: property.zipCode,
+    bed: property.bedrooms,
+    bath: property.bathrooms,
+    rate: property.monthlyRent,
+    landlord_id: 14,
+    internet: property.internet,
+    campusWalk: property.campusWalk,
+    petsAllowed: property.petsAllowed,
+  }).into(`properties`).returning(`id`);
+
+  return newProperty[0];
+};
+
+exports.uploadImages = async ({ images, propertyId }) => {
+  await Promise.all(images.map(async image => {
+    image.key = uuidv4();
+    await s3Upload({ file: image.buffer, imageKey: image.key, mimetype: image.mimetype });
+    await knex.insert({
+      property_id: propertyId,
+      image_key: image.key,
+    }).into(`property_images`);
+  }));
 };

@@ -5,9 +5,8 @@ import { Link } from 'react-router-dom';
 import { PropertyService } from "../../shared/services";
 import { MarkerIcon } from "../../shared/A-UI";
 import { Image } from 'react-extras';
-import Lottie from 'lottie-react';
+import { LoadingIcon } from '../../shared/A-UI';
 import PROPERTY_IMAGE from "assets/images/placeholderproperty.jpg";
-import loadingIcon from "assets/images/loadingIcon.json";
 
 export const PropertyList = () => {
   const [ properties, setProperties ] = useState([]);
@@ -46,11 +45,7 @@ export const PropertyList = () => {
   </Marker>);
 
   return isLoading ?
-    <div className="d-flex justify-content-center align-items-center" style={{ height: `75vh` }}>
-      <div style={{ maxHeight: `300px`, maxWidth: `300px` }}>
-        <Lottie animationData={loadingIcon} loop={true} />
-      </div>
-    </div> :
+    <LoadingIcon /> :
     <div className="container-fluid block-content" >
       <div className="row" style={{ maxHeight: `95vh` }}>
         <div className="col-md-6">

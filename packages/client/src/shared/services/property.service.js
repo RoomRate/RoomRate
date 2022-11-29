@@ -43,4 +43,33 @@ export class PropertyService {
       throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
     }
   }
+
+  static async getStates() {
+    try {
+      const response = await Axios({
+        method: `GET`,
+        url: `/property/states`,
+      });
+
+      return response.data.data.states;
+    }
+    catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
+
+  static async createProperty(data) {
+    try {
+      await Axios({
+        method: `POST`,
+        url: `/property/new`,
+        data,
+      });
+
+      return;
+    }
+    catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
 }
