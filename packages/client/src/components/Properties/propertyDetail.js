@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { Carousel } from "react-bootstrap";
 import { PropertyService } from "../../shared/services";
 import { useParams } from 'react-router-dom';
-import { Image } from 'react-extras';
-import Slider from "react-slick";
 import { Link } from 'react-router-dom';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import Rating from "react-rating";
 import { BsStarFill, BsStar } from "react-icons/bs";
 import { MarkerIcon } from "../../shared/A-UI";
 import Lottie from 'lottie-react';
-import PROPERTY_IMAGE from "assets/images/placeholderproperty.jpg";
 import loadingIcon from "assets/images/loadingIcon.json";
 
 export const PropertyDetails = () => {
@@ -38,14 +36,6 @@ export const PropertyDetails = () => {
     fetchData();
   }, [ id ]);
 
-  const settings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 1,
-  };
-
   return (
     isLoading ?
       <div className="d-flex justify-content-center align-items-center" style={{ height: `75vh` }}>
@@ -59,17 +49,18 @@ export const PropertyDetails = () => {
         <div className="container">
           <div className="row">
             <div className="col-md-6">
-              <div className="justify-content-center" >
-                <Image url={PROPERTY_IMAGE} alt="propertyimg" className="w-100" />
-                <Slider {...settings}>
+              <div className="justify-content-center h-100" >
+                <Carousel>
                   {
-                    property.images?.map(image =>
-                      <div>
-                        <img src={`data:image/jpeg;base64, ${image}`} alt="property_image" />
-                      </div>)
-
+                    property.images?.map((image) =>
+                      <Carousel.Item>
+                        <img
+                          src={`data:image/jpeg;base64, ${image}`}
+                          className="d-block w-100"
+                          alt="property_image" />
+                      </Carousel.Item>)
                   }
-                </Slider>
+                </Carousel>
               </div>
             </div>
             <div className="col-md-6">
@@ -124,7 +115,6 @@ export const PropertyDetails = () => {
                   <p>{review.review}</p>
                 </div>)
             }
-
           </div>
         </div>
       </div>

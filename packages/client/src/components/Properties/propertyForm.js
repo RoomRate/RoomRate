@@ -39,9 +39,7 @@ export const PropertyForm = () => {
       formData.append(`pictures`, file);
     }
     formData.append(`data`, JSON.stringify(data));
-    const newProperty = await PropertyService.createProperty(formData);
-
-    console.log(newProperty);
+    await PropertyService.createProperty(formData);
   };
 
   return (

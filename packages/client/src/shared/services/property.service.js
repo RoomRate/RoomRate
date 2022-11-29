@@ -69,7 +69,6 @@ export class PropertyService {
       return;
     }
     catch (err) {
-      console.log(err);
       throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
     }
   }

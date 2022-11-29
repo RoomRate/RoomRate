@@ -78,7 +78,6 @@ router.post(`/new`, upload.array(`pictures`, 10), async (req, res, next) => {
     );
   }
   catch (err) {
-    console.log(err);
     next(err);
   }
 });
