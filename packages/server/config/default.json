@@ -21,5 +21,11 @@
     },
     "session": {
         "secret": ""
+    },
+    "s3": {
+        "bucket_name": "",
+        "region": "",
+        "aws-access-key": "",
+        "aws-secret-key": ""
     }
 }
