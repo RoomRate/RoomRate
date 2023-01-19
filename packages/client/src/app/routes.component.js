@@ -6,6 +6,8 @@ import { PropertyList } from '../components/Properties/propertyList';
 import { ChatView } from 'components/Chat/ChatView';
 import { PropertyForm } from '../components/Properties/propertyForm';
 import { UserForm } from '../components/Users/userForm';
+import { LogIn } from 'components/Login/logIn';
+import { SignUp } from 'components/Login/signUp';
 
 export const RoutesComponent = () =>
   <Routes>
@@ -14,4 +16,6 @@ export const RoutesComponent = () =>
     <Route path="/chat" element={<ChatView />} />
     <Route path="/property/form" element={<PropertyForm />} />
     <Route path="/user/form" element={<UserForm />} />
+    <Route path="/login" element={<LogIn />} />
+    <Route path="/signup" element={<SignUp />} />
   </Routes>;
