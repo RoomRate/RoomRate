@@ -10,5 +10,6 @@ export const Navigation = () =>
         <NavDropdown.Item href="/property/form">New</NavDropdown.Item>
       </NavDropdown>
       <Nav.Link href="/chat">Roommate Chats</Nav.Link>
+      <Nav.Link href="/login">Login</Nav.Link>
     </Nav>
   </Navbar>;
