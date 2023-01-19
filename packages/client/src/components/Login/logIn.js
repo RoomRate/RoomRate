@@ -23,7 +23,6 @@ export const LogIn = () => {
           <div className="p-3 my-5 d-flex flex-column w-50">
             <div className="text-center">
               <img src={require(`../../assets/images/roomratepic.png`)} alt="logo" width={300} />
-
             </div>
 
             <h6>Please login to your account</h6><br />
