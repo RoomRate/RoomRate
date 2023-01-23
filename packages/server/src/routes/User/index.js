@@ -6,6 +6,7 @@ const passport = require(`passport`);
 
 router.post(`/login`, passport.authenticate(`local`), async (req, res, next) => {
   try {
+    console.log(1);
     const { username, password } = req.body;
 
     if (!username) {
@@ -16,6 +17,7 @@ router.post(`/login`, passport.authenticate(`local`), async (req, res, next) => 
     }
 
     const user = await UserService.login({ username, password });
+    console.log(user);
 
     return res
       .status(200)
@@ -24,6 +26,8 @@ router.post(`/login`, passport.authenticate(`local`), async (req, res, next) => 
         data: user,
       });
   } catch (err) {
+    console.log(err);
+
     return next(err);
   }
 });

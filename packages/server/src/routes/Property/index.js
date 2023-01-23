@@ -16,6 +16,7 @@ router.get(`/list`, async (req, res, next) => {
       { properties },
     );
   } catch (err) {
+    console.log(err);
     next(err);
   }
 });

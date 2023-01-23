@@ -3,11 +3,23 @@ import { useForm } from "react-hook-form";
 
 import { Button } from "react-bootstrap";
 import { Card } from 'react-bootstrap';
+import { UserService } from '../../shared/services';
 
 export const LogIn = () => {
-
   const { register, handleSubmit } = useForm();
-  const onSubmit = data => console.log(data);
+  const onSubmit = async data => {
+    try {
+      const { username, password, remember } = data;
+      await UserService.login({ username, password });
+
+      if (remember) {
+        // TODO set something in localstorage or something
+      }
+    } catch (err) {
+      console.log(err);
+      // TODO inline error
+    }
+  };
 
   return (
     <div className="parent" style={{ width: `100%` }}>
@@ -32,7 +44,7 @@ export const LogIn = () => {
                 type="email"
                 className="form-control"
                 required={true}
-                {...register(`email`)}
+                {...register(`username`)}
               /><br />
               <input
                 placeholder="Password"
