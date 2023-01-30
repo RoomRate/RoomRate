@@ -149,7 +149,7 @@
       "files": [ "*.ts", "*.tsx" ],
       "parser": "@typescript-eslint/parser",
       "extends": [
-        "eslint:recommended", // extends key not inherited from root
+        "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking"
@@ -161,7 +161,6 @@
       "rules": {
         "no-invalid-this": 0,
         "no-useless-return": 0,
-
         "@typescript-eslint/array-type": [ 2, {
           "default": "array-simple",
           "readonly": "array-simple"

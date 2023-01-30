@@ -12,7 +12,7 @@ const RouteLoader = ({ app }) => {
     const router = require(routePath);
 
     app.use(AuthMiddleware);
-    app.use(`/${ route.toLowerCase() }`, router);
+    app.use(`/api/${ route.toLowerCase() }`, router);
   });
 };
 
