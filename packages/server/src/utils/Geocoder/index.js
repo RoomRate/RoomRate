@@ -9,7 +9,7 @@ const geocoder = NodeGeocoder(options);
 
 exports.attachCoordinates = async ({ properties }) => {
   properties = await Promise.all(properties.map(async (p) => {
-    const returned = await geocoder.geocode(`${ p.street1 }, ${ p.city }, ${ p.state }, ${ p.zip }`);
+    const returned = await geocoder.geocode(`${ p.street_1 }, ${ p.city }, ${ p.state }, ${ p.zip }`);
     p.lat = returned[0].latitude;
     p.lng = returned[0].longitude;
 

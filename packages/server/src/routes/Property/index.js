@@ -52,6 +52,20 @@ router.get(`/:id/reviews`, async (req, res, next) => {
   }
 });
 
+router.post(`/review/new`, async (req, res, next) => {
+  try {
+    await PropertyService.createReview({ review: req.query.review });
+
+    ResponseHandler(
+      res,
+      `Created new review`,
+      {},
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get(`/states`, async (req, res, next) => {
   try {
     const states = await PropertyService.getStates();
