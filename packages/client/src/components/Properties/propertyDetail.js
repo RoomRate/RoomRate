@@ -9,6 +9,7 @@ import { BsStarFill, BsStar } from "react-icons/bs";
 import { useForm } from 'react-hook-form';
 import { MarkerIcon } from "../../shared/A-UI";
 import Lottie from 'lottie-react';
+import dayjs from 'dayjs';
 import loadingIcon from "assets/images/loadingIcon.json";
 
 export const PropertyDetails = () => {
@@ -120,8 +121,9 @@ export const PropertyDetails = () => {
             <h4>Reviews</h4>
             {
               reviews.map(review =>
-                <div className="mx-2 w-100 border-bottom">
+                <div className="w-100 border-bottom">
                   <p className="fw-bold m-0">{`${review.first_name} ${review.last_name}`}</p>
+                  <p className="m-0">{dayjs(review.date).format(`MM-DD-YYYY`)}</p>
                   <Rating
                     emptySymbol={<BsStar />}
                     fullSymbol={<BsStarFill />}
