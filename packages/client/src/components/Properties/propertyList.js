@@ -37,8 +37,8 @@ export const PropertyList = () => {
     position={[ p.lat, p.lng ]}>
     <Popup>
       <div>
-        {p.street1}<br />
-        {p.street2 ? <>{p.street2}<br /></> : ``}
+        {p.street_1}<br />
+        {p.street_2 ? <>{p.street_2}<br /></> : ``}
         {p.city}, {p.state_name} {p.zip}
       </div>
     </Popup>
@@ -75,7 +75,7 @@ export const PropertyList = () => {
                         <Image url={PROPERTY_IMAGE} alt="propertyimg" className="w-100" />
                       </div>
                       <div className="col-md-8">
-                        <h1>{property.street1} {property.street2 ? `, ${property.street2}` : ``}</h1>
+                        <h1>{property.street_1} {property.street_2 ? `, ${property.street_2}` : ``}</h1>
                         <p>{property.bed} bed, {property.bath} bath</p>
                       </div>
                       <div className="col-md-1">

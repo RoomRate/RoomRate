@@ -44,6 +44,21 @@ export class PropertyService {
     }
   }
 
+  static async createReview({ review }) {
+    try {
+      await Axios({
+        method: `POST`,
+        url: `/property/review/new`,
+        params: { review },
+      });
+
+      return;
+    }
+    catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
+
   static async getStates() {
     try {
       const response = await Axios({
