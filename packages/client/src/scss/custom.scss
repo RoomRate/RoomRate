@@ -2,6 +2,20 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import 'leaflet/dist/leaflet.css';
 
+html, body, .container {
+  overflow: hidden;
+}
+
+#propertyList {
+  height: 100%;
+  width: 100%;
+  background-color: #000000;
+}
+
+.propertyListing:hover {
+  filter: brightness(85%);
+}
+
 .block-content {
   min-height: 33em;
   padding-top: 15px;
