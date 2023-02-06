@@ -7,7 +7,6 @@ import { Image } from 'react-extras';
 import { LoadingIcon } from '../../shared/A-UI';
 import PROPERTY_IMAGE from "assets/images/placeholderproperty.jpg";
 import { Link } from 'react-router-dom';
-import '../../scss/custom.scss';
 
 export const PropertyList = () => {
   const [ properties, setProperties ] = useState([]);
@@ -85,18 +84,9 @@ export const PropertyList = () => {
                   Type
                 </Dropdown.Toggle>
               </Dropdown>
-            </ButtonGroup>
-          </Col>
-          <Col xs="6">
-            <ButtonGroup>
               <Dropdown>
                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                   Sort By
-                </Dropdown.Toggle>
-              </Dropdown>
-              <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                  City
                 </Dropdown.Toggle>
               </Dropdown>
             </ButtonGroup>
