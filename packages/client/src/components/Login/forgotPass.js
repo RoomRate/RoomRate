@@ -6,7 +6,7 @@ import { Card } from 'react-bootstrap';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 
-export const LogIn = () => {
+export const ForgotPassword = () => {
   const formSchema = Yup.object().shape({
     email: Yup.string()
       .email()
@@ -25,23 +25,22 @@ export const LogIn = () => {
     <div className="parent" style={{ width: `100%` }}>
 
       <div className="child"
-        style={{
-          float: `left`, display: `flex`, justifyContent: `left`, width: `44rem`, height: `94vh`,
-        }}>
+        style={{ float: `left`, display: `flex`, justifyContent: `left`, width: `44rem`, height: `94vh` }}>
         <img src={require(`../../assets/images/clifton.jpg`)} alt="clifton" />
       </div>
 
       <div className="child" style={{ display: `flex`, justifyContent: `right` }}>
-        <Card style={{
-          display: `flex`, justifyContent: `center`, alignItems: `center`, width: `47rem`, height: `94vh`,
-        }} >
+        <Card
+          style={{ display: `flex`, justifyContent: `center`, alignItems: `center`, width: `47rem`, height: `94vh` }} >
           <div className="p-3 my-5 d-flex flex-column w-50">
             <div className="text-center">
               <img src={require(`../../assets/images/roomratepic.png`)} alt="logo" width={300} />
             </div>
 
-            <h6>Please login to your account</h6><br />
+            <h4>Forgot your password?</h4>
+            <h6>Please enter your email address to retrieve password</h6><br />
             <form onSubmit={handleSubmit(onSubmit)}>
+              <br />
               <input
                 placeholder="E-mail"
                 type="email"
@@ -49,35 +48,13 @@ export const LogIn = () => {
                 {...register(`email`)}
               />
               <div className="invalid-feedback">{errors.email?.message}</div><br />
-              <input
-                placeholder="Password"
-                type="password"
-                className="form-control"
-                required={true}
-                {...register(`password`)}
-              /><br />
-
-              <div className="d-flex justify-content-between mx-3 mb-4">
-                <label>
-                  <input type="checkbox"{...register(`remember`)} />
-                  &nbsp;Remember me
-                </label>
-                <a href="login/password">Forgot password?</a>
-              </div>
-
               <div className="text-center">
-                <Button variant="primary" type="submit" className="text-center">SIGN IN</Button>
+                <Button variant="primary" type="submit" className="text-center">RESET PASSWORD</Button>
               </div><br />
-
-              <div className="text-center">
-                <p>Not a member? <a href="login/signup">Register</a></p>
-              </div>
-
             </form>
           </div>
         </Card>
       </div>
     </div>
-
   );
 };

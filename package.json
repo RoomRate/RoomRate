@@ -30,6 +30,7 @@
     "husky": "^8.0.1"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.9.10",
     "aws-sdk": "^2.1253.0",
     "bootstrap": "^5.2.2",
     "cross-env": "^7.0.3",
@@ -38,7 +39,8 @@
     "react-hook-form": "^7.38.0",
     "react-leaflet": "^4.1.0",
     "sass": "^1.55.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "yup": "^0.32.11"
   },
   "engines": {
     "node": "16.x"
