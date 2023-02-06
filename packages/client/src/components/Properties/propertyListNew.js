@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
-import { Card, Row, Col, Dropdown, ButtonGroup } from 'react-bootstrap';
+import { Card, Container, Row, Col, ListGroup } from 'react-bootstrap';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { PropertyService } from "../../shared/services";
 import { MarkerIcon } from "../../shared/A-UI";
@@ -7,8 +8,9 @@ import { Image } from 'react-extras';
 import { LoadingIcon } from '../../shared/A-UI';
 import PROPERTY_IMAGE from "assets/images/placeholderproperty.jpg";
 import { Link } from 'react-router-dom';
+import '../../scss/custom.scss';
 
-export const PropertyList = () => {
+export const PropertyListNew = () => {
   const [ properties, setProperties ] = useState([]);
   const [ isLoading, setLoading ] = useState(true);
 
@@ -49,49 +51,6 @@ export const PropertyList = () => {
     isLoading ?
       <LoadingIcon /> :
       <Col fluid style={{ height: `100vh` }} id="propertyList">
-        <Row
-          className="border border-1"
-          style={{ backgroundColor: `white`, padding: `10px`, display: `flex`, alignItems: `flex-start` }}>
-          <Col xs="6">
-            <ButtonGroup>
-              <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                  Price Range
-                </Dropdown.Toggle>
-              </Dropdown>
-              <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                  Distance
-                </Dropdown.Toggle>
-              </Dropdown>
-              <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                  Bedrooms
-                </Dropdown.Toggle>
-              </Dropdown>
-              <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                  Bathrooms
-                </Dropdown.Toggle>
-              </Dropdown>
-              <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                  Pets Allowed
-                </Dropdown.Toggle>
-              </Dropdown>
-              <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                  Type
-                </Dropdown.Toggle>
-              </Dropdown>
-              <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                  Sort By
-                </Dropdown.Toggle>
-              </Dropdown>
-            </ButtonGroup>
-          </Col>
-        </Row>
         <Row style={{ height: `100%` }}>
           <Col xs="6" style={{ padding: 0 }}>
             <MapContainer
