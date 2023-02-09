@@ -2,6 +2,14 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import 'leaflet/dist/leaflet.css';
 
+// html, body {
+//   overflow: hidden;
+// }
+
+.propertyListing:hover {
+  filter: brightness(85%);
+}
+
 .block-content {
   min-height: 33em;
   padding-top: 15px;
