@@ -9,5 +9,5 @@ interface ApiError {
 export type ErrorResponse = AxiosError<ApiError>;
 
 export const Axios = axios.create({
-  baseURL: `/`,
+  baseURL: `/api`,
 });
