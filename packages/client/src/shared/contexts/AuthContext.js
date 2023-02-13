@@ -1,21 +1,22 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { auth } from "../utils/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 
-import { auth } from "../utils/firebase";
-
 const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
+
+const logout = () => signOut(auth);
 
 export const AuthProvider = ({ children }) => {
   const [ currentUser, setCurrentUser ] = useState();
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState(``);
 
-  const register = (email, password) => createUserWithEmailAndPassword(auth, email, password);
+  const createAccount = (email, password) => createUserWithEmailAndPassword(auth, email, password);
   const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
 
   useEffect(() => {
@@ -30,9 +31,10 @@ export const AuthProvider = ({ children }) => {
   const value = {
     currentUser,
     login,
-    register,
+    createAccount,
     error,
     setError,
+    logout,
   };
 
   return (

@@ -2,8 +2,9 @@ const express = require(`express`);
 const router = express.Router();
 const { ResponseHandler } = require(`../../utils/ResponseHandler`);
 const ChatService = require(`../../libs/Chat`);
+const { VerifyToken } = require(`../../utils/Middleware/VerifyToken`);
 
-router.get(`/list`, async (req, res, next) => {
+router.get(`/list`, VerifyToken, async (req, res, next) => {
   try {
     const { user_id } = req.query;
 
@@ -19,7 +20,7 @@ router.get(`/list`, async (req, res, next) => {
   }
 });
 
-router.get(`/:chat_id/messages`, async (req, res, next) => {
+router.get(`/:chat_id/messages`, VerifyToken, async (req, res, next) => {
   try {
     const { chat_id } = req.params;
 
@@ -35,7 +36,7 @@ router.get(`/:chat_id/messages`, async (req, res, next) => {
   }
 });
 
-router.post(`/:chat_id/message`, async (req, res, next) => {
+router.post(`/:chat_id/message`, VerifyToken, async (req, res, next) => {
   try {
     const { message, user_id } = req.body;
     const { chat_id } = req.params;
@@ -52,7 +53,7 @@ router.post(`/:chat_id/message`, async (req, res, next) => {
   }
 });
 
-router.get(`/:chat_id/users`, async (req, res, next) => {
+router.get(`/:chat_id/users`, VerifyToken, async (req, res, next) => {
   try {
     const { chat_id } = req.params;
 
@@ -68,7 +69,7 @@ router.get(`/:chat_id/users`, async (req, res, next) => {
   }
 });
 
-router.post(`/:chat_id/message`, async (req, res, next) => {
+router.post(`/:chat_id/message`, VerifyToken, async (req, res, next) => {
   try {
     const { message, user_id } = req.body;
     const { chat_id } = req.params;
@@ -85,7 +86,7 @@ router.post(`/:chat_id/message`, async (req, res, next) => {
   }
 });
 
-router.get(`/:chat_id`, async (req, res, next) => {
+router.get(`/:chat_id`, VerifyToken, async (req, res, next) => {
   try {
     const { chat_id } = req.params;
 

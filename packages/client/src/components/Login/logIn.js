@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { UserService } from "../../shared/services/user.service.js";
 import { Button } from "react-bootstrap";
 import { Card } from 'react-bootstrap';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -29,10 +28,15 @@ export const LogIn = () => {
   }, [ currentUser, navigate ]);
 
   const onSubmit = async (data) => {
-    const { email, password, remember } = data;
+    try {
+      // eslint-disable-next-line no-unused-vars
+      const { email, password, remember } = data;
 
-    await login(email, password);
-    reset();
+      await login(email, password);
+      reset();
+    } catch (err) {
+      console.log(`Invalid username or password`);
+    }
   };
 
   return (

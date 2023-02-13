@@ -1,11 +1,19 @@
 import { Axios } from "shared/utils";
+import { auth } from "shared/utils/firebase";
 
 export class ChatService {
   static async getChatsForUser() {
     try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
       const response = await Axios({
         method: `GET`,
         url: `/chat/list?user_id=${13}`, // TODO Eventually we need to grab this from the auth strategy
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
       return response.data.data;
@@ -17,9 +25,16 @@ export class ChatService {
 
   static async getMessagesForChat({ chat_id }) {
     try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
       const response = await Axios({
         method: `GET`,
         url: `/chat/${chat_id}/messages`,
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
       return response.data.data;
@@ -31,12 +46,19 @@ export class ChatService {
 
   static async sendMessage({ message, user_id, chat_id }) {
     try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
       const response = await Axios({
         method: `POST`,
         url: `/chat/${chat_id}/message`,
         data: {
           user_id,
           message,
+        },
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
         },
       });
 
@@ -49,9 +71,16 @@ export class ChatService {
 
   static async getChatUsers({ chat_id }) {
     try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
       const response = await Axios({
         method: `GET`,
         url: `/chat/${chat_id}/users`,
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
       return response.data.data;
@@ -63,9 +92,16 @@ export class ChatService {
 
   static async getChatById({ chat_id }) {
     try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
       const response = await Axios({
         method: `GET`,
         url: `/chat/${chat_id}`,
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
       return response.data.data;

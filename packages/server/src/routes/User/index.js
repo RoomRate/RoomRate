@@ -2,6 +2,7 @@ const express = require(`express`);
 const router = express.Router();
 const { BadRequestError } = require(`restify-errors`);
 const UserService = require(`../../libs/User`);
+const { VerifyToken } = require(`../../utils/Middleware/VerifyToken`);
 
 router.post(`/login`, async (req, res, next) => {
   try {
@@ -23,8 +24,6 @@ router.post(`/login`, async (req, res, next) => {
         data: user,
       });
   } catch (err) {
-    console.log(err);
-
     return next(err);
   }
 });
@@ -42,7 +41,7 @@ router.get(`/logout`, (req, res, next) => {
   });
 });
 
-router.get(`/:id`, async (req, res, next) => {
+router.get(`/:id`, VerifyToken, async (req, res, next) => {
   try {
     const { id } = req.params;
 

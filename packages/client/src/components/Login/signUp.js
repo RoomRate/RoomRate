@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-
 import { Button } from "react-bootstrap";
 import { Card } from 'react-bootstrap';
+import { useAuth } from "shared/contexts/AuthContext.js";
+import { useNavigate } from "react-router-dom";
 
 export const SignUp = () => {
+  const { currentUser, createAccount } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate(`/`);
+    }
+  }, [ currentUser, navigate ]);
+
   const formSchema = Yup.object().shape({
     name: Yup.string().required(`Enter first and last name`),
     email: Yup.string()
@@ -23,9 +33,18 @@ export const SignUp = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: yupResolver(formSchema),
   });
-  const onSubmit = (data) => {
-    console.log({ data });
-    reset();
+
+  const onSubmit = async (data) => {
+    try {
+      const { email, password } = data;
+
+      await createAccount(email, password);
+
+      reset();
+      navigate(`/`);
+    } catch (err) {
+      console.log(`Failed to register`);
+    }
   };
 
   return (

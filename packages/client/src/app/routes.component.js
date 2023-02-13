@@ -9,13 +9,26 @@ import { UserForm } from '../components/Users/userForm';
 import { LogIn } from 'components/Login/logIn';
 import { SignUp } from 'components/Login/signUp';
 import { ForgotPassword } from 'components/Login/forgotPass';
+import AuthenticatedRoute from 'shared/contexts/AuthenticatedRoute';
 
 export const RoutesComponent = () =>
   <Routes>
     <Route path="/" element={<PropertyList />} />
     <Route path="/property/:id/detail" element={<PropertyDetails />} />
-    <Route path="/chat" element={<ChatView />} />
-    <Route path="/property/form" element={<PropertyForm />} />
+    <Route
+      path="/chat"
+      element={
+        <AuthenticatedRoute>
+          <ChatView />
+        </AuthenticatedRoute>
+      } />
+    <Route
+      path="/property/form"
+      element={
+        <AuthenticatedRoute>
+          <PropertyForm />
+        </AuthenticatedRoute>
+      } />
     <Route path="/user/form" element={<UserForm />} />
     <Route path="/login" element={<LogIn />} />
     <Route path="/login/signup" element={<SignUp />} />
