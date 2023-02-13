@@ -10,12 +10,8 @@ const session = require(`express-session`);
 const MongoStore = require(`connect-mongo`);
 const duration = require(`parse-duration`);
 const { v4 } = require(`uuid`);
-const passport = require(`passport`);
-const LocalStrategy = require(`passport-local`);
-const bcrypt = require(`bcrypt`);
 const cookieParser = require(`cookie-parser`);
 
-const UserService = require(`./libs/User`);
 const RouteLoader = require(`./utils/RouteLoader`);
 const { ErrorHandler } = require(`./utils/ErrorHandler`);
 const { setUpWebSocketServer } = require(`./utils/WebSocketServer`);
@@ -52,39 +48,6 @@ app.use(session({
     autoRemove: `native`,
   }),
 }));
-
-passport.use(new LocalStrategy(async (username, password, cb) => {
-  const user = await UserService.getUserByUsername({ username });
-
-  if (!user) {
-    return cb(null, false);
-  }
-
-  const isValidPassword = await bcrypt.compare(password, user.password);
-
-  if (isValidPassword) {
-    return cb(null, user);
-  }
-
-  return cb(null, false);
-}));
-
-passport.serializeUser((user, cb) => {
-  cb(null, user);
-});
-
-passport.deserializeUser(async (req, user, done) => {
-  try {
-    const _user = await UserService.getUserById({ id: user.id });
-
-    done(null, _user);
-  } catch (err) {
-    return done(err);
-  }
-});
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Logging
 const accessLogStream = fs.createWriteStream(path.join(__dirname, `../logs/access.log`), { flags: `a` });

@@ -2,8 +2,8 @@ const knex = require(`../Database`);
 const bcrypt = require(`bcrypt`);
 const { InvalidCredentialsError, BadRequestError } = require(`restify-errors`);
 
-exports.login = async ({ username, password }) => {
-  if (!username) {
+exports.login = async ({ email, password }) => {
+  if (!email) {
     throw new BadRequestError(`No username provided`);
   }
 
@@ -11,7 +11,8 @@ exports.login = async ({ username, password }) => {
     throw new BadRequestError(`No password provided`);
   }
 
-  const user = await this.getUserByUsername({ username });
+  const user = await this.getUserByEmail({ email });
+  console.log(user);
 
   if (!user) {
     throw new InvalidCredentialsError(`Invalid username or password`);
@@ -23,27 +24,27 @@ exports.login = async ({ username, password }) => {
     return user;
   }
 
-  throw new InvalidCredentialsError(`Invalid username or password`);
+  throw new InvalidCredentialsError(`Invalid email or password`);
 };
 
-exports.getUserByUsername = async ({ username }) => {
-  if (!username) {
-    throw new BadRequestError(`No username provided`);
+exports.getUserByEmail = async ({ email }) => {
+  if (!email) {
+    throw new BadRequestError(`No email provided`);
   }
 
   const user = await knex.raw(`
-    SELECT first_name, last_name, email, username
+    SELECT first_name, last_name, email, username, password
     FROM users
-    WHERE username = ?
+    WHERE email = ?
     LIMIT 1;
-  `, [ username ]);
+  `, [ email ]);
 
   return user.rows[0];
 };
 
 exports.getUserById = async ({ id }) => {
   if (!id) {
-    throw new BadRequestError(`No username provided`);
+    throw new BadRequestError(`No id provided`);
   }
 
   const user = await knex.raw(`
