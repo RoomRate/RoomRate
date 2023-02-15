@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect } from "react";
+/* eslint-disable no-unused-vars */
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { auth } from "../utils/firebase";
 import {
   createUserWithEmailAndPassword,
@@ -16,8 +17,8 @@ export const AuthProvider = ({ children }) => {
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState(``);
 
-  const createAccount = (email, password) => createUserWithEmailAndPassword(auth, email, password);
-  const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
+  const createAccount = async (email, password) => await createUserWithEmailAndPassword(auth, email, password);
+  const login = async (email, password) => await signInWithEmailAndPassword(auth, email, password);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -28,18 +29,16 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  const value = {
-    currentUser,
-    login,
-    createAccount,
-    error,
-    setError,
-    logout,
-  };
+  const value = useMemo(() =>
+    ({ currentUser, login, createAccount, error, setError, logout }),
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [ currentUser, login, createAccount, error, setError, logout ]);
+
+  console.log(currentUser);
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };

@@ -12,7 +12,6 @@ exports.login = async ({ email, password }) => {
   }
 
   const user = await this.getUserByEmail({ email });
-  console.log(user);
 
   if (!user) {
     throw new InvalidCredentialsError(`Invalid username or password`);

@@ -1,5 +1,5 @@
-import { Axios } from "shared/utils";
-import { auth } from "shared/utils/firebase";
+import { Axios } from "../utils/http.config.ts";
+import { auth } from "../utils/firebase";
 
 export class ChatService {
   static async getChatsForUser() {

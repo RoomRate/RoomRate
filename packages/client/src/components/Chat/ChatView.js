@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, Form } from 'react-bootstrap';
 import { ChatList } from './ChatList';
 import { useForm } from 'react-hook-form';
-import { ChatService } from 'shared/services';
+import { ChatService } from '../../shared/services';
 import './chat.scss';
 
 export const ChatView = () => {

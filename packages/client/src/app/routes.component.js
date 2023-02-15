@@ -3,13 +3,13 @@ import { Routes, Route } from 'react-router-dom';
 
 import { PropertyDetails } from '../components/Properties/propertyDetail';
 import { PropertyList } from '../components/Properties/propertyList';
-import { ChatView } from 'components/Chat/ChatView';
+import { ChatView } from '../components/Chat/ChatView';
 import { PropertyForm } from '../components/Properties/propertyForm';
 import { UserForm } from '../components/Users/userForm';
-import { LogIn } from 'components/Login/logIn';
-import { SignUp } from 'components/Login/signUp';
-import { ForgotPassword } from 'components/Login/forgotPass';
-import AuthenticatedRoute from 'shared/contexts/AuthenticatedRoute';
+import { LogIn } from '../components/Login/logIn';
+import { SignUp } from '../components/Login/signUp';
+import { ForgotPassword } from '../components/Login/forgotPass';
+import AuthenticatedRoute from '../shared/contexts/AuthenticatedRoute';
 
 export const RoutesComponent = () =>
   <Routes>

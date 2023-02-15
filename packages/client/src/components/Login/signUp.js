@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Button } from "react-bootstrap";
 import { Card } from 'react-bootstrap';
-import { useAuth } from "shared/contexts/AuthContext.js";
+import { useAuth } from "../../shared/contexts/AuthContext.js";
 import { useNavigate } from "react-router-dom";
 
 export const SignUp = () => {

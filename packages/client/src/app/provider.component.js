@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from '../shared/contexts/AuthContext';
 
 export const Providers = ({ children }) =>
-  <React.StrictMode>
-    <BrowserRouter>
+  <BrowserRouter>
+    <AuthProvider>
       {children}
-    </BrowserRouter>
-  </React.StrictMode>;
+    </AuthProvider>
+  </BrowserRouter>;
 
 Providers.propTypes = {
   children: PropTypes.oneOfType([

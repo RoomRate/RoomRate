@@ -6,7 +6,7 @@ import { Col } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { Row } from "react-bootstrap";
 import { LoadingIcon } from '../../shared/A-UI';
-import { PropertyService } from 'shared/services';
+import { PropertyService } from '../../shared/services';
 import Select from 'react-select';
 
 export const PropertyForm = () => {

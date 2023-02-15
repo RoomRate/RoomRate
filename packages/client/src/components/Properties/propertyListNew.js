@@ -6,7 +6,7 @@ import { PropertyService } from "../../shared/services";
 import { MarkerIcon } from "../../shared/A-UI";
 import { Image } from 'react-extras';
 import { LoadingIcon } from '../../shared/A-UI';
-import PROPERTY_IMAGE from "assets/images/placeholderproperty.jpg";
+import PROPERTY_IMAGE from "../../assets/images/placeholderproperty.jpg";
 import { Link } from 'react-router-dom';
 import '../../scss/custom.scss';
 

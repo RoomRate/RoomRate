@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { MarkerIcon } from "../../shared/A-UI";
 import Lottie from 'lottie-react';
 import dayjs from 'dayjs';
-import loadingIcon from "assets/images/loadingIcon.json";
+import loadingIcon from "../../assets/images/loadingIcon.json";
 
 export const PropertyDetails = () => {
   const { register, reset, handleSubmit } = useForm();

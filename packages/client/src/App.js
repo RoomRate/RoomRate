@@ -2,18 +2,16 @@ import './App.css';
 import "../src/scss/custom.scss";
 import { RoutesComponent } from './app/routes.component';
 import { Navigation } from './components/Panels/Navigation/navbar';
-import { AuthProvider } from 'shared/contexts/AuthContext';
+import { Providers } from './app/provider.component';
 
 function App() {
   return (
-    <>
-      <div className="App">
-        <AuthProvider>
-          <Navigation />
-          <RoutesComponent />
-        </AuthProvider>
-      </div>
-    </>
+    <div className="App">
+      <Providers>
+        <Navigation />
+        <RoutesComponent />
+      </Providers>
+    </div>
   );
 }
 
