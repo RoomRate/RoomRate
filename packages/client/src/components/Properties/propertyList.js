@@ -48,7 +48,7 @@ export const PropertyList = () => {
   return (
     isLoading ?
       <LoadingIcon /> :
-      <Col fluid style={{ height: `100vh` }} id="propertyList">
+      <Col fluid="true" style={{ height: `100vh` }} id="propertyList">
         <Row
           className="border border-1"
           style={{ backgroundColor: `white`, padding: `10px`, display: `flex`, alignItems: `flex-start` }}>

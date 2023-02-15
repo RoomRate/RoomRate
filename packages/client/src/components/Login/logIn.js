@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "react-bootstrap";
@@ -21,15 +22,14 @@ export const LogIn = () => {
     resolver: yupResolver(formSchema),
   });
 
-  useEffect(() => {
-    if (currentUser) {
-      navigate(`/`);
-    }
-  }, [ currentUser, navigate ]);
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     navigate(`/`);
+  //   }
+  // }, [ currentUser, navigate ]);
 
   const onSubmit = async (data) => {
     try {
-      // eslint-disable-next-line no-unused-vars
       const { email, password, remember } = data;
 
       await login(email, password);
