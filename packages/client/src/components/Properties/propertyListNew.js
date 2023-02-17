@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
-import { Card, Container, Row, Col, ListGroup } from 'react-bootstrap';
+import { Card, Row, Col } from 'react-bootstrap';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { PropertyService } from "../../shared/services";
 import { MarkerIcon } from "../../shared/A-UI";

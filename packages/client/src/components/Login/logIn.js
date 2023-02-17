@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "react-bootstrap";
@@ -9,7 +8,7 @@ import { useAuth } from "../../shared/contexts/AuthContext.js";
 import { useNavigate } from "react-router-dom";
 
 export const LogIn = () => {
-  const { currentUser, setCurrentUser, login } = useAuth();
+  const { currentUser, login } = useAuth();
   const navigate = useNavigate();
 
   const formSchema = Yup.object().shape({
@@ -30,7 +29,7 @@ export const LogIn = () => {
 
   const onSubmit = async (data) => {
     try {
-      const { email, password, remember } = data;
+      const { email, password } = data;
 
       await login(email, password);
       reset();
