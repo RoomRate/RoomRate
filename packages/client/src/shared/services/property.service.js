@@ -75,13 +75,14 @@ export class PropertyService {
 
   static async createProperty(data) {
     try {
-      await Axios({
+      console.log(data);
+      const response = await Axios({
         method: `POST`,
         url: `/property/new`,
         data,
       });
 
-      return;
+      return response.data.data.id;
     }
     catch (err) {
       throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
