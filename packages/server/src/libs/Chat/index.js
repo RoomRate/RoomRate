@@ -112,3 +112,65 @@ exports.getChatById = async ({ chat_id }) => {
 
   return response.rows[0];
 };
+
+exports.createNewChat = async ({ created_by, title }) => {
+  const response = await knex.raw(`
+    INSERT INTO chats(created_by, title)
+    VALUES(?, ?)
+    RETURNING *;
+  `, [ created_by, title ]);
+
+  return response.rows[0];
+};
+
+exports.addUserToChat = async ({ chat_id, user_id }) => {
+  await knex.raw(`
+    INSERT INTO chat_users(chat_id, user_id)
+    VALUES(?, ?);
+  `, [ chat_id, user_id ]);
+};
+
+exports.isUserInChat = async ({ chat_id, user_id }) => {
+  const response = await knex.raw(`
+    SELECT *
+    FROM chat_users
+    WHERE chat_id = ?
+    AND user_id = ?
+    AND deleted_at IS NULL
+    LIMIT 1;
+  `, [ chat_id, user_id ]);
+
+  return !!response.rows.length;
+};
+
+exports.removeUserFromChat = async ({ chat_id, user_id }) => {
+  await knex.raw(`
+    UPDATE chat_users
+    SET deleted_at = NOW()
+    WHERE chat_id = ?
+    AND user_id = ?;
+  `, [ chat_id, user_id ]);
+};
+
+exports.getMessageCreatorById = async ({ message_id }) => {
+  const response = await knex.raw(`
+    SELECT created_by
+    FROM chat_messages
+    WHERE id = ?
+    LIMIT 1;
+  `, [ message_id ]);
+
+  return response.rows[0].created_by;
+};
+
+exports.editMessage = async ({ message_id, edited_message }) => {
+  const response = await knex.raw(`
+    UPDATE chat_messages
+    SET message = ?,
+    updated_at = NOW()
+    WHERE message_id = ?
+    RETURNING *;
+  `, [ edited_message, message_id ]);
+
+  return response.rows[0];
+};
