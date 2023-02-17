@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Card, ListGroup } from 'react-bootstrap';
 import { ChatService } from '../../shared/services';
+import { useAuth } from '../../shared/contexts/AuthContext';
 
 export const ChatList = ({ onChatSelect }) => {
   const [ chatList, setChatList ] = useState([]);
   const [ activeChat, setActiveChat ] = useState(parseInt(localStorage.getItem(`lastOpenedChat`)));
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,7 +91,7 @@ export const ChatList = ({ onChatSelect }) => {
                     </ListGroup.Item>)
                 }
               </> :
-              <p>You currently do not have any ongoing chats</p>
+              <p>{JSON.stringify(currentUser)}</p>
           }
         </ListGroup>
       </Card.Body>

@@ -9,7 +9,7 @@ import { useAuth } from "../../shared/contexts/AuthContext.js";
 import { useNavigate } from "react-router-dom";
 
 export const LogIn = () => {
-  const { currentUser, login } = useAuth();
+  const { currentUser, setCurrentUser, login } = useAuth();
   const navigate = useNavigate();
 
   const formSchema = Yup.object().shape({
@@ -22,11 +22,11 @@ export const LogIn = () => {
     resolver: yupResolver(formSchema),
   });
 
-  // useEffect(() => {
-  //   if (currentUser) {
-  //     navigate(`/`);
-  //   }
-  // }, [ currentUser, navigate ]);
+  useEffect(() => {
+    if (currentUser) {
+      navigate(`/`);
+    }
+  }, [ currentUser, navigate ]);
 
   const onSubmit = async (data) => {
     try {

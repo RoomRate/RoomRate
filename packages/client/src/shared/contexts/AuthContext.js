@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
 import { auth } from "../utils/firebase";
 import {
@@ -20,7 +19,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [ currentUser, setCurrentUser ] = useState(JSON.parse(localStorage.getItem(`user`)));
+  const [ currentUser, setCurrentUser ] = useState();
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState(``);
 
@@ -33,17 +32,11 @@ export const AuthProvider = ({ children }) => {
   const logout = useCallback(() => signOut(auth), []);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
       setLoading(false);
     });
-
-    return unsubscribe;
   }, []);
-
-  useEffect(() => {
-    console.log(currentUser);
-  }, [ loading ]);
 
   const value = useMemo(() =>
     ({ currentUser, login, createAccount, error, setError, logout }),
@@ -51,7 +44,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AsyncPageWrapper status="success">
-      <AuthContext.Provider value={value} >
+      <AuthContext.Provider value={value}>
         {!loading && children}
       </AuthContext.Provider>
     </AsyncPageWrapper>
