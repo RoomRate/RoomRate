@@ -1,143 +1,302 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-
+import { useNavigate } from 'react-router-dom';
 import { Button } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { Row } from "react-bootstrap";
-import { LoadingIcon } from '../../shared/A-UI';
 import { PropertyService } from 'shared/services';
 import Select from 'react-select';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import CurrencyInput from 'react-currency-input-field';
+
+const GooglePlacesAutocompleteComponent = ({ error, ...field }) =>
+  <div>
+    <GooglePlacesAutocomplete
+      apiKey="AIzaSyDBKcovwh0tZ7C_MZ8y44SY_CDuKc2fEsM"
+      selectProps={{
+        ...field,
+        isClearable: true,
+      }}
+    />
+    {error && <div style={{ color: `red` }}>{error.message}</div>}
+  </div>;
 
 export const PropertyForm = () => {
-  const { control, register, handleSubmit } = useForm();
-  const [ states, setStates ] = useState();
-  const [ isLoading, setLoading ] = useState(true);
+  const { control, register, handleSubmit, reset } = useForm();
+  const [ pic, setPic ] = useState([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setStates(await PropertyService.getStates());
-      }
+  function uploadSingleFile(e) {
+    const files = [ ...e.target.files ];
+    console.log(files);
+    setPic(pic.concat(files.map(file => URL.createObjectURL(file))));
+    console.log(pic);
+  }
 
-      catch (err) {
-        throw new Error(err);
-      }
-      finally {
-        setLoading(false);
-      }
-    };
+  function deleteFile(e) {
+    const s = pic.filter((item, index) => index !== e);
+    setPic(s);
+    console.log(s);
+  }
 
-    document.title = `RoomRate - New Property`;
-    fetchData();
-  }, []);
+  const bedrooms = [
+    { value: `studio`, label: `Studio` },
+    { value: 1.0, label: 1.0 },
+    { value: 2.0, label: 2.0 },
+    { value: 3.0, label: 3.0 },
+    { value: 4.0, label: 4.0 },
+    { value: 5.0, label: 5.0 },
+    { value: 6.0, label: 6.0 },
+  ];
+
+  const bathrooms = [
+    { value: 0.5, label: 0.5 },
+    { value: 1.0, label: 1.0 },
+    { value: 1.5, label: 1.5 },
+    { value: 2.0, label: 2.0 },
+    { value: 2.5, label: 2.5 },
+    { value: 3.0, label: 3.0 },
+    { value: 3.5, label: 3.5 },
+    { value: 4.0, label: 4.0 },
+    { value: 4.5, label: 4.5 },
+    { value: 5.0, label: 5.0 },
+    { value: 5.5, label: 5.5 },
+    { value: 6.0, label: 6.0 },
+  ];
+
+  const propertyType = [
+    { value: `Full House`, label: `Full House` },
+    { value: `Split House`, label: `Split House` },
+    { value: `Apartment`, label: `Apartment` },
+    { value: `Sublease`, label: `Sublease` },
+  ];
+
+  document.title = `RoomRate - New Property`;
 
   const createNewProperty = async (data) => {
     const formData = new FormData();
-    for (const file of data.pictures) {
-      formData.append(`pictures`, file);
-    }
+    data.policies = {};
+    data.policies.heat = data.heat;
+    data.policies.ac = data.ac;
+    data.policies.pets = data.pets;
+    data.policies.internet = data.internet;
+    data.policies.parking = data.parking;
+    data.policies.laundry = data.laundry;
+    data.policies.utilities = data.utilities;
+    data.policies.wheelchair = data.wheelchair;
+    data.policies.furnished = data.furnished;
+
+    delete data.heat;
+    delete data.ac;
+    delete data.pets;
+    delete data.internet;
+    delete data.parking;
+    delete data.laundry;
+    delete data.utilities;
+    delete data.wheelchair;
+    delete data.furnished;
+
+    console.log(data);
+    formData.append(`pictures`, pic);
     formData.append(`data`, JSON.stringify(data));
-    await PropertyService.createProperty(formData);
+    const newId = await PropertyService.createProperty(formData);
+    reset();
+
+    return navigate(`/property/${newId}/detail`);
+
   };
 
   return (
-    isLoading ? <LoadingIcon /> : <>
-      <div className="container">
-        <h1>Register Your Property:</h1>
-        <form onSubmit={handleSubmit(createNewProperty)}>
-          <Form.Group>
-            <label htmlFor="address">Address</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="123 Main St."
-              {...register(`address`, { required: true })}
-            />
-          </Form.Group>
-
+    <>
+      <div style={{
+        width: `50%`, marginLeft: `auto`, marginRight: `auto`, textAlign: `left`,
+        height: `100%`, border: `1px solid DarkGray`,
+        borderRadius: `10px`, marginTop: `1%`, marginBottom: `1%`,
+      }}>
+        <br /><h2 style={{ textAlign: `center` }}><b> List Your Property For Everyone To See </b></h2>
+        <form style={{
+          marginTop: `2%`, marginLeft: `15%`, marginRight: `15%`,
+        }} onSubmit={handleSubmit(createNewProperty)}>
           <Row>
-            <Form.Group>
-              <label htmlFor="addressTwo">Address 2</label>
+            <Form.Group as={Col}>
+              <label htmlFor="address">Street Address</label>
+              <Controller
+                name="address"
+                rules={{
+                  required: `This is a required field`,
+                }}
+                control={control}
+                render={({ field, fieldState }) =>
+                  <GooglePlacesAutocompleteComponent
+                    {...field}
+                    error={fieldState.error}
+                  />}
+              />
+            </Form.Group>
+            <Col xs={2}>
+              <label htmlFor="unit">Unit/Apt#</label>
               <input
                 type="text"
                 className="form-control"
-                placeholder="Apartment, studio, or floor"
-                {...register(`addressTwo`, { required: true })}
+                {...register(`unitNo`)}
               />
-            </Form.Group>
-          </Row>
+            </Col>
+          </Row><br />
+
           <Row>
             <Form.Group as={Col}>
-              <label htmlFor="city">City: </label>
-              <input type="text" className="form-control"{...register(`city`, { required: true })} />
-            </Form.Group>
-
-            <Form.Group as={Col}>
-              <label htmlFor="state">State: </label>
+              <label htmlFor="type">Property Type</label>
               <Controller
+                name="propType"
                 control={control}
-                name="state"
                 render={({ field }) => <Select
                   {...field}
                   classNamePrefix="react-select"
-                  options={states.map(state => ({ label: state.name, value: state.id }))}
+                  options={propertyType}
                 />}
                 rules={{
-                  required: `Please select a state`,
+                  required: `Please Select`,
                 }}
-              />
+              /><br />
             </Form.Group>
-
             <Form.Group as={Col}>
-              <label htmlFor="zipCode">Zip Code: </label>
-              <input type="text" className="form-control"{...register(`zipCode`, { required: true, maxLength: 5 })} />
+              <label htmlFor="price">Monthly Price</label>
+              <CurrencyInput
+                placeholder="$"
+                className="form-control"
+                decimalsLimit={2}
+                intlConfig={{ locale: `en-US`, currency: `USD` }}
+                {...register(`price`, { required: true })}
+              />
             </Form.Group>
           </Row>
 
           <Row>
             <Form.Group as={Col}>
-              <label htmlFor="monthlyRent">Monthly Rent: </label>
-              <input type="number" className="form-control"{...register(`monthlyRent`, { required: true })} />
+              <label htmlFor="beds">Bedrooms</label>
+              <Controller
+                name="bed"
+                control={control}
+                render={({ field }) => <Select
+                  {...field}
+                  classNamePrefix="react-select"
+                  options={bedrooms}
+                />}
+                rules={{
+                  required: `Please Select`,
+                }}
+              />
             </Form.Group>
-
             <Form.Group as={Col}>
-              <label htmlFor="bedrooms">Number of Bedrooms: </label>
-              <input type="number" className="form-control"{...register(`bedrooms`, { required: true })} />
-            </Form.Group>
-
-            <Form.Group as={Col}>
-              <label htmlFor="bathrooms">Number of Bathrooms: </label>
-              <input type="number" className="form-control"{...register(`bathrooms`, { required: true })} />
+              <label htmlFor="baths">Bathrooms</label>
+              <Controller
+                name="bath"
+                control={control}
+                render={({ field }) => <Select
+                  {...field}
+                  classNamePrefix="react-select"
+                  options={bathrooms}
+                />}
+                rules={{
+                  required: `Please Select`,
+                }}
+              /><br />
             </Form.Group>
           </Row>
-          <Form.Group as={Col}>
-            <label htmlFor="description">A brief description of the property: </label>
-            <textarea rows={5} className="form-control" {...register(`description`)} />
-          </Form.Group>
-          <b>Upload Pictures: </b>
-          <input className="form-control" type="file" accept="image/*" multiple {...register(`pictures`)} />
 
-          <br />
-          <b>Policies: </b>
-          <br />
+          <Row>
+            <Form.Group>
+              <label htmlFor="description">Brief description of the property: </label>
+              <textarea rows={5} className="form-control" {...register(`description`, { required: true })} /><br />
+            </Form.Group>
+          </Row>
 
-          <Form.Group>
-            <label htmlFor="internet">Internet Included: </label>
-            <input type="checkbox"{...register(`internet`)} />
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="campusWalk">Walkable to Campus: </label>
-            <input type="checkbox"{...register(`campusWalk`)} />
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="petsAllowed">Pets Allowed: </label>
-            <input type="checkbox"{...register(`petsAllowed`)} />
-          </Form.Group>
-          <br /><br />
+          <Row>
+            <p>Check what policies apply:</p>
+            <Form.Group as={Col}>
+              <input type="checkbox" className="toggle-switch-checkbox"{...register(`pets`)} />
+              <label htmlFor="pets">&nbsp;Pets Allowed</label>
+            </Form.Group>
+            <Form.Group as={Col}>
+              <input type="checkbox" className="toggle-switch-checkbox"{...register(`heat`)} />
+              <label htmlFor="heat">&nbsp;Central Heating</label>
+            </Form.Group>
+            <Form.Group as={Col}>
+              <input type="checkbox" className="toggle-switch-checkbox"{...register(`ac`)} />
+              <label htmlFor="ac">&nbsp;Air Conditioning</label>
+            </Form.Group>
+          </Row>
+          <Row>
+            <Form.Group as={Col}>
+              <input type="checkbox" className="toggle-switch-checkbox"{...register(`internet`)} />
+              <label htmlFor="internet">&nbsp;Internet Included</label>
+            </Form.Group>
+            <Form.Group as={Col}>
+              <input type="checkbox" className="toggle-switch-checkbox"{...register(`parking`)} />
+              <label htmlFor="parking">&nbsp;Parking</label>
+            </Form.Group>
+            <Form.Group as={Col}>
+              <input type="checkbox" className="toggle-switch-checkbox"{...register(`laundry`)} />
+              <label htmlFor="laundry">&nbsp;Laundry Onsite</label>
+            </Form.Group>
+          </Row>
+          <Row>
+            <Form.Group as={Col}>
+              <input type="checkbox" className="toggle-switch-checkbox"{...register(`utilities`)} />
+              <label htmlFor="utilities">&nbsp;Utilities Included</label>
+            </Form.Group>
+            <Form.Group as={Col}>
+              <input type="checkbox" className="toggle-switch-checkbox"{...register(`wheelchair`)} />
+              <label htmlFor="wheelchair">&nbsp;Wheelchair Accessible</label>
+            </Form.Group>
+            <Form.Group as={Col}>
+              <input type="checkbox" className="toggle-switch-checkbox"{...register(`furnished`)} />
+              <label htmlFor="furnished">&nbsp;Pre-furnished</label>
+            </Form.Group>
+          </Row>
 
-          <Button variant="primary" type="submit">Submit Property</Button>
+          <Row>
+            <Form.Group>
+              <div className="form-group preview">
+                {pic.length > 0 &&
+                  pic.map((item, index) =>
+                    <div key={item}>
+                      <img src={item} alt="" style={{ width: `100px` }} />
+                      <button type="button" className="btn-close" onClick={() => deleteFile(index)}>
+                        <span className="icon-cross" />
+                        <span className="visually-hidden">Close</span>
+                      </button>
+                    </div>)}
+
+              </div>
+              <div className="form-group">
+                <br /><input
+                  type="file"
+                  className="form-control"
+                  onChange={uploadSingleFile}
+                  multiple="multiple"
+                />
+              </div>
+            </Form.Group>
+          </Row>
+
+          <Row>
+            <Form.Group>
+              <br /><label htmlFor="verified">I would like to verify this property is mine:&nbsp;</label>
+              <input type="checkbox" className="toggle-switch-checkbox"{...register(`verified`)} />
+            </Form.Group>
+          </Row>
+
+          <div style={{ textAlign: `center` }}>
+            <br /><Button type="submit" style={{
+              width: `50%`,
+            }}>Add My Property</Button><br /><br />
+            <p>By clicking Add My Property above, I agree that I will provide
+              accurate and non discriminatory information and I will comply with
+              the RoomRate.homes <a href=" ">Terms and Conditions</a>. </p>
+          </div>
+
         </form>
       </div>
     </>
