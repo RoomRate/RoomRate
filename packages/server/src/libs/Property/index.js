@@ -19,7 +19,6 @@ exports.getPropertyDetail = async ({ id }) => {
     SELECT *
     FROM properties
     JOIN users ON users.id = properties.landlord_id
-    JOIN states ON states.id = properties.state_id
     WHERE properties.id = ?
   `, [ id ]);
 
