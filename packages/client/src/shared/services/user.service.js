@@ -19,4 +19,24 @@ export class UserService {
       throw new Error(`Failed to login`);
     }
   }
+
+  static async addUserFromFirebase({ uid, email, firstName, lastName }) {
+    try {
+      await Axios({
+        method: `POST`,
+        url: `/user/new`,
+        data: {
+          uid,
+          email,
+          firstName,
+          lastName,
+        },
+      });
+
+      return;
+    }
+    catch (err) {
+      throw new Error(`Failed to add user to firebase`);
+    }
+  }
 }

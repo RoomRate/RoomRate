@@ -6,6 +6,7 @@ import { Button } from "react-bootstrap";
 import { Card } from 'react-bootstrap';
 import { useAuth } from "../../shared/contexts/AuthContext.js";
 import { useNavigate } from "react-router-dom";
+import { UserService } from "../../shared/services/user.service.js";
 
 export const SignUp = () => {
   const { currentUser, createAccount } = useAuth();
@@ -18,7 +19,8 @@ export const SignUp = () => {
   }, [ currentUser, navigate ]);
 
   const formSchema = Yup.object().shape({
-    name: Yup.string().required(`Enter first and last name`),
+    firstName: Yup.string().required(`Enter first name`),
+    lastName: Yup.string().required(`Enter last name`),
     email: Yup.string()
       .email()
       .required(`E-mail is required`),
@@ -36,9 +38,16 @@ export const SignUp = () => {
 
   const onSubmit = async (data) => {
     try {
-      const { email, password } = data;
+      const {
+        email: userEmail,
+        password: userPassword,
+        firstName,
+        lastName,
+      } = data;
 
-      await createAccount(email, password);
+      const { user: { uid, email } } = await createAccount(userEmail, userPassword);
+
+      await UserService.addUserFromFirebase({ uid, email, firstName, lastName });
 
       reset();
       navigate(`/`);
@@ -70,11 +79,18 @@ export const SignUp = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <br />
               <br /><input
-                id="fullName"
+                id="firstName"
                 type="text"
-                placeholder="Name"
+                placeholder="First Name"
                 className={`form-control ${errors.name ? `is-invalid` : ``}`}
-                {...register(`name`)}
+                {...register(`firstName`)}
+              />
+              <br /><input
+                id="lastName"
+                type="text"
+                placeholder="Last Name"
+                className={`form-control ${errors.name ? `is-invalid` : ``}`}
+                {...register(`lastName`)}
               />
               <div className="invalid-feedback">{errors.name?.message}</div><br />
               <input

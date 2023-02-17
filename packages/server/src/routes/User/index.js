@@ -53,4 +53,16 @@ router.get(`/:id`, VerifyToken, async (req, res, next) => {
   }
 });
 
+router.post(`/new`, async (req, res, next) => {
+  try {
+    const { uid, email, firstName, lastName } = req.body;
+
+    const user = await UserService.addUserFromFirebase({ uid, email, firstName, lastName });
+
+    return res.status(200).json(user);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

@@ -55,3 +55,12 @@ exports.getUserById = async ({ id }) => {
 
   return user.rows[0];
 };
+
+exports.addUserFromFirebase = async ({ uid, email, firstName, lastName }) => {
+  const user = await knex.raw(`
+    INSERT INTO users(uid, email, username, first_name, last_name)
+    VALUES (?, ?, ?, ?, ?);
+  `, [ uid, email, email, firstName, lastName ]);
+
+  return user.rows[0];
+};
