@@ -83,16 +83,18 @@ router.get(`/states`, async (req, res, next) => {
 
 router.post(`/new`, VerifyToken, upload.array(`pictures`, 10), async (req, res, next) => {
   try {
+    console.log(JSON.parse(req.body.data));
     const { id } = await PropertyService.createProperty({ property: JSON.parse(req.body.data) });
     await PropertyService.uploadImages({ images: req.files, propertyId: id });
 
     ResponseHandler(
       res,
       `Created New Property`,
-      {},
+      { id },
     );
   }
   catch (err) {
+    console.log(err);
     next(err);
   }
 });

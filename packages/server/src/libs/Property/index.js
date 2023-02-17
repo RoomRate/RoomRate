@@ -74,19 +74,16 @@ exports.getPropertyImages = async ({ id }) => {
 
 exports.createProperty = async ({ property }) => {
   const newProperty = await knex.insert({
-    street_1: property.address,
-    street_2: property.addressTwo,
+    street_1: property.address.label,
+    street_2: property.unitNo,
     details: property.description,
-    city: property.city,
-    state_id: property.state.value,
-    zip: property.zipCode,
-    bed: property.bedrooms,
-    bath: property.bathrooms,
-    rate: property.monthlyRent,
+    bed: property.bed.value,
+    bath: property.bath.value,
+    rate: property.price,
     landlord_id: 14,
-    internet: property.internet,
-    campusWalk: property.campusWalk,
-    petsAllowed: property.petsAllowed,
+    propType: property.propType.value,
+    policies: property.policies,
+    verified: property.verified,
   }).into(`properties`).returning(`id`);
 
   return newProperty[0];
