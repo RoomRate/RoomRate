@@ -1,4 +1,4 @@
-import { Axios } from "../utils/http.config.ts";
+import { Axios } from "../utils/http.config.js";
 
 export class PropertyService {
   static async getPropertyList({ all }) {
