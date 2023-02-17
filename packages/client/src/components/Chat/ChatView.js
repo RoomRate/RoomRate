@@ -5,12 +5,13 @@ import { Button, Card, Form } from 'react-bootstrap';
 import { ChatList } from './ChatList';
 import { useForm } from 'react-hook-form';
 import { ChatService } from '../../shared/services';
+import { useAuth } from '../../shared/contexts/AuthContext';
 import './chat.scss';
 
 export const ChatView = () => {
   document.title = `Roomrate - Chats`;
   const [ chat, setChat ] = useState();
-  const [ user_id, set_user_id ] = useState(13); // TODO grab this from the auth strategy
+  const { currentUser } = useAuth();
   const { register, reset, handleSubmit } = useForm();
 
   const HOST = process.env.NODE_ENV === `production` ?
@@ -27,13 +28,13 @@ export const ChatView = () => {
     if (chat) {
       wss.onmessage = data => {
         const message = JSON.parse(data.data.toString());
-        if (user_id !== message.created_by) {
+        if (currentUser.id !== message.created_by) {
           chat.messages.push(message);
           setChat({ ...chat });
         }
       };
     }
-  }, [ wss, chat, HOST, user_id ]);
+  }, [ wss, chat, HOST, currentUser.id ]);
 
   const setCurrentChat = (selected) => setChat(selected.chat);
 
@@ -42,25 +43,20 @@ export const ChatView = () => {
       if (message) {
         const { id: chat_id } = chat;
 
-        const sentMessage = await ChatService.sendMessage({ message, user_id, chat_id });
+        const sentMessage = await ChatService.sendMessage({ message, user_id: currentUser.id, chat_id });
 
         chat.messages.push(sentMessage);
         reset();
 
         wss.send(JSON.stringify({
           chat_id,
-          created_by: user_id,
+          created_by: currentUser.id,
           message,
         }));
       }
     } catch (err) {
       throw new Error(err);
     }
-  };
-
-  // This can be used for demo purposes
-  const changeUser = () => {
-    set_user_id(user_id === 13 ? 14 : 13);
   };
 
   return (
@@ -73,7 +69,7 @@ export const ChatView = () => {
           chat ?
             <Card style={{ height: `100vh` }}>
               <Card.Title>
-                <div onClick={() => changeUser()}>
+                <div>
                   {
                     chat.title ?
                       <p>{chat.title}</p> :
@@ -86,7 +82,7 @@ export const ChatView = () => {
                 {
                   chat.messages?.length ?
                     chat.messages.map(message =>
-                      <div className={`${user_id === message.created_by ? `mine` : `yours`} messages`}>
+                      <div className={`${currentUser.id === message.created_by ? `mine` : `yours`} messages`}>
                         <div className="message">
                           {message.message}
                         </div>

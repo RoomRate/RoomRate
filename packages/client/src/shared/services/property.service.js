@@ -44,12 +44,12 @@ export class PropertyService {
     }
   }
 
-  static async createReview({ review }) {
+  static async createReview({ review, user_id }) {
     try {
       await Axios({
         method: `POST`,
         url: `/property/review/new`,
-        params: { review },
+        params: { review, user_id },
       });
 
       return;
@@ -75,7 +75,6 @@ export class PropertyService {
 
   static async createProperty(data) {
     try {
-      console.log(data);
       const response = await Axios({
         method: `POST`,
         url: `/property/new`,

@@ -6,6 +6,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { AsyncPageWrapper } from "../A-UI/AsyncPageWrapper";
+import { UserService } from "../services";
 
 export const AuthContext = createContext();
 
@@ -32,10 +33,20 @@ export const AuthProvider = ({ children }) => {
   const logout = useCallback(() => signOut(auth), []);
 
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-      setLoading(false);
+    const fetchData = async ({ uid }) => await UserService.getUserFromFirebaseUid({ uid });
+
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const userData = await fetchData({ uid: user.uid });
+        setCurrentUser({ ...user, ...userData });
+        setLoading(false);
+      } else {
+        setCurrentUser(null);
+        setLoading(false);
+      }
     });
+
+    return () => unsubscribe();
   }, []);
 
   const value = useMemo(() =>

@@ -11,6 +11,7 @@ import { MarkerIcon } from "../../shared/A-UI";
 import Lottie from 'lottie-react';
 import dayjs from 'dayjs';
 import loadingIcon from "../../assets/images/loadingIcon.json";
+import { useAuth } from "../../shared/contexts/AuthContext";
 
 export const PropertyDetails = () => {
   const { register, reset, handleSubmit } = useForm();
@@ -19,6 +20,7 @@ export const PropertyDetails = () => {
   const [ property, setProperty ] = useState();
   const [ reviews, setReviews ] = useState([]);
   const [ reviewRating, setReviewRating ] = useState(2.5);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,7 +48,7 @@ export const PropertyDetails = () => {
       message: data.review,
     };
 
-    await PropertyService.createReview({ review });
+    await PropertyService.createReview({ review, user_id: currentUser.id });
     reset();
     setReviews(await PropertyService.getReviews({ id }));
   };
