@@ -5,6 +5,7 @@ const { ResponseHandler } = require(`../../utils/ResponseHandler`);
 const multer = require(`multer`);
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+const { VerifyToken } = require(`../../utils/Middleware/VerifyToken`);
 
 router.get(`/list`, async (req, res, next) => {
   try {
@@ -52,9 +53,11 @@ router.get(`/:id/reviews`, async (req, res, next) => {
   }
 });
 
-router.post(`/review/new`, async (req, res, next) => {
+router.post(`/review/new`, VerifyToken, async (req, res, next) => {
   try {
-    await PropertyService.createReview({ review: req.query.review });
+    const { review, user_id } = req.query;
+
+    await PropertyService.createReview({ review, user_id });
 
     ResponseHandler(
       res,
@@ -80,9 +83,8 @@ router.get(`/states`, async (req, res, next) => {
   }
 });
 
-router.post(`/new`, upload.array(`pictures`, 10), async (req, res, next) => {
+router.post(`/new`, VerifyToken, upload.array(`pictures`, 10), async (req, res, next) => {
   try {
-    console.log(JSON.parse(req.body.data));
     const { id } = await PropertyService.createProperty({ property: JSON.parse(req.body.data) });
     await PropertyService.uploadImages({ images: req.files, propertyId: id });
 
@@ -93,7 +95,6 @@ router.post(`/new`, upload.array(`pictures`, 10), async (req, res, next) => {
     );
   }
   catch (err) {
-    console.log(err);
     next(err);
   }
 });

@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Card, ListGroup } from 'react-bootstrap';
 import { ChatService } from '../../shared/services';
+import { useAuth } from '../../shared/contexts/AuthContext';
 
 export const ChatList = ({ onChatSelect }) => {
   const [ chatList, setChatList ] = useState([]);
   const [ activeChat, setActiveChat ] = useState(parseInt(localStorage.getItem(`lastOpenedChat`)));
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setChatList(await ChatService.getChatsForUser());
+        const { user_id } = currentUser;
+        setChatList(await ChatService.getChatsForUser({ user_id }));
 
         if (activeChat) {
           await getChatMessages({ chat_id: activeChat });

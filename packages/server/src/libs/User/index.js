@@ -1,49 +1,9 @@
 const knex = require(`../Database`);
-const bcrypt = require(`bcrypt`);
-const { InvalidCredentialsError, BadRequestError } = require(`restify-errors`);
-
-exports.login = async ({ username, password }) => {
-  if (!username) {
-    throw new BadRequestError(`No username provided`);
-  }
-
-  if (!password) {
-    throw new BadRequestError(`No password provided`);
-  }
-
-  const user = await this.getUserByUsername({ username });
-
-  if (!user) {
-    throw new InvalidCredentialsError(`Invalid username or password`);
-  }
-
-  const isValidPassword = await bcrypt.compare(password, user.password);
-
-  if (isValidPassword) {
-    return user;
-  }
-
-  throw new InvalidCredentialsError(`Invalid username or password`);
-};
-
-exports.getUserByUsername = async ({ username }) => {
-  if (!username) {
-    throw new BadRequestError(`No username provided`);
-  }
-
-  const user = await knex.raw(`
-    SELECT first_name, last_name, email, username
-    FROM users
-    WHERE username = ?
-    LIMIT 1;
-  `, [ username ]);
-
-  return user.rows[0];
-};
+const { BadRequestError } = require(`restify-errors`);
 
 exports.getUserById = async ({ id }) => {
   if (!id) {
-    throw new BadRequestError(`No username provided`);
+    throw new BadRequestError(`No id provided`);
   }
 
   const user = await knex.raw(`
@@ -52,6 +12,26 @@ exports.getUserById = async ({ id }) => {
     WHERE id = ?
     LIMIT 1;
   `, [ id ]);
+
+  return user.rows[0];
+};
+
+exports.addUserFromFirebase = async ({ uid, email, firstName, lastName }) => {
+  const user = await knex.raw(`
+    INSERT INTO users(uid, email, username, first_name, last_name)
+    VALUES (?, ?, ?, ?, ?);
+  `, [ uid, email, email, firstName, lastName ]);
+
+  return user.rows[0];
+};
+
+exports.getUserFromFirebaseUid = async ({ uid }) => {
+  const user = await knex.raw(`
+    SELECT id, first_name, last_name, email, username
+    FROM users
+    WHERE uid = ?
+    LIMIT 1;
+  `, [ uid ]);
 
   return user.rows[0];
 };

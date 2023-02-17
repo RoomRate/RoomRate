@@ -5,7 +5,7 @@ import { Button } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { Row } from "react-bootstrap";
-import { PropertyService } from 'shared/services';
+import { PropertyService } from '../../shared/services';
 import Select from 'react-select';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import CurrencyInput from 'react-currency-input-field';

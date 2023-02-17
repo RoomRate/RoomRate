@@ -1,5 +1,5 @@
 import Lottie from 'lottie-react';
-import loadingIcon from "assets/images/loadingIcon.json";
+import loadingIcon from "../../assets/images/loadingIcon.json";
 
 export const LoadingIcon = () =>
   <div className="d-flex justify-content-center align-items-center" style={{ height: `75vh` }}>

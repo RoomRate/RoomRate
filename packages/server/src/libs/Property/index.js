@@ -39,11 +39,11 @@ exports.getReviews = async ({ id }) => {
   return reviews.rows;
 };
 
-exports.createReview = async ({ review }) => {
+exports.createReview = async ({ review, user_id }) => {
   await knex.insert({
     rating: review.rating,
     message: review.message,
-    user_id: 13, // hardcoded value until user session is set up
+    user_id,
     date: moment().format(`MM/DD/YYYY`),
     property_id: review.id,
   }).into(`property_reviews`);

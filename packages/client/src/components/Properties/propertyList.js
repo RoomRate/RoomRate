@@ -5,7 +5,7 @@ import { PropertyService } from "../../shared/services";
 import { MarkerIcon } from "../../shared/A-UI";
 import { Image } from 'react-extras';
 import { LoadingIcon } from '../../shared/A-UI';
-import PROPERTY_IMAGE from "assets/images/placeholderproperty.jpg";
+import PROPERTY_IMAGE from "../../assets/images/placeholderproperty.jpg";
 import { Link } from 'react-router-dom';
 
 export const PropertyList = () => {
@@ -48,7 +48,7 @@ export const PropertyList = () => {
   return (
     isLoading ?
       <LoadingIcon /> :
-      <Col fluid style={{ height: `100vh` }} id="propertyList">
+      <Col fluid="true" style={{ height: `100vh` }} id="propertyList">
         <Row
           className="border border-1"
           style={{ backgroundColor: `white`, padding: `10px`, display: `flex`, alignItems: `flex-start` }}>

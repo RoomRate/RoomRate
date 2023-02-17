@@ -1,14 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-
 import { Button } from "react-bootstrap";
 import { Card } from 'react-bootstrap';
+import { useAuth } from "../../shared/contexts/AuthContext.js";
+import { useNavigate } from "react-router-dom";
+import { UserService } from "../../shared/services/user.service.js";
 
 export const SignUp = () => {
+  const { currentUser, createAccount } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate(`/`);
+    }
+  }, [ currentUser, navigate ]);
+
   const formSchema = Yup.object().shape({
-    name: Yup.string().required(`Enter first and last name`),
+    firstName: Yup.string().required(`Enter first name`),
+    lastName: Yup.string().required(`Enter last name`),
     email: Yup.string()
       .email()
       .required(`E-mail is required`),
@@ -23,9 +35,25 @@ export const SignUp = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: yupResolver(formSchema),
   });
-  const onSubmit = (data) => {
-    console.log({ data });
-    reset();
+
+  const onSubmit = async (data) => {
+    try {
+      const {
+        email: userEmail,
+        password: userPassword,
+        firstName,
+        lastName,
+      } = data;
+
+      const { user: { uid, email } } = await createAccount(userEmail, userPassword);
+
+      await UserService.addUserFromFirebase({ uid, email, firstName, lastName });
+
+      reset();
+      navigate(`/`);
+    } catch (err) {
+      console.log(`Failed to register`);
+    }
   };
 
   return (
@@ -51,11 +79,18 @@ export const SignUp = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <br />
               <br /><input
-                id="fullName"
+                id="firstName"
                 type="text"
-                placeholder="Name"
+                placeholder="First Name"
                 className={`form-control ${errors.name ? `is-invalid` : ``}`}
-                {...register(`name`)}
+                {...register(`firstName`)}
+              />
+              <br /><input
+                id="lastName"
+                type="text"
+                placeholder="Last Name"
+                className={`form-control ${errors.name ? `is-invalid` : ``}`}
+                {...register(`lastName`)}
               />
               <div className="invalid-feedback">{errors.name?.message}</div><br />
               <input
