@@ -23,14 +23,14 @@ export class ChatService {
     }
   }
 
-  static async getMessagesForChat({ chat_id }) {
+  static async getMessagesForChat({ chat_id, user_id }) {
     try {
       const user = auth.currentUser;
       const token = user && await user.getIdToken();
 
       const response = await Axios({
         method: `GET`,
-        url: `/chat/${chat_id}/messages`,
+        url: `/chat/${chat_id}/messages?user_id=${user_id}`,
         headers: {
           'Content-Type': `application/json`,
           'Authorization': `Bearer ${token}`,
@@ -69,14 +69,14 @@ export class ChatService {
     }
   }
 
-  static async getChatUsers({ chat_id }) {
+  static async getChatUsers({ chat_id, user_id }) {
     try {
       const user = auth.currentUser;
       const token = user && await user.getIdToken();
 
       const response = await Axios({
         method: `GET`,
-        url: `/chat/${chat_id}/users`,
+        url: `/chat/${chat_id}/users?user_id=${user_id}`,
         headers: {
           'Content-Type': `application/json`,
           'Authorization': `Bearer ${token}`,
@@ -90,14 +90,14 @@ export class ChatService {
     }
   }
 
-  static async getChatById({ chat_id }) {
+  static async getChatById({ chat_id, user_id }) {
     try {
       const user = auth.currentUser;
       const token = user && await user.getIdToken();
 
       const response = await Axios({
         method: `GET`,
-        url: `/chat/${chat_id}`,
+        url: `/chat/${chat_id}?user_id=${user_id}`,
         headers: {
           'Content-Type': `application/json`,
           'Authorization': `Bearer ${token}`,
@@ -108,6 +108,98 @@ export class ChatService {
     }
     catch (err) {
       throw new Error(`Failed to get chat info`);
+    }
+  }
+
+  static async createNewChat({ created_by, title }) {
+    try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
+      const response = await Axios({
+        method: `POST`,
+        url: `/new`,
+        data: {
+          created_by,
+          title,
+        },
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      return response.data.data;
+    }
+    catch (err) {
+      throw new Error(`Failed to create new chat`);
+    }
+  }
+
+  static async addUserToChat({ chat_id, user_id }) {
+    try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
+      await Axios({
+        method: `POST`,
+        url: `/chat/${chat_id}/user/${user_id}/add`,
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      return;
+    }
+    catch (err) {
+      throw new Error(`Failed to remove user from chat`);
+    }
+  }
+
+  static async removeUserFromChat({ chat_id, user_id }) {
+    try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
+      await Axios({
+        method: `DELETE`,
+        url: `/chat/${chat_id}/user/${user_id}/remove`,
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      return;
+    }
+    catch (err) {
+      throw new Error(`Failed to remove user from chat`);
+    }
+  }
+
+  static async editMessage({ chat_id, message_id, user_id, edited_message }) {
+    try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
+      const response = await Axios({
+        method: `PUT`,
+        url: `/chat/${chat_id}/message/${message_id}/edit`,
+        data: {
+          edited_message,
+          user_id,
+        },
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      return response.data.data;
+    }
+    catch (err) {
+      throw new Error(`Failed to edit message`);
     }
   }
 }

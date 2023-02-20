@@ -11,8 +11,7 @@ export const ChatList = ({ onChatSelect }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { user_id } = currentUser;
-        setChatList(await ChatService.getChatsForUser({ user_id }));
+        setChatList(await ChatService.getChatsForUser({ user_id: currentUser.id }));
 
         if (activeChat) {
           await getChatMessages({ chat_id: activeChat });
@@ -28,9 +27,9 @@ export const ChatList = ({ onChatSelect }) => {
   const getChatMessages = async ({ chat_id }) => {
     try {
       // TODO consolidate all these requests into one
-      const messages = await ChatService.getMessagesForChat({ chat_id });
-      const users = await ChatService.getChatUsers({ chat_id });
-      const chatInfo = await ChatService.getChatById({ chat_id });
+      const messages = await ChatService.getMessagesForChat({ chat_id, user_id: currentUser.id });
+      const users = await ChatService.getChatUsers({ chat_id, user_id: currentUser.id });
+      const chatInfo = await ChatService.getChatById({ chat_id, user_id: currentUser.id });
 
       const chat = {
         id: chat_id,
@@ -53,7 +52,7 @@ export const ChatList = ({ onChatSelect }) => {
       <Card.Body>
         <ListGroup>
           {
-            chatList.length ?
+            chatList?.length ?
               <>
                 {
                   chatList.map(chat =>
@@ -78,15 +77,20 @@ export const ChatList = ({ onChatSelect }) => {
                         </dd>
                       </div>
                       <div className="row">
-                        <dt>Last message: </dt>
-                        <dd style={{ overflowX: `ellipsis` }}>
-                          {
-                            chat.user_id === chat.last_message.user.id ?
-                              `You: ` :
-                              `${chat.last_message.user.first_name} ${chat.last_message.user.last_name}: `
-                          }
-                          {chat.last_message.message}
-                        </dd>
+                        {
+                          chat.last_message?.message &&
+                            <>
+                              <dt>Last message: </dt>
+                              <dd style={{ overflowX: `ellipsis` }}>
+                                {
+                                  chat.user_id === chat.last_message.user.id ?
+                                    `You: ` :
+                                    `${chat.last_message.user.first_name} ${chat.last_message.user.last_name}: `
+                                }
+                                {chat.last_message.message}
+                              </dd>
+                            </>
+                        }
 
                       </div>
                     </ListGroup.Item>)
