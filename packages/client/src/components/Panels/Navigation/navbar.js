@@ -28,6 +28,9 @@ export const Navigation = () =>
             <Link to="/login" className="links">Login</Link>
           </Nav.Link>
           {/* <Nav.Link onClick={logoutUser()}>Logout</Nav.Link> */}
+          <Nav.Link>
+            <Link to="/test" className="links">Test</Link>
+          </Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </Container>

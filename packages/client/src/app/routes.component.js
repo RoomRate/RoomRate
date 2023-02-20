@@ -11,6 +11,8 @@ import { SignUp } from '../components/Login/signUp';
 import { ForgotPassword } from '../components/Login/forgotPass';
 import AuthenticatedRoute from '../shared/contexts/AuthenticatedRoute';
 
+import { Test } from '../components/Users/test';
+
 export const RoutesComponent = () =>
   <Routes>
     <Route path="/" element={<PropertyList />} />
@@ -33,4 +35,5 @@ export const RoutesComponent = () =>
     <Route path="/login" element={<LogIn />} />
     <Route path="/login/signup" element={<SignUp />} />
     <Route path="/login/password" element={<ForgotPassword />} />
+    <Route path="/test" element={<Test />} />
   </Routes>;

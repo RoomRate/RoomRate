@@ -8,9 +8,22 @@ import { LoadingIcon } from '../../shared/A-UI';
 import PROPERTY_IMAGE from "../../assets/images/placeholderproperty.jpg";
 import { Link } from 'react-router-dom';
 
+import ProfileModal from '../Users/ProfileModal.js';
+
 export const PropertyList = () => {
   const [ properties, setProperties ] = useState([]);
   const [ isLoading, setLoading ] = useState(true);
+
+  const [ showModal, setShowModal ] = useState(false);
+
+  const handleOpenModal = () => {
+    console.log(`Modal opened`);
+    setShowModal(true);
+  };
+
+  function handleCloseModal() {
+    setShowModal(false);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,6 +105,12 @@ export const PropertyList = () => {
             </ButtonGroup>
           </Col>
         </Row>
+
+        <button onClick={handleOpenModal}>Open Profile</button>
+        {showModal &&
+          <ProfileModal onClose={handleCloseModal}>
+            <h2>This is the modal content</h2>
+          </ProfileModal>}
         <Row style={{ height: `100%` }}>
           <Col xs="6" style={{ padding: 0 }}>
             <MapContainer

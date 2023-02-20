@@ -41,6 +41,7 @@
     "react-currency-input-field": "^3.6.10",
     "react-google-places-autocomplete": "^3.4.0",
     "react-hook-form": "^7.38.0",
+    "react-horizontal-scrolling-menu": "^3.2.5",
     "react-leaflet": "^4.1.0",
     "sass": "^1.55.0",
     "uuid": "^9.0.0",
