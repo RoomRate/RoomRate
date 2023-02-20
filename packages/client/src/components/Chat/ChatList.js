@@ -77,15 +77,20 @@ export const ChatList = ({ onChatSelect }) => {
                         </dd>
                       </div>
                       <div className="row">
-                        <dt>Last message: </dt>
-                        <dd style={{ overflowX: `ellipsis` }}>
-                          {
-                            chat.user_id === chat.last_message.user.id ?
-                              `You: ` :
-                              `${chat.last_message.user.first_name} ${chat.last_message.user.last_name}: `
-                          }
-                          {chat.last_message.message}
-                        </dd>
+                        {
+                          chat.last_message?.message &&
+                            <>
+                              <dt>Last message: </dt>
+                              <dd style={{ overflowX: `ellipsis` }}>
+                                {
+                                  chat.user_id === chat.last_message.user.id ?
+                                    `You: ` :
+                                    `${chat.last_message.user.first_name} ${chat.last_message.user.last_name}: `
+                                }
+                                {chat.last_message.message}
+                              </dd>
+                            </>
+                        }
 
                       </div>
                     </ListGroup.Item>)

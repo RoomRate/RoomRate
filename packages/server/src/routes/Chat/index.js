@@ -25,7 +25,7 @@ router.get(`/:chat_id/messages`, VerifyToken, async (req, res, next) => {
     const { chat_id } = req.params;
     const { user_id } = req.query;
 
-    if (await ChatService.isUserInChat({ chat_id, user_id })) {
+    if (!await ChatService.isUserInChat({ chat_id, user_id })) {
       throw new Error(`You have been removed from this chat`);
     }
 
@@ -37,6 +37,7 @@ router.get(`/:chat_id/messages`, VerifyToken, async (req, res, next) => {
       messages,
     );
   } catch (err) {
+    console.log(err);
     next(err);
   }
 });
@@ -46,7 +47,7 @@ router.get(`/:chat_id/users`, VerifyToken, async (req, res, next) => {
     const { chat_id } = req.params;
     const { user_id } = req.query;
 
-    if (await ChatService.isUserInChat({ chat_id, user_id })) {
+    if (!await ChatService.isUserInChat({ chat_id, user_id })) {
       throw new Error(`You have been removed from this chat`);
     }
 
@@ -67,7 +68,7 @@ router.post(`/:chat_id/message`, VerifyToken, async (req, res, next) => {
     const { message, user_id } = req.body;
     const { chat_id } = req.params;
 
-    if (await ChatService.isUserInChat({ chat_id, user_id })) {
+    if (!await ChatService.isUserInChat({ chat_id, user_id })) {
       throw new Error(`You have been removed from this chat`);
     }
 
@@ -88,7 +89,7 @@ router.put(`/:chat_id/message/:message_id/edit`, VerifyToken, async (req, res, n
     const { edited_message, user_id } = req.body;
     const { chat_id, message_id } = req.params;
 
-    if (await ChatService.isUserInChat({ chat_id, user_id })) {
+    if (!await ChatService.isUserInChat({ chat_id, user_id })) {
       throw new Error(`You have been removed from this chat`);
     }
 
@@ -113,7 +114,7 @@ router.get(`/:chat_id`, VerifyToken, async (req, res, next) => {
     const { chat_id } = req.params;
     const { user_id } = req.query;
 
-    if (await ChatService.isUserInChat({ chat_id, user_id })) {
+    if (!await ChatService.isUserInChat({ chat_id, user_id })) {
       throw new Error(`You have been removed from this chat`);
     }
 

@@ -13,19 +13,20 @@ exports.getChatsForUser = async ({ user_id }) => {
     SELECT 
       chats.id AS chat_id,
       chats.title AS chat_title,
-      chat_messages.message AS last_message,
-      chat_messages.created_by AS last_message_user_id
+      last_message.message AS last_message,
+      last_message.created_by AS last_message_user_id
     FROM chats
     JOIN chat_users ON chats.id = chat_users.chat_id
-    JOIN chat_messages ON chats.id = chat_messages.chat_id
-    WHERE chat_users.user_id = ?
-    AND chat_messages.id = (
-      SELECT id
-      FROM chat_messages
-      WHERE chat_id = chats.id
-      ORDER BY created_at DESC
-      LIMIT 1
-    );
+    LEFT JOIN (
+      SELECT message, created_by, chat_id
+      FROM chat_messages cm
+      WHERE cm.id = (
+        SELECT MAX(id)
+        FROM chat_messages
+        WHERE chat_id = cm.chat_id
+      )
+    ) AS last_message ON chats.id = last_message.chat_id
+    WHERE chat_users.user_id = ?;
   `, [ user_id ]);
 
   for (const chat of chatInfo) {
@@ -139,6 +140,8 @@ exports.isUserInChat = async ({ chat_id, user_id }) => {
     AND deleted_at IS NULL
     LIMIT 1;
   `, [ chat_id, user_id ]);
+
+  console.log(!!response.rows.length);
 
   return !!response.rows.length;
 };
