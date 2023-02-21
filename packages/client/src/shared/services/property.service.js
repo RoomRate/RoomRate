@@ -1,4 +1,5 @@
 import { Axios } from "../utils/http.config.js";
+import { auth } from "../utils/firebase";
 
 export class PropertyService {
   static async getPropertyList({ all }) {
@@ -74,11 +75,18 @@ export class PropertyService {
   }
 
   static async createProperty(data) {
+    const user = auth.currentUser;
+    const token = user && await user.getIdToken();
+    console.log(data);
     try {
       const response = await Axios({
         method: `POST`,
         url: `/property/new`,
         data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ContentType: `multipart/form-data`,
+        },
       });
 
       return response.data.data.id;

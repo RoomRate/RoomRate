@@ -9,6 +9,7 @@ import { PropertyService } from '../../shared/services';
 import Select from 'react-select';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import CurrencyInput from 'react-currency-input-field';
+import { useAuth } from '../../shared/contexts/AuthContext';
 
 const GooglePlacesAutocompleteComponent = ({ error, ...field }) =>
   <div>
@@ -25,13 +26,12 @@ const GooglePlacesAutocompleteComponent = ({ error, ...field }) =>
 export const PropertyForm = () => {
   const { control, register, handleSubmit, reset } = useForm();
   const [ pic, setPic ] = useState([]);
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   function uploadSingleFile(e) {
     const files = [ ...e.target.files ];
-    console.log(files);
-    setPic(pic.concat(files.map(file => URL.createObjectURL(file))));
-    console.log(pic);
+    setPic(files);
   }
 
   function deleteFile(e) {
@@ -86,6 +86,7 @@ export const PropertyForm = () => {
     data.policies.utilities = data.utilities;
     data.policies.wheelchair = data.wheelchair;
     data.policies.furnished = data.furnished;
+    data.landlord_id = currentUser.id;
 
     delete data.heat;
     delete data.ac;
@@ -97,8 +98,9 @@ export const PropertyForm = () => {
     delete data.wheelchair;
     delete data.furnished;
 
-    console.log(data);
-    formData.append(`pictures`, pic);
+    for (const file of pic) {
+      formData.append(`pictures`, file);
+    }
     formData.append(`data`, JSON.stringify(data));
     const newId = await PropertyService.createProperty(formData);
     reset();
@@ -262,7 +264,7 @@ export const PropertyForm = () => {
                 {pic.length > 0 &&
                   pic.map((item, index) =>
                     <div key={item}>
-                      <img src={item} alt="" style={{ width: `100px` }} />
+                      <img src={URL.createObjectURL(item)} alt="" style={{ width: `100px` }} />
                       <button type="button" className="btn-close" onClick={() => deleteFile(index)}>
                         <span className="icon-cross" />
                         <span className="visually-hidden">Close</span>

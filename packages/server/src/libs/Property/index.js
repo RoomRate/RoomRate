@@ -85,7 +85,7 @@ exports.createProperty = async ({ property }) => {
     bed: property.bed.value,
     bath: property.bath.value,
     rate: property.price,
-    landlord_id: 14,
+    landlord_id: property.landlord_id,
     propType: property.propType.value,
     policies: property.policies,
     verified: property.verified,
