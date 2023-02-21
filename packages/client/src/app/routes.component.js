@@ -9,6 +9,7 @@ import { UserForm } from '../components/Users/userForm';
 import { LogIn } from '../components/Login/logIn';
 import { SignUp } from '../components/Login/signUp';
 import { ForgotPassword } from '../components/Login/forgotPass';
+import { RoommateFinder } from '../components/RoommateFinder/RoommateFinder';
 import AuthenticatedRoute from '../shared/contexts/AuthenticatedRoute';
 
 export const RoutesComponent = () =>
@@ -33,4 +34,5 @@ export const RoutesComponent = () =>
     <Route path="/login" element={<LogIn />} />
     <Route path="/login/signup" element={<SignUp />} />
     <Route path="/login/password" element={<ForgotPassword />} />
+    <Route path="/roommate-finder" element={<RoommateFinder />} />
   </Routes>;
