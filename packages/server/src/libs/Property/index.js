@@ -10,6 +10,12 @@ exports.getPropertyList = async () => {
     FROM properties
   `);
   properties = await attachCoordinates({ properties: properties.rows });
+  properties = await Promise.all(properties.map(async p => {
+    const [ peopleCount ] = await knex(`roommate_posts`).count(`property_id`).where(`property_id`, p.id);
+    p.peopleInterested = peopleCount.count;
+
+    return p;
+  }));
 
   return properties;
 };
@@ -79,7 +85,7 @@ exports.createProperty = async ({ property }) => {
     bed: property.bed.value,
     bath: property.bath.value,
     rate: property.price,
-    landlord_id: 14,
+    landlord_id: property.landlord_id,
     propType: property.propType.value,
     policies: property.policies,
     verified: property.verified,

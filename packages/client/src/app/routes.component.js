@@ -9,9 +9,9 @@ import { UserForm } from '../components/Users/userForm';
 import { LogIn } from '../components/Login/logIn';
 import { SignUp } from '../components/Login/signUp';
 import { ForgotPassword } from '../components/Login/forgotPass';
+import { RoommateFinder } from '../components/RoommateFinder/RoommateFinder';
+import ProfileModal from '../components/Users/ProfileModal';
 import AuthenticatedRoute from '../shared/contexts/AuthenticatedRoute';
-
-import { Test } from '../components/Users/test';
 
 export const RoutesComponent = () =>
   <Routes>
@@ -35,5 +35,11 @@ export const RoutesComponent = () =>
     <Route path="/login" element={<LogIn />} />
     <Route path="/login/signup" element={<SignUp />} />
     <Route path="/login/password" element={<ForgotPassword />} />
-    <Route path="/test" element={<Test />} />
+    <Route path="/roommate-finder" element={<RoommateFinder />} />
+    <Route
+      element={
+        <AuthenticatedRoute>
+          <ProfileModal />
+        </AuthenticatedRoute>
+      } />
   </Routes>;

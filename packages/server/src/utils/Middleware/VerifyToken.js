@@ -1,4 +1,4 @@
-const auth = require(`../Firebase`);
+const { auth } = require(`../Firebase`);
 
 exports.VerifyToken = async (req, res, next) => {
   const { 1: token } = req.headers.authorization.split(` `);
