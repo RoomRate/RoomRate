@@ -34,7 +34,7 @@ export const ForgotPassword = () => {
           style={{ display: `flex`, justifyContent: `center`, alignItems: `center`, width: `47rem`, height: `94vh` }} >
           <div className="p-3 my-5 d-flex flex-column w-50">
             <div className="text-center">
-              <img src={require(`../../assets/images/roomratepic.png`)} alt="logo" width={300} />
+              <img src={require(`../../assets/images/RoomRateLogoRed.png`)} alt="logo" width={300} />
             </div>
 
             <h4>Forgot your password?</h4>

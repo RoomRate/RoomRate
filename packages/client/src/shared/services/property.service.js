@@ -46,11 +46,17 @@ export class PropertyService {
   }
 
   static async createReview({ review, user_id }) {
+    const user = auth.currentUser;
+    const token = user && await user.getIdToken();
+
     try {
       await Axios({
         method: `POST`,
         url: `/property/review/new`,
         params: { review, user_id },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       return;
@@ -77,7 +83,6 @@ export class PropertyService {
   static async createProperty(data) {
     const user = auth.currentUser;
     const token = user && await user.getIdToken();
-    console.log(data);
     try {
       const response = await Axios({
         method: `POST`,

@@ -5,8 +5,7 @@ exports.getPosts = async () => {
     .orderBy(`posted_on`, `desc`)
     .limit(10);
 
-  console.log(posts)
-  return Promise.all(posts.map(async (post) => {
+  return await Promise.all(posts.map(async (post) => {
     post.author = await knex(`users`).select(`id`, `first_name`, `last_name`).where({ id: post.user_id }).first()
     post.property = await knex(`properties`).select(`id`, `street_1`, `street_2`).where({ id: post.property_id }).first()
 
