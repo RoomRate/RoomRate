@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "node --optimize_for_size --max_old_space_size=460 packages/server/src/index.js",
-    "heroku-postbuild": "mkdir config && cp packages/server/config/default.json config/default.json && cd packages/client && npm install && npm run build:heroku"
+    "heroku-postbuild": "mkdir config && cp packages/server/config/default.json config/default.json && cd packages/client && npm install && npm run build:heroku",
+    "check-updates": "npm run check-updates --workspaces -if-present", 
+    "check-updates:fix": "npm run check-updates:fix --workspaces -if-present" 
   },
   "contributors": [
     {
