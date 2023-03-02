@@ -4,7 +4,7 @@ import { Image } from 'react-extras';
 import logo from '../../../assets/images/RoomRateLogoInvert.png';
 import user from '../../../assets/images/DefaultPFP.png';
 import '../../../scss/custom.scss';
-import ProfileModal from '../../Users/ProfileModal.js';
+import { ProfileModal } from '../../Users/ProfileModal.js';
 
 export const Navigation = () => {
   const [ showModal, setShowModal ] = useState(false);

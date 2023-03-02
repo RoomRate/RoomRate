@@ -39,4 +39,17 @@ router.get(`/uid/:uid`, async (req, res, next) => {
   }
 });
 
+router.put(`/update`, VerifyToken, async (req, res, next) => {
+  try {
+    const { data } = req.body;
+    console.log(`routes:`, req.body);
+    const user = await UserService.updateUser({ data });
+
+    return res.status(200).json(user);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+});
+
 module.exports = router;

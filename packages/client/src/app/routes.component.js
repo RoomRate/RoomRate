@@ -10,7 +10,7 @@ import { LogIn } from '../components/Login/logIn';
 import { SignUp } from '../components/Login/signUp';
 import { ForgotPassword } from '../components/Login/forgotPass';
 import { RoommateFinder } from '../components/RoommateFinder/RoommateFinder';
-import ProfileModal from '../components/Users/ProfileModal';
+import { ProfileModal } from '../components/Users/ProfileModal';
 import AuthenticatedRoute from '../shared/contexts/AuthenticatedRoute';
 
 export const RoutesComponent = () =>

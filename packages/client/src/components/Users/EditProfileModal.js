@@ -7,20 +7,29 @@ import { Col } from "react-bootstrap";
 // import EdiText from 'react-editext';
 import { useForm, Controller } from "react-hook-form";
 import Select from 'react-select';
+import { UserService } from '../../shared/services';
 
 function EditProfileModal({ onClose }) {
   const { register, control, handleSubmit, reset } = useForm();
-
-  const onSave = (data) => {
-    console.log(data);
+  /*
+  const onSubmit = (data) => {
+    console.log(`clicked`, data);
     reset();
     onClose();
   };
-
+*/
   const seeking = [
     { value: `yes`, label: `yes` },
     { value: `no`, label: `no` },
   ];
+
+  const updateUserProfile = async (data) => {
+    const formData = new FormData();
+    formData.append(`data`, JSON.stringify(data));
+    await UserService.updateUser(formData);
+    reset();
+    onClose();
+  };
 
   return (
     <>
@@ -38,7 +47,7 @@ function EditProfileModal({ onClose }) {
         </Modal.Header>
         <Modal.Body>
           <div className="container">
-            <Form onSubmit={handleSubmit(onSave)}>
+            <Form onSubmit={handleSubmit(updateUserProfile)}>
               <Row>
                 <Form.Group>
                   <label htmlFor="pic">Profile Picture:</label>
@@ -61,16 +70,13 @@ function EditProfileModal({ onClose }) {
                 <Form.Group>
                   <label htmlFor="seeking">Are you seeking roommates?</label>
                   <Controller
-                    name=""
+                    name="seeking"
                     control={control}
                     render={({ field }) => <Select
                       {...field}
                       classNamePrefix="react-select"
                       options={seeking}
                     />}
-                    rules={{
-                      required: `Please Select`,
-                    }}
                   />
                 </Form.Group>
               </Row>
@@ -80,12 +86,12 @@ function EditProfileModal({ onClose }) {
                   <textarea rows={5} className="form-control" name="bio" {...register(`bio`)} />
                 </Form.Group>
               </Row>
+              <br /><div style={{ textAlign: `right` }}>
+                <Button variant="primary" type="submit">Save</Button>
+              </div>
             </Form>
           </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" type="submit">Save</Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

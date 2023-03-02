@@ -42,4 +42,27 @@ export class UserService {
       throw new Error(`Failed to fetch user details using firebase uid`);
     }
   }
+
+  static async updateUser(data) {
+    console.log(`user service:`, data);
+    const user = auth.currentUser;
+    const token = user && await user.getIdToken();
+    try {
+      const response = await Axios({
+        method: `PUT`,
+        url: `/user/update/`,
+        data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ContentType: `multipart/form-data`,
+        },
+      });
+
+      return response.data;
+    }
+    catch (err) {
+      console.log(err);
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
 }
