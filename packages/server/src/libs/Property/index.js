@@ -29,6 +29,7 @@ exports.getPropertyDetail = async ({ id }) => {
   `, [ id ]);
 
   property = await attachCoordinates({ properties: property.rows });
+  property[0].peopleInterested = await knex(`roommate_posts`).count(`property_id`).where(`property_id`, id);
 
   return property[0];
 };
@@ -39,6 +40,7 @@ exports.getReviews = async ({ id }) => {
     FROM property_reviews
     JOIN users ON property_reviews.user_id = users.id
     WHERE property_reviews.property_id = ?
+    ORDER BY date DESC
     `, [ id ]);
 
   return reviews.rows;

@@ -102,48 +102,51 @@ export const RoommateFinder = () => {
             </Card.Body>
           </Card>
           {
-            posts.map(post => <>
-              <Card className="w-100 my-2 text-start">
-                <Card.Body>
-                  <div className="d-flex">
-                    <div className="mr-4">
-                      <Image
-                        url={DEFAULT_PFP}
-                        fallbackUrl={DEFAULT_PFP}
-                        className="avatar rounded img-fluid me-2"
-                        alt="user profile avatar"
-                        width={50} />
-                    </div>
-                    <div className="w-100 mx-2">
-                      <p className="my-0 fw-bold">{post.title}
-                        {
-                          post.property ?
-                            <span className="text-dark"> for <Link to={`/property/${post.property.id}/detail`}>
-                              {post.property.street_1} {post.property.street_2}
-                            </Link>
-                            </span> :
-                            null
-                        }
-                      </p>
-                      <Card.Text>
-                        <p>{post.message}</p>
-                        <p className="my-0"><Link to={`user/${post.author.id}`}>
-                          {post.author.first_name} {post.author.last_name}
-                        </Link>
+            posts.map(post => {
+              console.log(post);
+
+              return <>
+                <Card className="w-100 my-2 text-start">
+                  <Card.Body>
+                    <div className="d-flex">
+                      <div className="mr-4">
+                        <Image
+                          url={DEFAULT_PFP}
+                          fallbackUrl={DEFAULT_PFP}
+                          className="avatar rounded img-fluid me-2"
+                          alt="user profile avatar"
+                          width={50} />
+                      </div>
+                      <div className="w-100 mx-2">
+                        <p className="my-0 fw-bold">{post.title}
+                          {
+                            post.property ?
+                              <span className="text-dark"> for <Link to={`/property/${post.property.id}/detail`}>
+                                {post.property.street_1} {post.property.street_2}
+                              </Link>
+                              </span> :
+                              null
+                          }
+                        </p>
+                        <Card.Text>
+                          <p>{post.message}</p>
+                          <p className="my-0"><Link to={`user/${post.author.id}`}>
+                            {post.author.first_name} {post.author.last_name}
+                          </Link>
                           &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
-                      </Card.Text>
+                        </Card.Text>
+                      </div>
+                      <Dropdown className="ms-auto">
+                        <Dropdown.Toggle as={CustomToggle} />
+                        <Dropdown.Menu>
+                          <Dropdown.Item>Edit</Dropdown.Item>
+                          <Dropdown.Item onClick={() => deletePost(post.id)}>Delete</Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
                     </div>
-                    <Dropdown className="ms-auto">
-                      <Dropdown.Toggle as={CustomToggle} />
-                      <Dropdown.Menu>
-                        <Dropdown.Item>Edit</Dropdown.Item>
-                        <Dropdown.Item onClick={() => deletePost(post.id)}>Delete</Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </div>
-                </Card.Body>
-              </Card>
-            </>)
+                  </Card.Body>
+                </Card>
+              </>; })
           }
         </div>
       </div>

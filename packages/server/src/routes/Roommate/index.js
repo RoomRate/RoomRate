@@ -13,7 +13,6 @@ router.get(`/post`, async (req, res, next) => {
       { posts },
     );
   } catch (err) {
-    console.log(err);
     next(err);
   }
 });
