@@ -54,4 +54,18 @@ export class RoommateService {
       throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
     }
   }
+
+  static async searchProperties(input) {
+    try {
+      const response = await Axios({
+        method: `GET`,
+        url: `/property/search?input=${input}`,
+      });
+
+      return response.data.data;
+    } catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
+
 }

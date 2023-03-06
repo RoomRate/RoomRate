@@ -4,16 +4,24 @@ import Lottie from 'lottie-react';
 import { RoommateService } from "../../shared/services";
 import { useForm } from "react-hook-form";
 import { Image } from 'react-extras';
-import { BsThreeDots } from "react-icons/bs";
+import { TfiCommentAlt } from "react-icons/tfi";
 import { Link } from 'react-router-dom';
+import { debounce } from 'lodash';
+import AsyncSelect from 'react-select/async';
 import ReactTimeAgo from 'react-time-ago';
 import loadingIcon from '../../assets/images/loadingIcon.json';
 import DEFAULT_PFP from '../../assets/images/DefaultPFP.png';
+import '../../scss/roommate_finder.scss';
+import { CustomToggle } from "../../shared/A-UI";
+import { PostDetailModal } from "./PostDetailModal";
 
-export const RoommateFinder = () => {
+export const RoommateFinder = ({ property }) => {
   const [ isLoading, setLoading ] = useState(true);
   const [ posts, setPosts ] = useState([]);
+  const [ newPostProperty, setNewPostProperty ] = useState(property ? property.id : null);
   const { register, handleSubmit, reset } = useForm();
+  const [ showPostModal, setShowPostModal ] = useState(false);
+  const [ postDetail, setPostDetail ] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +42,7 @@ export const RoommateFinder = () => {
   }, []);
 
   const createPost = async (post) => {
+    post.property = newPostProperty;
     await RoommateService.createPost(post);
     setPosts(await RoommateService.getPosts());
     reset();
@@ -43,6 +52,22 @@ export const RoommateFinder = () => {
     await RoommateService.deletePost(id);
     setPosts(await RoommateService.getPosts());
   };
+
+  const propertySearch = async (input) => {
+    const properties = await RoommateService.searchProperties(input);
+
+    return properties.map(p => ({ value: p.id, label: `${p.street_1}${p.street_2 ? `, Unit ${p.street_2}` : ``}` }));
+  };
+
+  const handlePropertyChange = (_property) => {
+    setNewPostProperty(_property.value);
+  };
+
+  const showPostDetailModal = (post) => {
+    setPostDetail(post);
+    setShowPostModal(true);
+  };
+  const hidePostDetailModal = () => setShowPostModal(false);
 
   return isLoading ?
     <div className="d-flex justify-content-center" style={{ height: `75vh` }}>
@@ -89,77 +114,101 @@ export const RoommateFinder = () => {
                     width={50} />
                 </div>
                 <form id="newPost" onSubmit={handleSubmit(createPost)} className="w-100 mx-2">
+                  <div className="d-flex mb-2">
+                    <input
+                      className="w-100 me-2"
+                      placeholder="Title"
+                      {...register(`title`, { required: true })}
+                      defaultValue="Looking for roommates"
+                    />
+                    <span className="mt-2">for</span>
+                    <AsyncSelect
+                      className="w-100 ms-2"
+                      cacheOptions
+                      noOptionsMessage={() => `Search for property...`}
+                      loadOptions={debounce(propertySearch, 100, { leading: true })}
+                      defaultValue={
+                        property ? {
+                          // eslint-disable-next-line max-len
+                          label: `${property.street_1}${property.street_2 ? `, Unit ${property.street_2}` : ``}`, value: property.id,
+                        } : null
+                      }
+                      onChange={handlePropertyChange}
+                    />
+                  </div>
                   <textarea
                     className="w-100"
                     placeholder="Create post"
                     {...register(`message`)}
                   />
                 </form>
-                <div>
-                  <Button className="btn-primary mt-2" form="newPost" type="submit">Post</Button>
+                <div className="d-flex align-items-center">
+                  <Button
+                    className="btn-primary align-self-center"
+                    form="newPost"
+                    type="submit"
+                    variant="danger"
+                  >
+                    Post
+                  </Button>
                 </div>
               </div>
             </Card.Body>
           </Card>
           {
-            posts.map(post => {
-              console.log(post);
-
-              return <>
-                <Card className="w-100 my-2 text-start">
-                  <Card.Body>
-                    <div className="d-flex">
-                      <div className="mr-4">
-                        <Image
-                          url={DEFAULT_PFP}
-                          fallbackUrl={DEFAULT_PFP}
-                          className="avatar rounded img-fluid me-2"
-                          alt="user profile avatar"
-                          width={50} />
-                      </div>
-                      <div className="w-100 mx-2">
-                        <p className="my-0 fw-bold">{post.title}
-                          {
-                            post.property ?
-                              <span className="text-dark"> for <Link to={`/property/${post.property.id}/detail`}>
-                                {post.property.street_1} {post.property.street_2}
-                              </Link>
-                              </span> :
-                              null
-                          }
-                        </p>
-                        <Card.Text>
-                          <p>{post.message}</p>
-                          <p className="my-0"><Link to={`user/${post.author.id}`}>
-                            {post.author.first_name} {post.author.last_name}
-                          </Link>
-                          &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
-                        </Card.Text>
-                      </div>
-                      <Dropdown className="ms-auto">
-                        <Dropdown.Toggle as={CustomToggle} />
-                        <Dropdown.Menu>
-                          <Dropdown.Item>Edit</Dropdown.Item>
-                          <Dropdown.Item onClick={() => deletePost(post.id)}>Delete</Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
+            posts.map(post => <>
+              <Card className="w-100 my-2 text-start">
+                <Card.Body>
+                  <div className="d-flex">
+                    <div className="mr-4">
+                      <Image
+                        url={DEFAULT_PFP}
+                        fallbackUrl={DEFAULT_PFP}
+                        className="avatar rounded img-fluid me-2"
+                        alt="user profile avatar"
+                        width={50} />
                     </div>
-                  </Card.Body>
-                </Card>
-              </>; })
+                    <div className="w-100 mx-2">
+                      <p className="my-0 fw-bold">{post.title}
+                        {
+                          post.property ?
+                            <span className="text-dark"> for <Link to={`/property/${post.property.id}/detail`}>
+                              {post.property.street_1}, Unit {post.property.street_2}
+                            </Link>
+                            </span> :
+                            null
+                        }
+                      </p>
+                      <Card.Text>
+                        <p>{post.message}</p>
+                        <p className="my-0"><Link to={`user/${post.author.id}`}>
+                          {post.author.first_name} {post.author.last_name}
+                        </Link>
+                          &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
+                      </Card.Text>
+                    </div>
+                    <Dropdown className="ms-auto">
+                      <Dropdown.Toggle as={CustomToggle} />
+                      <Dropdown.Menu>
+                        <Dropdown.Item>Edit</Dropdown.Item>
+                        <Dropdown.Item onClick={() => deletePost(post.id)}>Delete</Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </div>
+                </Card.Body>
+                {
+                  <Card.Footer className="d-flex bg-white justify-content-center">
+                    <Button
+                      variant="danger"
+                      onClick={() => showPostDetailModal(post)}
+                    ><TfiCommentAlt /> Comments</Button>
+                  </Card.Footer>
+                }
+              </Card>
+            </>)
           }
         </div>
       </div>
+      {showPostModal && <PostDetailModal post={postDetail} show={showPostModal} onHide={hidePostDetailModal} /> }
     </div>;
 };
-
-const CustomToggle = React.forwardRef(({ onClick }, ref) =>
-  <BsThreeDots
-    className="m-2"
-    href="a"
-    ref={ref}
-    onClick={(e) => {
-      e.preventDefault();
-      onClick(e);
-    }}
-  />);

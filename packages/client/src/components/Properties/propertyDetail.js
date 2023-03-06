@@ -119,6 +119,9 @@ export const PropertyDetails = () => {
                 <span className="fw-bold">Rooms:</span> {property?.bed} bed, {property?.bath} bath
               </p>
               <p className="mb-1">
+                <span className="fw-bold">Type:</span> {property?.propType}
+              </p>
+              <p className="mb-1">
                 <span className="fw-bold">Landlord:</span> &nbsp;
                 <Link to={`/user/${property.landlord_id}/detail`}>
                   {`${property.first_name} ${property.last_name}`}
@@ -202,7 +205,7 @@ export const PropertyDetails = () => {
                     <Card>
                       <div className="text-center">
                         <FaWheelchair />
-                        <p className="my-0">Wheelchair accessible</p>
+                        <p className="my-0">Disabled-friendly</p>
                       </div>
                     </Card>
                   </div> : null

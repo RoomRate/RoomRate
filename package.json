@@ -40,6 +40,7 @@
     "bootstrap": "^5.2.2",
     "cross-env": "^7.0.3",
     "javascript-time-ago": "^2.5.9",
+    "lodash": "^4.17.21",
     "multer": "^1.4.5-lts.1",
     "npm-check-updates": "^16.7.10",
     "react-bootstrap": "^2.7.0",

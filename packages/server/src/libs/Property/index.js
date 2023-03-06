@@ -106,3 +106,13 @@ exports.uploadImages = async ({ images, propertyId }) => {
     }).into(`property_images`);
   }));
 };
+
+exports.searchProperties = async ({ input }) => {
+  const properties = await knex.raw(`
+    SELECT *
+    FROM properties
+    WHERE LOWER(properties.street_1) || ', Unit ' || LOWER(properties.street_2) LIKE ?
+  `, [ `%${ input }%` ]);
+
+  return properties.rows;
+};

@@ -99,4 +99,18 @@ router.post(`/new`, VerifyToken, upload.array(`pictures`, 10), async (req, res, 
   }
 });
 
+router.get(`/search`, async (req, res, next) => {
+  try {
+    const properties = await PropertyService.searchProperties({ input: req.query.input });
+
+    ResponseHandler(
+      res,
+      `Got property list`,
+      properties,
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
