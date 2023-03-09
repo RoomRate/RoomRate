@@ -37,7 +37,6 @@ export const PropertyForm = () => {
   function deleteFile(e) {
     const s = pic.filter((item, index) => index !== e);
     setPic(s);
-    console.log(s);
   }
 
   const bedrooms = [

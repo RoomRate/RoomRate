@@ -59,4 +59,59 @@ router.put(`/post/:id`, async (req, res, next) => {
   }
 });
 
+router.get(`/post/comment/:id`, async (req, res, next) => {
+  try {
+    const comments = await RoommateService.getComments(req.params.id);
+
+    ResponseHandler(
+      res,
+      `Got comments`,
+      { comments },
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post(`/post/comment/new`, async (req, res, next) => {
+  try {
+    await RoommateService.postComment(req.body.comment);
+
+    ResponseHandler(
+      res,
+      `Created comment`,
+      {},
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete(`/post/comment/:id`, async (req, res, next) => {
+  try {
+    await RoommateService.deleteComment(req.params.id);
+
+    ResponseHandler(
+      res,
+      `Deleted comment`,
+      {},
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.put(`/post/comment/`, async (req, res, next) => {
+  try {
+    await RoommateService.updateComment(req.params.id, req.body.comment);
+
+    ResponseHandler(
+      res,
+      `Updated comment`,
+      {},
+    );
+  } catch (err) {
+    next(err);
+  }
+});
 module.exports = router;

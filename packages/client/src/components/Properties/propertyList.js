@@ -129,51 +129,48 @@ export const PropertyList = () => {
           </div>
           <div id="propertyList" style={{ overflowY: `scroll`, height: `88.75vh`, width: `100%` }}>
             {
-              properties.map(property => {
-                console.log(Number(property.peopleInterested) > 0);
-
-                return <Link
-                  to={`/property/${property.id}/detail`}
-                  style={{ color: `black`, textDecoration: `none` }}>
-                  <Card key={property.id} className="propertyListing mb-3">
-                    <Card.Header className="text-start">
-                      <h2 className="my-0">{property.street_1}</h2>
-                      {property.street_2 ? <h3 className="my-0 fw-light">Unit {property.street_2}</h3> : null}
-                    </Card.Header>
-                    <Card.Body>
-                      <div className="d-flex">
-                        <div
-                          className="w-50"
-                          style={{ position: `relative` }}
-                        >
-                          <Image
-                            url={PROPERTY_IMAGE}
-                            alt="propertyimg"
-                            className="w-100" />
-                          {property.peopleInterested !== `0` &&
-                            <Badge
-                              bg="danger"
-                              className="text-start"
-                              style={{ position: `absolute`, top: `10px`, left: `10px`, zIndex: 1 }}
-                            >
-                              {/* eslint-disable-next-line max-len */}
-                              {property.peopleInterested} {property.peopleInterested === `1` ? `person` : `people`} interested
-                            </Badge>}
-                        </div>
-                        <div className="w-50 text-start ms-2">
-                          <h3 className="my-0">{property.rate}</h3 >
-                          <h3 className="my-0">{property.bed} Bed, {property.bath} Bath</h3 >
-                          <br />
-                          <p>
-                            {
-                              formatPolicies(property)
-                            }
-                          </p>
-                        </div>
+              properties.map(property => <Link
+                to={`/property/${property.id}/detail`}
+                style={{ color: `black`, textDecoration: `none` }}>
+                <Card key={property.id} className="propertyListing mb-3">
+                  <Card.Header className="text-start">
+                    <h2 className="my-0">{property.street_1}</h2>
+                    {property.street_2 ? <h3 className="my-0 fw-light">Unit {property.street_2}</h3> : null}
+                  </Card.Header>
+                  <Card.Body>
+                    <div className="d-flex">
+                      <div
+                        className="w-50"
+                        style={{ position: `relative` }}
+                      >
+                        <Image
+                          url={PROPERTY_IMAGE}
+                          alt="propertyimg"
+                          className="w-100" />
+                        {property.peopleInterested !== `0` &&
+                          <Badge
+                            bg="danger"
+                            className="text-start"
+                            style={{ position: `absolute`, top: `10px`, left: `10px`, zIndex: 1 }}
+                          >
+                            {/* eslint-disable-next-line max-len */}
+                            {property.peopleInterested} {property.peopleInterested === `1` ? `person` : `people`} interested
+                          </Badge>}
                       </div>
-                    </Card.Body>
-                  </Card>
-                </Link>; })
+                      <div className="w-50 text-start ms-2">
+                        <h3 className="my-0">{property.rate}</h3 >
+                        <h3 className="my-0">{property.bed} Bed, {property.bath} Bath</h3 >
+                        <br />
+                        <p>
+                          {
+                            formatPolicies(property)
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Link>)
             }
           </div>
         </div>

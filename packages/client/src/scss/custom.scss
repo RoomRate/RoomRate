@@ -47,3 +47,15 @@ nav {
     }
   }
 }
+
+.btn {
+  @extend .btn;
+}
+
+.btn-stealth {
+  background-color: #FFFFFF;
+  border: none;
+  text-transform: none;
+  color: #777777;
+  background-color: transparent;
+}

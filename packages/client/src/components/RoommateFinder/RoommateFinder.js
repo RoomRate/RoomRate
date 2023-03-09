@@ -14,6 +14,7 @@ import DEFAULT_PFP from '../../assets/images/DefaultPFP.png';
 import '../../scss/roommate_finder.scss';
 import { CustomToggle } from "../../shared/A-UI";
 import { PostDetailModal } from "./PostDetailModal";
+import { useAuth } from '../../shared/contexts/AuthContext';
 
 export const RoommateFinder = ({ property }) => {
   const [ isLoading, setLoading ] = useState(true);
@@ -22,6 +23,7 @@ export const RoommateFinder = ({ property }) => {
   const { register, handleSubmit, reset } = useForm();
   const [ showPostModal, setShowPostModal ] = useState(false);
   const [ postDetail, setPostDetail ] = useState(null);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +45,7 @@ export const RoommateFinder = ({ property }) => {
 
   const createPost = async (post) => {
     post.property = newPostProperty;
+    post.author = currentUser.id;
     await RoommateService.createPost(post);
     setPosts(await RoommateService.getPosts());
     reset();
@@ -187,21 +190,26 @@ export const RoommateFinder = ({ property }) => {
                           &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
                       </Card.Text>
                     </div>
-                    <Dropdown className="ms-auto">
-                      <Dropdown.Toggle as={CustomToggle} />
-                      <Dropdown.Menu>
-                        <Dropdown.Item>Edit</Dropdown.Item>
-                        <Dropdown.Item onClick={() => deletePost(post.id)}>Delete</Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
+                    {
+                      currentUser?.id === post.author.id &&
+                        <Dropdown className="ms-auto">
+                          <Dropdown.Toggle as={CustomToggle} />
+                          <Dropdown.Menu>
+                            <Dropdown.Item>Edit</Dropdown.Item>
+                            <Dropdown.Item onClick={() => deletePost(post.id)}>Delete</Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                    }
                   </div>
                 </Card.Body>
                 {
                   <Card.Footer className="d-flex bg-white justify-content-center">
-                    <Button
-                      variant="danger"
+                    <button
+                      className="btn btn-stealth"
                       onClick={() => showPostDetailModal(post)}
-                    ><TfiCommentAlt /> Comments</Button>
+                    ><TfiCommentAlt /> {post.comments.length > 0 ? post.comments.length === 1 ?
+                        `${post.comments.length} Reply` : `${post.comments.length} Replies` :
+                        `No Replies`}</button>
                   </Card.Footer>
                 }
               </Card>

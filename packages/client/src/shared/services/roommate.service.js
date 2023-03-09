@@ -68,4 +68,32 @@ export class RoommateService {
     }
   }
 
+  static async getPostComments(id) {
+    try {
+      console.log(id);
+      const response = await Axios({
+        method: `GET`,
+        url: `/roommate/post/comment/${id}`,
+        params: { post_id: id },
+      });
+
+      return response.data.data.comments;
+    } catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
+
+  static async addComment(comment) {
+    try {
+      await Axios({
+        method: `POST`,
+        url: `/roommate/post/comment/new`,
+        data: { comment },
+      });
+
+      return;
+    } catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
 }

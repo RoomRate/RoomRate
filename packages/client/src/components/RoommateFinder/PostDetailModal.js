@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Card, CloseButton, Dropdown, Modal } from "react-bootstrap";
 import { RoommateService } from "../../shared/services";
 import { Image } from 'react-extras';
@@ -8,17 +8,23 @@ import DEFAULT_PFP from '../../assets/images/DefaultPFP.png';
 import '../../scss/roommate_finder.scss';
 import { CustomToggle } from "../../shared/A-UI";
 import { useForm } from "react-hook-form";
+import { useAuth } from '../../shared/contexts/AuthContext';
 
 export const PostDetailModal = ({ post, show, onHide }) => {
   const { register, handleSubmit, reset } = useForm();
+  const [ comments, setComments ] = useState(post.comments);
+  const { currentUser } = useAuth();
 
   const deleteComment = async (id) => {
     await RoommateService.deleteComment(id);
   };
 
   const addComment = async (comment) => {
+    comment.author = currentUser.id;
+    comment.post = post.id;
     await RoommateService.addComment(comment);
     reset();
+    setComments(await RoommateService.getPostComments(post.id));
   };
 
   return <Modal show={show} onHide={onHide} size="xl">
@@ -57,7 +63,7 @@ export const PostDetailModal = ({ post, show, onHide }) => {
               <p className="my-0"><Link to={`user/${post.author.id}`}>
                 {post.author.first_name} {post.author.last_name}
               </Link>
-                          &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
+                &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
             </Card.Text>
           </div>
         </div>
@@ -72,17 +78,17 @@ export const PostDetailModal = ({ post, show, onHide }) => {
               alt="user profile avatar"
               width={50} />
           </div>
-          <form id="newPost" onSubmit={handleSubmit(addComment)} className="w-100 mx-2">
+          <form id="newReply" onSubmit={handleSubmit(addComment)} className="w-100 mx-2">
             <textarea
               className="w-100"
               placeholder="Create post"
-              {...register(`message`)}
+              {...register(`reply`, { required: true })}
             />
           </form>
           <div className="d-flex align-items-center">
             <Button
               className="btn-primary align-self-center"
-              form="newPost"
+              form="newReply"
               type="submit"
               variant="danger"
             >
@@ -92,9 +98,8 @@ export const PostDetailModal = ({ post, show, onHide }) => {
         </div>
         <div className="d-flex reply-container" />
         {
-
-          post.comments.length > 0 ?
-            post.comments.map(c => <div className="d-flex">
+          comments.length > 0 ?
+            comments.map(c => <div className="d-flex">
               <div className="mr-4">
                 <Image
                   url={DEFAULT_PFP}
@@ -103,18 +108,18 @@ export const PostDetailModal = ({ post, show, onHide }) => {
                   alt="user profile avatar"
                   width={40} />
               </div>
-              <div className="w-100 mx-2 reply">
+              <div className="w-auto mb-2 mx-2 reply">
                 <p className="my-0 fw-bold">
                   <Link to={`user/${c.user_id}`}>
                     {c.author.first_name} {c.author.last_name}
                   </Link>
-      &nbsp;posted <ReactTimeAgo date={c.posted_on} />
+                  &nbsp;posted <ReactTimeAgo date={c.posted_on} />
                 </p>
                 <Card.Text>
                   <p>{c.message}</p>
                 </Card.Text>
               </div>
-              <Dropdown className="ms-auto reply-option">
+              <Dropdown className="reply-option">
                 <Dropdown.Toggle as={CustomToggle} />
                 <Dropdown.Menu>
                   <Dropdown.Item>Edit</Dropdown.Item>

@@ -76,8 +76,6 @@ export const PropertyDetails = () => {
   const showReviewModal = () => setReviewModal(true);
   const hideReviewModal = () => setReviewModal(false);
 
-  console.log(property);
-
   return (
     isLoading ?
       <div className="d-flex justify-content-center" style={{ height: `75vh` }}>
