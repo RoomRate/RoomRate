@@ -91,37 +91,37 @@ export const PropertyList = () => {
           <div className="w-100">
             <ButtonGroup>
               <Dropdown>
-                <Dropdown.Toggle className="mx-1 my-1" variant="secondary" id="dropdown-basic">
+                <Dropdown.Toggle className="rounded-0 btn-lg" variant="secondary" id="dropdown-basic">
                   Price Range
                 </Dropdown.Toggle>
               </Dropdown>
               <Dropdown>
-                <Dropdown.Toggle className="mx-1 my-1" variant="secondary" id="dropdown-basic">
+                <Dropdown.Toggle className="rounded-0 btn-lg" variant="secondary" id="dropdown-basic">
                   Distance
                 </Dropdown.Toggle>
               </Dropdown>
               <Dropdown>
-                <Dropdown.Toggle className="mx-1 my-1" variant="secondary" id="dropdown-basic">
+                <Dropdown.Toggle className="rounded-0 btn-lg" variant="secondary" id="dropdown-basic">
                   Bedrooms
                 </Dropdown.Toggle>
               </Dropdown>
               <Dropdown>
-                <Dropdown.Toggle className="mx-1 my-1" variant="secondary" id="dropdown-basic">
+                <Dropdown.Toggle className="rounded-0 btn-lg" variant="secondary" id="dropdown-basic">
                   Bathrooms
                 </Dropdown.Toggle>
               </Dropdown>
               <Dropdown>
-                <Dropdown.Toggle className="mx-1 my-1" variant="secondary" id="dropdown-basic">
+                <Dropdown.Toggle className="rounded-0 btn-lg" variant="secondary" id="dropdown-basic">
                   Pets Allowed
                 </Dropdown.Toggle>
               </Dropdown>
               <Dropdown>
-                <Dropdown.Toggle className="mx-1 my-1" variant="secondary" id="dropdown-basic">
+                <Dropdown.Toggle className="rounded-0 btn-lg" variant="secondary" id="dropdown-basic">
                   Type
                 </Dropdown.Toggle>
               </Dropdown>
               <Dropdown>
-                <Dropdown.Toggle className="mx-1 my-1" variant="secondary" id="dropdown-basic">
+                <Dropdown.Toggle className="rounded-0 btn-lg" variant="secondary" id="dropdown-basic">
                   Sort By
                 </Dropdown.Toggle>
               </Dropdown>

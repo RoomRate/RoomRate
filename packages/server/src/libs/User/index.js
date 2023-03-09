@@ -27,7 +27,7 @@ exports.addUserFromFirebase = async ({ uid, email, firstName, lastName }) => {
 
 exports.getUserFromFirebaseUid = async ({ uid }) => {
   const user = await knex.raw(`
-      SELECT id, first_name, last_name, email, username
+      SELECT id, first_name, last_name, email, username, bio, seeking
       FROM users
       WHERE uid = ?
       LIMIT 1;
@@ -36,23 +36,14 @@ exports.getUserFromFirebaseUid = async ({ uid }) => {
   return user.rows[0];
 };
 
-exports.updateUser = async ({ data }) => {
-  console.log(`libs:`, data);
+exports.updateUser = async (data) => {
+  const { uid, first_name, last_name } = data;
   await knex(`users`)
-    .where({ id: data.uid })
+    .where({ id: uid })
     .update({
-      first_name: data.first_name,
-      last_name: data.last_name,
+      first_name,
+      last_name,
+      seeking: data.seeking.value,
+      bio: data.bio,
     });
 };
-
-/*
-exports.updateUser = async (data, uid) => {
-  const updatedUser = await knex.update(`
-    UPDATE users
-    SET first_name = ?, last_name = ?
-    WHERE id = ?;`, [ data.first_name, data.last_name, uid ]);
-
-  return updatedUser.rows[0];
-};
-*/

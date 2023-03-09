@@ -5,9 +5,8 @@ import Button from 'react-bootstrap/Button';
 import { Col, Row, Card } from "react-bootstrap";
 import { ScrollMenu } from 'react-horizontal-scrolling-menu';
 // import EdiText from 'react-editext';
-import EditProfileModal from './EditProfileModal';
 import { useAuth } from '../../shared/contexts/AuthContext';
-import { LoadingIcon } from '../../shared/A-UI';
+import { LoadingIconProfile } from '../../shared/A-UI/LoadingIconProfile';
 import { PropertyService } from "../../shared/services";
 import { Link } from 'react-router-dom';
 import PROPERTY_IMAGE from "../../assets/images/placeholderproperty.jpg";
@@ -17,16 +16,15 @@ import Select from 'react-select';
 import { UserService } from '../../shared/services';
 
 export const ProfileModal = ({ onClose }) => {
-  const { control } = useForm();
-  const [ showEditModal, setShowEditModal ] = useState(false);
+  const { control, handleSubmit, register } = useForm();
   const { currentUser } = useAuth();
   const [ properties, setProperties ] = useState([]);
   const [ isLoading, setLoading ] = useState(true);
   const [ isEditing, setIsEditing ] = useState(false);
-  const [ first_name, setFirstName ] = useState(currentUser.first_name);
-  const [ last_name, setLastName ] = useState(currentUser.last_name);
-  const [ setSeeking ] = useState(currentUser.seeking);
-  const [ setBio ] = useState(currentUser.bio);
+  const [ first_name ] = useState(currentUser.first_name);
+  const [ last_name ] = useState(currentUser.last_name);
+  const [ seeking ] = useState(currentUser.seeking);
+  const [ bio ] = useState(currentUser.bio);
 
   const seekingOptions = [
     { value: `Yes`, label: `Yes` },
@@ -53,34 +51,22 @@ export const ProfileModal = ({ onClose }) => {
   }, []);
 
   const handleOpenEdit = () => {
-    // setShowEditModal(true);
     setIsEditing(true);
   };
 
-  const handleSave = (event) => {
+  const handleSave = (data) => {
     setIsEditing(false);
-    event.preventDefault();
     const formData = new FormData();
-    formData.append(`id`, currentUser.id);
-    formData.append(`first_name`, first_name);
-    formData.append(`last_name`, last_name);
-    // const object = {};
-    // formData.forEach((value, key) => object[key] = value);
-    // const json = JSON.stringify(object);
-    // formData.append(`seeking`, seeking.value);
-    // formData.append(`bio`, bio);
-    console.log(`clicked`, formData);
-    // console.log(`test`, formData.getAll(`data`));
-    UserService.updateUser(formData);
-  };
-
-  const handleCloseEdit = () => {
-    setShowEditModal(false);
+    formData.append(`userData`, JSON.stringify({
+      ...data,
+      uid: currentUser.id,
+    }));
+    UserService.updateUser(JSON.parse(formData.get(`userData`)));
   };
 
   return (
     isLoading ?
-      <LoadingIcon style={{ show: `none` }} /> :
+      <LoadingIconProfile /> :
       <>
         <Modal
           className="modal"
@@ -111,12 +97,12 @@ export const ProfileModal = ({ onClose }) => {
                           <h2 id="fullName">{currentUser.first_name} {currentUser.last_name}</h2>
                         </div>
                         <div id="seeking" style={{ textAlign: `center` }}>
-                          <p>Seeking Roommate</p>
+                          <h5>Seeking Roommate: {currentUser.seeking}</h5>
                         </div>
                       </Col>
                       <Col>
-                        <div id="bio" style={{ border: `1px solid black`, height: `100% ` }}>
-                          <p>Bio</p>
+                        <div id="bio" style={{ marginLeft: `50px`, height: `100% ` }}>
+                          <h5>{currentUser.bio}</h5>
                         </div>
                       </Col>
                     </Row>
@@ -124,13 +110,9 @@ export const ProfileModal = ({ onClose }) => {
                   <br />
                   <div style={{ textAlign: `right` }}>
                     <Button variant="primary">
-                      Message
+                      Logout
                     </Button>
                     &nbsp;<Button variant="secondary" onClick={handleOpenEdit}>Edit</Button>
-                    {showEditModal &&
-                      <EditProfileModal onClose={handleCloseEdit}>
-                        <h1>edit</h1>
-                      </EditProfileModal>}
                   </div>
                 </Modal.Body>
                 <Modal.Footer>
@@ -171,62 +153,70 @@ export const ProfileModal = ({ onClose }) => {
               </div>}
             {currentUser && isEditing &&
               <Modal.Body>
-                <div className="container">
-                  <Row>
-                    <Col xs={4}>
-                      <div className="container" id="profilePic">
-                        <img src={require(`../../assets/images/blank-profile-picture.webp`)}
-                          className="rounded-circle" style={{ width: `200px`, height: `200px`, textAlign: `center` }}
-                          alt="Avatar" />
-                        <input type="file" accept="image/*"
-                          style={{ ptextAlign: `left` }}
-                        />
-                      </div>
-                      <br />
-                      <div>
-                        <label htmlFor="first_name">First Name:</label>
-                        <input
-                          className="form-control" type="text"
-                          id="firstName" name="firstName" value={first_name}
-                          onChange={(event) => setFirstName(event.target.value)}
-                        />
-                        <label htmlFor="last_name">Last Name:</label>
-                        <input
-                          className="form-control" type="text"
-                          id="lastName" name="lastName" value={last_name}
-                          onChange={(event) => setLastName(event.target.value)}
-                        />
-                      </div>
-                      <div id="seeking">
-                        <label htmlFor="seeking">Are you seeking roommates?</label>
-                        <Controller
-                          name="seeking"
-                          control={control}
-                          render={({ field }) => <Select
-                            {...field}
-                            classNamePrefix="react-select"
-                            options={seekingOptions}
-                            onChange={(setSeeking)}
-                          />}
-                        />
-                      </div>
-                    </Col>
-                    <Col>
-                      <div id="bio" style={{ height: `100% ` }}>
-                        <label htmlFor="bio">Bio:</label>
-                        <textarea
-                          className="form-control" type="text" rows={16}
-                          onChange={(event) => setBio(event.target.value)}
-                        />
-                      </div>
-                    </Col>
-                  </Row>
-                </div>
-                <div style={{ textAlign: `right` }}>
-                  <br /><Button variant="primary" onClick={handleSave}>
-                    Save
-                  </Button>
-                </div>
+                <form onSubmit={handleSubmit(handleSave)}>
+                  <div className="container">
+
+                    <Row>
+                      <Col xs={4}>
+                        <div className="container" id="profilePic">
+                          <img src={require(`../../assets/images/blank-profile-picture.webp`)}
+                            className="rounded-circle" style={{ width: `200px`, height: `200px`, textAlign: `center` }}
+                            alt="Avatar" />
+                          <input type="file" accept="image/*"
+                            style={{ textAlign: `left` }}
+                          />
+                        </div>
+                        <br />
+                        <div>
+                          <label htmlFor="first_name">First Name:</label>
+                          <input
+                            className="form-control" type="text"
+                            id="firstName" name="firstName" defaultValue={first_name}
+                            {...register(`first_name`)}
+                          />
+                          <label htmlFor="last_name">Last Name:</label>
+                          <input
+                            className="form-control" type="text"
+                            id="lastName" name="lastName" defaultValue={last_name}
+                            {...register(`last_name`)}
+                          />
+                        </div>
+                        <div id="seeking">
+                          <label htmlFor="seeking">Are you seeking roommates?</label>
+                          <Controller
+                            name="seeking"
+                            control={control}
+                            render={({ field }) => <Select
+                              {...field}
+                              classNamePrefix="react-select"
+                              options={seekingOptions}
+                              value={seeking.value}
+                            />}
+                            rules={{
+                              required: `Please Select`,
+                            }}
+                          />
+                        </div>
+                      </Col>
+                      <Col>
+                        <div id="bio" style={{ height: `100% ` }}>
+                          <label htmlFor="bio">Bio:</label>
+                          <textarea
+                            className="form-control" type="text" rows={16}
+                            defaultValue={bio}
+                            {...register(`bio`)}
+                          />
+                        </div>
+                      </Col>
+                    </Row>
+                  </div>
+                  <div style={{ textAlign: `right` }}>
+                    <br /><Button variant="primary" type="submit">
+                      Save
+                    </Button>
+
+                  </div>
+                </form>
               </Modal.Body>}
           </div>
         </Modal >

@@ -9,8 +9,8 @@
   "scripts": {
     "start": "node --optimize_for_size --max_old_space_size=460 packages/server/src/index.js",
     "heroku-postbuild": "mkdir config && cp packages/server/config/default.json config/default.json && cd packages/client && npm install && npm run build:heroku",
-    "check-updates": "npm run check-updates --workspaces -if-present", 
-    "check-updates:fix": "npm run check-updates:fix --workspaces -if-present" 
+    "check-updates": "npm run check-updates --workspaces -if-present",
+    "check-updates:fix": "npm run check-updates:fix --workspaces -if-present"
   },
   "contributors": [
     {
@@ -50,6 +50,7 @@
     "react-leaflet": "^4.1.0",
     "react-time-ago": "^7.2.1",
     "sass": "^1.55.0",
+    "swiper": "^9.1.0",
     "uuid": "^9.0.0",
     "yup": "^0.32.11"
   },

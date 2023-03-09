@@ -5,13 +5,15 @@ import logo from '../../../assets/images/RoomRateLogoInvert.png';
 import user from '../../../assets/images/DefaultPFP.png';
 import '../../../scss/custom.scss';
 import { ProfileModal } from '../../Users/ProfileModal.js';
+import { useAuth } from '../../../shared/contexts/AuthContext';
 
 export const Navigation = () => {
   const [ showModal, setShowModal ] = useState(false);
+  const { currentUser } = useAuth();
 
-  const handleOpenModal = () => {
+  function handleOpenModal() {
     setShowModal(true);
-  };
+  }
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -35,7 +37,12 @@ export const Navigation = () => {
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>
-      <Nav.Link onClick={handleOpenModal} className="links"><Image url={user} alt="Profile" height="30" /></Nav.Link>
+      {currentUser ?
+        <Nav.Link onClick={handleOpenModal}>
+          <Image url={user} alt="Profile" height="30" />
+        </Nav.Link> :
+        <Nav.Link className="links" href="/login" style={{ color: `white`, fontWeight: `bold` }}>
+          Login/Signup</Nav.Link>}
       {showModal &&
         <ProfileModal onClose={handleCloseModal}>
           <h1>Modal Content</h1>

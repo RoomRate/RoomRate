@@ -41,9 +41,11 @@ router.get(`/uid/:uid`, async (req, res, next) => {
 
 router.put(`/update`, VerifyToken, async (req, res, next) => {
   try {
-    const { data } = req.body;
-    console.log(`routes:`, req.body);
-    const user = await UserService.updateUser({ data });
+    const userData = req.body;
+    if (!userData) {
+      throw new Error(`Missing user data`);
+    }
+    const user = await UserService.updateUser(userData);
 
     return res.status(200).json(user);
   } catch (err) {
