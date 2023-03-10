@@ -16,7 +16,7 @@ import Select from 'react-select';
 import { UserService } from '../../shared/services';
 
 export const ProfileModal = ({ onClose }) => {
-  const { control, handleSubmit, register } = useForm();
+  const { control, handleSubmit, register, reset } = useForm();
   const { currentUser } = useAuth();
   const [ properties, setProperties ] = useState([]);
   const [ isLoading, setLoading ] = useState(true);
@@ -25,6 +25,12 @@ export const ProfileModal = ({ onClose }) => {
   const [ last_name ] = useState(currentUser.last_name);
   const [ seeking ] = useState(currentUser.seeking);
   const [ bio ] = useState(currentUser.bio);
+  const [ pic, setPic ] = useState([]);
+
+  function uploadSingleFile(e) {
+    const files = [ ...e.target.files ];
+    setPic(files);
+  }
 
   const seekingOptions = [
     { value: `Yes`, label: `Yes` },
@@ -55,13 +61,19 @@ export const ProfileModal = ({ onClose }) => {
   };
 
   const handleSave = (data) => {
+    data.seeking = data.seeking.value;
     setIsEditing(false);
     const formData = new FormData();
+
+    for (const file of pic) {
+      formData.append(`pictures`, file);
+    }
     formData.append(`userData`, JSON.stringify({
       ...data,
       uid: currentUser.id,
     }));
-    UserService.updateUser(JSON.parse(formData.get(`userData`)));
+    UserService.updateUser(formData);
+    reset();
   };
 
   return (
@@ -89,7 +101,7 @@ export const ProfileModal = ({ onClose }) => {
                       <Col xs={4}>
                         <div id="profilePic" style={{ textAlign: `center` }}>
                           <img src={require(`../../assets/images/blank-profile-picture.webp`)}
-                            className="rounded-circle" style={{ width: `200px`, height: `200px` }}
+                            className="rounded-circle" style={{ width: `150px`, height: `150px` }}
                             alt="Avatar" />
                         </div>
                         <br />
@@ -160,10 +172,13 @@ export const ProfileModal = ({ onClose }) => {
                       <Col xs={4}>
                         <div className="container" id="profilePic">
                           <img src={require(`../../assets/images/blank-profile-picture.webp`)}
-                            className="rounded-circle" style={{ width: `200px`, height: `200px`, textAlign: `center` }}
-                            alt="Avatar" />
-                          <input type="file" accept="image/*"
-                            style={{ textAlign: `left` }}
+                            className="rounded-circle" style={{ width: `150px`, height: `150px`, textAlign: `center` }}
+                            alt="Avatar" /><br /><br />
+                          <input
+                            type="file"
+                            onChange={uploadSingleFile}
+                            single="single"
+                            accept="image/*"
                           />
                         </div>
                         <br />

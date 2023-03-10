@@ -1,5 +1,7 @@
 const knex = require(`../Database`);
 const { BadRequestError } = require(`restify-errors`);
+const { s3Upload } = require(`../../utils/S3`);
+const { v4: uuidv4 } = require(`uuid`);
 
 exports.getUserById = async ({ id }) => {
   if (!id) {
@@ -36,14 +38,29 @@ exports.getUserFromFirebaseUid = async ({ uid }) => {
   return user.rows[0];
 };
 
-exports.updateUser = async (data) => {
-  const { uid, first_name, last_name } = data;
-  await knex(`users`)
+exports.uploadImages = async ({ images, user }) => {
+  console.log(user);
+  await Promise.all(images.map(async image => {
+    image.key = uuidv4();
+    await s3Upload({ file: image.buffer, imageKey: image.key, mimetype: image.mimetype });
+    await knex(`users`)
+      .where({ id: user.id })
+      .update({
+        image_key: image.key,
+      });
+  }));
+};
+
+exports.updateUser = async ({ data }) => {
+  const { uid, first_name, last_name, seeking, bio } = data;
+  const userId = await knex(`users`)
     .where({ id: uid })
     .update({
       first_name,
       last_name,
-      seeking: data.seeking.value,
-      bio: data.bio,
-    });
+      seeking: seeking.value,
+      bio,
+    }).returning(`id`);
+
+  return userId;
 };

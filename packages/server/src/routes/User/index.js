@@ -2,6 +2,10 @@ const express = require(`express`);
 const router = express.Router();
 const UserService = require(`../../libs/User`);
 const { VerifyToken } = require(`../../utils/Middleware/VerifyToken`);
+const multer = require(`multer`);
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const { ResponseHandler } = require(`../../utils/ResponseHandler`);
 
 router.get(`/:id`, VerifyToken, async (req, res, next) => {
   try {
@@ -39,15 +43,20 @@ router.get(`/uid/:uid`, async (req, res, next) => {
   }
 });
 
-router.put(`/update`, VerifyToken, async (req, res, next) => {
+router.put(`/update`, VerifyToken, upload.array(`pictures`, 10), async (req, res, next) => {
   try {
     const userData = req.body;
     if (!userData) {
       throw new Error(`Missing user data`);
     }
-    const user = await UserService.updateUser(userData);
+    const userId = await UserService.updateUser({ data: JSON.parse(userData.userData) });
+    await UserService.uploadImages({ images: req.files, user: userId[0] });
 
-    return res.status(200).json(user);
+    ResponseHandler(
+      res,
+      `User updated successfully`,
+      { id: userId[0] },
+    );
   } catch (err) {
     console.log(err);
     next(err);
