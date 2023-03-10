@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from './shared/contexts/AuthContext';
 import { setupDayjs } from './shared/utils/dayjs';
-import TimeAgo from 'javascript-time-ago';
+import { TimeAgo } from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 TimeAgo.addDefaultLocale(en);
 
