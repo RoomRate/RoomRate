@@ -14,11 +14,14 @@ exports.getChatsForUser = async ({ user_id }) => {
       chats.id AS chat_id,
       chats.title AS chat_title,
       last_message.message AS last_message,
-      last_message.created_by AS last_message_user_id
+      last_message.created_by AS last_message_user_id,
+      last_message.created_at,
+      STRING_AGG(users.first_name || ' ' || users.last_name, ', ') as users
     FROM chats
     JOIN chat_users ON chats.id = chat_users.chat_id
+    JOIN users ON chat_users.user_id = users.id
     LEFT JOIN (
-      SELECT message, created_by, chat_id
+      SELECT message, created_by, chat_id, created_at
       FROM chat_messages cm
       WHERE cm.id = (
         SELECT MAX(id)
@@ -26,7 +29,9 @@ exports.getChatsForUser = async ({ user_id }) => {
         WHERE chat_id = cm.chat_id
       )
     ) AS last_message ON chats.id = last_message.chat_id
-    WHERE chat_users.user_id = ?;
+    WHERE chat_users.user_id = ?
+    GROUP BY chats.id, chats.title, last_message.message, last_message.created_by, last_message.created_at
+    ORDER BY last_message.created_at DESC;
   `, [ user_id ]);
 
   for (const chat of chatInfo) {
@@ -44,11 +49,12 @@ exports.getChatsForUser = async ({ user_id }) => {
 
     chats.push({
       chat_id: chat.chat_id,
-      chat_title: chat.chat_title,
+      chat_title: chat.chat_title || chat.users,
       users: chatUsers.filter(user => user.id !== user_id),
       last_message: {
         user: lastMessageUser,
         message: chat.last_message,
+        created_at: chat.created_at,
       },
       user_id, // the user making the request
     });
@@ -95,7 +101,7 @@ exports.sendMessage = async ({ message, chat_id, user_id }) => {
 
 exports.getChatUsers = async ({ chat_id }) => {
   const { rows: users } = await knex.raw(`
-    SELECT users.first_name, users.last_name
+    SELECT users.id, users.first_name, users.last_name
     FROM users
     JOIN chat_users ON users.id = chat_users.user_id
     WHERE chat_users.chat_id = ?;
@@ -141,8 +147,6 @@ exports.isUserInChat = async ({ chat_id, user_id }) => {
     LIMIT 1;
   `, [ chat_id, user_id ]);
 
-  console.log(!!response.rows.length);
-
   return !!response.rows.length;
 };
 
@@ -176,4 +180,24 @@ exports.editMessage = async ({ message_id, edited_message }) => {
   `, [ edited_message, message_id ]);
 
   return response.rows[0];
+};
+
+exports.getChatInfo = async ({ chat_id }) => {
+  const response = await knex.raw(`
+    SELECT 
+      chats.id, 
+      chats.title
+    FROM chats
+    WHERE chats.id = ?;
+  `, [ chat_id ]);
+
+  return response.rows[0];
+};
+
+exports.renameChat = async ({ chat_id, title }) => {
+  await knex.raw(`
+    UPDATE chats
+    SET title = ?
+    WHERE chat_id = ?;
+  `, [ title, chat_id ]);
 };

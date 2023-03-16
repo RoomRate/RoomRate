@@ -90,27 +90,6 @@ export class ChatService {
     }
   }
 
-  static async getChatById({ chat_id, user_id }) {
-    try {
-      const user = auth.currentUser;
-      const token = user && await user.getIdToken();
-
-      const response = await Axios({
-        method: `GET`,
-        url: `/chat/${chat_id}?user_id=${user_id}`,
-        headers: {
-          'Content-Type': `application/json`,
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      return response.data.data;
-    }
-    catch (err) {
-      throw new Error(`Failed to get chat info`);
-    }
-  }
-
   static async createNewChat({ created_by, title }) {
     try {
       const user = auth.currentUser;
@@ -200,6 +179,52 @@ export class ChatService {
     }
     catch (err) {
       throw new Error(`Failed to edit message`);
+    }
+  }
+
+  static async getChatInfo({ chat_id, user_id }) {
+    try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
+      const response = await Axios({
+        method: `GET`,
+        url: `/chat/${chat_id}/info?user_id=${user_id}`,
+        data: {
+          user_id,
+        },
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      return response.data.data;
+    } catch (err) {
+      throw new Error(`Failed to get chat info`);
+    }
+  }
+
+  static async changeTitle({ chat_id, title }) {
+    try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
+      const response = await Axios({
+        method: `PUT`,
+        url: `/chat/${chat_id}/title`,
+        data: {
+          title,
+        },
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      return response.data.data;
+    } catch (err) {
+      throw new Error(`Failed to rename chat`);
     }
   }
 }
