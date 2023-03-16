@@ -271,6 +271,7 @@ export const PropertyForm = () => {
                   className="form-control"
                   onChange={uploadSingleFile}
                   multiple="multiple"
+                  accept="image/*"
                 />
               </div>
             </Form.Group>

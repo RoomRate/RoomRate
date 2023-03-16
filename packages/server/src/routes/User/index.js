@@ -2,6 +2,10 @@ const express = require(`express`);
 const router = express.Router();
 const UserService = require(`../../libs/User`);
 const { VerifyToken } = require(`../../utils/Middleware/VerifyToken`);
+const multer = require(`multer`);
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const { ResponseHandler } = require(`../../utils/ResponseHandler`);
 
 router.get(`/:id`, VerifyToken, async (req, res, next) => {
   try {
@@ -34,6 +38,37 @@ router.get(`/uid/:uid`, async (req, res, next) => {
     const user = await UserService.getUserFromFirebaseUid({ uid });
 
     return res.status(200).json(user);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get(`/uid/:uid/image`, VerifyToken, async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+
+    const userImage = await UserService.getUserImage({ uid });
+
+    return res.status(200).json(userImage);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.put(`/update`, VerifyToken, upload.array(`pictures`, 10), async (req, res, next) => {
+  try {
+    const userData = req.body;
+    if (!userData) {
+      throw new Error(`Missing user data`);
+    }
+    const userId = await UserService.updateUser({ data: JSON.parse(userData.userData) });
+    await UserService.uploadImages({ images: req.files, user: userId[0] });
+
+    ResponseHandler(
+      res,
+      `User updated successfully`,
+      { id: userId[0] },
+    );
   } catch (err) {
     next(err);
   }

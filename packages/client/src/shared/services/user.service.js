@@ -42,4 +42,46 @@ export class UserService {
       throw new Error(`Failed to fetch user details using firebase uid`);
     }
   }
+
+  static async getUserImage({ uid }) {
+    try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
+      const response = await Axios({
+        method: `GET`,
+        url: `/user/uid/${uid}/image`,
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    }
+    catch (err) {
+      throw new Error(`Failed to fetch user image`);
+    }
+  }
+
+  static async updateUser(data) {
+    const user = auth.currentUser;
+    const token = user && await user.getIdToken();
+    try {
+      const response = await Axios({
+        method: `PUT`,
+        url: `/user/update`,
+        data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ContentType: `multipart/form-data`,
+        },
+      });
+
+      return response.data.data.id;
+    }
+    catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
 }
