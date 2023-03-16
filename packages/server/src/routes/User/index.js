@@ -74,4 +74,16 @@ router.put(`/update`, VerifyToken, upload.array(`pictures`, 10), async (req, res
   }
 });
 
+router.get(`/search`, VerifyToken, async (req, res, next) => {
+  try {
+    const { q } = req.query;
+
+    const users = await UserService.searchUsers({ q });
+
+    return res.status(200).json(users);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

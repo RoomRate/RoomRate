@@ -37,7 +37,6 @@ router.get(`/:chat_id/messages`, VerifyToken, async (req, res, next) => {
       messages,
     );
   } catch (err) {
-    console.log(err);
     next(err);
   }
 });
@@ -185,6 +184,52 @@ router.delete(`/:chat_id/user/:id/remove`, VerifyToken, async (req, res, next) =
       res,
       `Successfully removed user from chat`,
       {},
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get(`/:chat_id/info`, VerifyToken, async (req, res, next) => {
+  try {
+    const { chat_id } = req.params;
+    const { user_id } = req.query;
+
+    if (!await ChatService.isUserInChat({ chat_id, user_id })) {
+      throw new Error(`You have been removed from this chat`);
+    }
+
+    const chat = await ChatService.getChatInfo({ chat_id });
+    const users = await ChatService.getChatUsers({ chat_id });
+    const messages = await ChatService.getMessagesForChat({ chat_id });
+
+    const chatInfo = {
+      chat,
+      users,
+      messages,
+    };
+
+    return ResponseHandler(
+      res,
+      `Successfully got chat info`,
+      chatInfo,
+    );
+  } catch (err) {
+    next(err);
+  }
+
+});
+router.put(`/:chat_id/title`, VerifyToken, async (req, res, next) => {
+  try {
+    const { chat_id } = req.params;
+    const { title } = req.body;
+
+    await ChatService.renameChat({ chat_id, title });
+
+    return ResponseHandler(
+      res,
+      `Successfully renamed chat`,
+      title,
     );
   } catch (err) {
     next(err);

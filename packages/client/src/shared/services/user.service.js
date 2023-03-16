@@ -43,6 +43,27 @@ export class UserService {
     }
   }
 
+  static async searchUsers({ q }) {
+    try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
+      const response = await Axios({
+        method: `GET`,
+        url: `/user/search?=${q}`,
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    }
+    catch (err) {
+      throw new Error(`Failed to search users`);
+    }
+  }
+
   static async getUserImage({ uid }) {
     try {
       const user = auth.currentUser;

@@ -87,3 +87,15 @@
   background: white;
   border-bottom-left-radius: 10px;
 }
+
+.ellipsis-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0, 0, 0, 0;
+  cursor: pointer;
+}
+
+.no-arrow::after {
+  display: none !important; 
+}
