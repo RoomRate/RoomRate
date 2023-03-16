@@ -6,6 +6,10 @@
 $enable-negative-margins: true;
  
 .propertyListing:hover {
+  filter: brightness(75%);
+}
+
+.clicked-property {
   filter: brightness(85%);
 }
 
