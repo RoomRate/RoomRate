@@ -43,6 +43,18 @@ router.get(`/uid/:uid`, async (req, res, next) => {
   }
 });
 
+router.get(`/uid/:uid/image`, VerifyToken, async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+
+    const userImage = await UserService.getUserImage({ uid });
+
+    return res.status(200).json(userImage);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.put(`/update`, VerifyToken, upload.array(`pictures`, 10), async (req, res, next) => {
   try {
     const userData = req.body;
@@ -58,7 +70,6 @@ router.put(`/update`, VerifyToken, upload.array(`pictures`, 10), async (req, res
       { id: userId[0] },
     );
   } catch (err) {
-    console.log(err);
     next(err);
   }
 });

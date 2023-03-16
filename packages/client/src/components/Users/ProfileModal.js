@@ -18,14 +18,13 @@ import { UserService } from '../../shared/services';
 export const ProfileModal = ({ onClose }) => {
   const { control, handleSubmit, register, reset } = useForm();
   const { currentUser } = useAuth();
+  const [ user, setUser ] = useState([]);
   const [ properties, setProperties ] = useState([]);
   const [ isLoading, setLoading ] = useState(true);
   const [ isEditing, setIsEditing ] = useState(false);
-  const [ first_name ] = useState(currentUser.first_name);
-  const [ last_name ] = useState(currentUser.last_name);
-  const [ seeking ] = useState(currentUser.seeking);
-  const [ bio ] = useState(currentUser.bio);
   const [ pic, setPic ] = useState([]);
+  const [ uid ] = useState(currentUser.uid);
+  const [ userImage, setUserImage ] = useState([]);
 
   function uploadSingleFile(e) {
     const files = [ ...e.target.files ];
@@ -42,6 +41,8 @@ export const ProfileModal = ({ onClose }) => {
       try {
         setLoading(true);
         setProperties(await PropertyService.getPropertyList({ all: true }));
+        setUser(await UserService.getUserFromFirebaseUid({ uid }));
+        setUserImage(await UserService.getUserImage({ uid }));
       }
 
       catch (err) {
@@ -54,7 +55,7 @@ export const ProfileModal = ({ onClose }) => {
 
     document.title = `RoomRate - Properties`;
     fetchData();
-  }, []);
+  }, [ uid ]);
 
   const handleOpenEdit = () => {
     setIsEditing(true);
@@ -100,21 +101,24 @@ export const ProfileModal = ({ onClose }) => {
                     <Row>
                       <Col xs={4}>
                         <div id="profilePic" style={{ textAlign: `center` }}>
-                          <img src={require(`../../assets/images/blank-profile-picture.webp`)}
-                            className="rounded-circle" style={{ width: `150px`, height: `150px` }}
-                            alt="Avatar" />
+                          <img
+                            src={userImage ? `data:image/jpeg;base64, ${userImage}` :
+                              `../../assets/images/blank-profile-picture.webp`}
+                            className="rounded-circle"
+                            style={{ width: `225px`, height: `200px`, border: `1px solid black` }}
+                            alt="user_image"
+                          />
                         </div>
-                        <br />
                         <div style={{ textAlign: `center` }}>
-                          <h2 id="fullName">{currentUser.first_name} {currentUser.last_name}</h2>
+                          <h2 id="fullName">{user.first_name} {user.last_name}</h2>
                         </div>
                         <div id="seeking" style={{ textAlign: `center` }}>
-                          <h5>Seeking Roommate: {currentUser.seeking}</h5>
+                          <h5>Seeking Roommate: {user.seeking}</h5>
                         </div>
                       </Col>
                       <Col>
                         <div id="bio" style={{ marginLeft: `50px`, height: `100% ` }}>
-                          <h5>{currentUser.bio}</h5>
+                          <h5>{user.bio}</h5>
                         </div>
                       </Col>
                     </Row>
@@ -171,9 +175,13 @@ export const ProfileModal = ({ onClose }) => {
                     <Row>
                       <Col xs={4}>
                         <div className="container" id="profilePic">
-                          <img src={require(`../../assets/images/blank-profile-picture.webp`)}
-                            className="rounded-circle" style={{ width: `150px`, height: `150px`, textAlign: `center` }}
-                            alt="Avatar" /><br /><br />
+                          <img
+                            src={userImage ? `data:image/jpeg;base64, ${userImage}` :
+                              `../../assets/images/blank-profile-picture.webp`}
+                            className="rounded-circle"
+                            style={{ width: `225px`, height: `200px`, border: `1px solid black` }}
+                            alt="user_image"
+                          /><br /><br />
                           <input
                             type="file"
                             onChange={uploadSingleFile}
@@ -186,13 +194,13 @@ export const ProfileModal = ({ onClose }) => {
                           <label htmlFor="first_name">First Name:</label>
                           <input
                             className="form-control" type="text"
-                            id="firstName" name="firstName" defaultValue={first_name}
+                            id="firstName" name="firstName" defaultValue={user.first_name}
                             {...register(`first_name`)}
                           />
                           <label htmlFor="last_name">Last Name:</label>
                           <input
                             className="form-control" type="text"
-                            id="lastName" name="lastName" defaultValue={last_name}
+                            id="lastName" name="lastName" defaultValue={user.last_name}
                             {...register(`last_name`)}
                           />
                         </div>
@@ -205,7 +213,7 @@ export const ProfileModal = ({ onClose }) => {
                               {...field}
                               classNamePrefix="react-select"
                               options={seekingOptions}
-                              value={seeking.value}
+                              defaultValue={user.seeking}
                             />}
                             rules={{
                               required: `Please Select`,
@@ -217,8 +225,8 @@ export const ProfileModal = ({ onClose }) => {
                         <div id="bio" style={{ height: `100% ` }}>
                           <label htmlFor="bio">Bio:</label>
                           <textarea
-                            className="form-control" type="text" rows={16}
-                            defaultValue={bio}
+                            className="form-control" type="text" rows={18}
+                            defaultValue={user.bio}
                             {...register(`bio`)}
                           />
                         </div>

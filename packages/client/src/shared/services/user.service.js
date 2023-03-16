@@ -43,6 +43,27 @@ export class UserService {
     }
   }
 
+  static async getUserImage({ uid }) {
+    try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
+      const response = await Axios({
+        method: `GET`,
+        url: `/user/uid/${uid}/image`,
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    }
+    catch (err) {
+      throw new Error(`Failed to fetch user image`);
+    }
+  }
+
   static async updateUser(data) {
     const user = auth.currentUser;
     const token = user && await user.getIdToken();
@@ -56,7 +77,6 @@ export class UserService {
           ContentType: `multipart/form-data`,
         },
       });
-      console.log(response);
 
       return response.data.data.id;
     }
