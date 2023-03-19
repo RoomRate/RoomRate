@@ -31,6 +31,23 @@ export class PropertyService {
     }
   }
 
+  static async getPropertyThumbnail({ property_id }) {
+    try {
+      const response = await Axios({
+        method: `GET`,
+        url: `/property/${property_id}/thumbnail`,
+        headers: {
+          'Content-Type': `application/json`,
+        },
+      });
+
+      return response.data;
+    }
+    catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
+
   static async getReviews({ id }) {
     try {
       const response = await Axios({
