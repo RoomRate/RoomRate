@@ -110,7 +110,7 @@ export const PropertyDetails = () => {
                   {property.street_2 ? <h4 className="fw-light">Unit {property.street_2}</h4> : null}
                 </div>
                 <div className="text-end ms-auto">
-                  <h4>{property.rate}</h4>
+                  <h4>${property.rate}</h4>
                 </div>
               </div>
               <p className="mb-1">

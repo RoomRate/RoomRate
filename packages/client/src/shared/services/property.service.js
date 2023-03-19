@@ -2,12 +2,12 @@ import { Axios } from "../utils/http.config.js";
 import { auth } from "../utils/firebase";
 
 export class PropertyService {
-  static async getPropertyList({ all }) {
+  static async getPropertyList(filter) {
     try {
       const response = await Axios({
         method: `GET`,
-        params: { all },
-        url: `/property/list`,
+        url: `/property/list?`,
+        params: { filter },
       });
 
       return response.data.data.properties;

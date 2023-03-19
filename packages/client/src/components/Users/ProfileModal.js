@@ -111,7 +111,7 @@ export const ProfileModal = ({ onClose }) => {
                         <div id="profilePic" style={{ textAlign: `center` }}>
                           <img
                             src={userImage ? `data:image/jpeg;base64, ${userImage}` :
-                              `../../assets/images/blank-profile-picture.webp`}
+                              `../../assets/images/placeholderprofile.jpg`}
                             className="rounded-circle"
                             style={{ width: `225px`, height: `200px`, border: `1px solid black` }}
                             alt="user_image"
