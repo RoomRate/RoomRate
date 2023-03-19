@@ -8,12 +8,13 @@ import { MarkerIcon } from "../../shared/A-UI";
 import { LoadingIcon } from '../../shared/A-UI';
 // import PROPERTY_IMAGE from "../../assets/images/placeholderproperty.jpg";
 import { Link } from 'react-router-dom';
-// import { useParams } from 'react-router-dom';
+import { scroller, Element } from 'react-scroll';
 
 export const PropertyList = () => {
   // const { id } = useParams();
   const [ properties, setProperties ] = useState([]);
   const [ isLoading, setLoading ] = useState(true);
+  const [ clickedProperty, setClickedProperty ] = useState(null);
   const [ thumbnails, setThumbnail ] = useState({});
 
   useEffect(() => {
@@ -45,15 +46,41 @@ export const PropertyList = () => {
     <Marker
       key={p.id}
       icon={MarkerIcon}
-      position={[ p.lat, p.lng ]}>
-      <Popup>
+      position={[ p.lat, p.lng ]}
+      eventHandlers={{
+        click: () => {
+          scrollToPropertyFromMarker({ property_id: p.id });
+          setClickedProperty(p.id);
+        },
+        mouseover: (e) => {
+          e.target.openPopup();
+        },
+        mouseout: (e) => {
+          e.target.closePopup();
+        },
+      }}>
+      <Popup autoPan={false}>
         <div>
-          {p.street_1}<br />
-          {p.street_2 ? <>{p.street_2}<br /></> : ``}
-          {p.city}, {p.state_name} {p.zip}
+          <h4 className="my-0">{p.street_1}</h4>
+          {p.street_2 ? <h5 className="my-0 fw-light">Unit {p.street_2}</h5> : null}
+        </div>
+        <br />
+        <br />
+        <div>
+          <h5 className="my-0">{p.rate}</h5 >
+          <h5 className="my-0">{p.bed} Bed, {p.bath} Bath</h5>
         </div>
       </Popup>
     </Marker>);
+
+  const scrollToPropertyFromMarker = ({ property_id }) => {
+    scroller.scrollTo(`property-${property_id}`, {
+      duration: 300,
+      delay: 100,
+      smooth: true,
+      containerId: `propertyList`,
+    });
+  };
 
   const formatPolicies = (property) => {
     const policyList = [];
@@ -81,7 +108,7 @@ export const PropertyList = () => {
   return (
     isLoading ?
       <LoadingIcon /> :
-      <div className="d-flex" style={{ height: `93.75vh`, overflow: `hidden` }} id="propertyList">
+      <div className="d-flex" style={{ height: `93.75vh`, overflow: `hidden` }}>
         <div style={{ padding: 0, width: `70%` }}>
           <MapContainer
             style={{ height: `93.75vh` }}
@@ -136,12 +163,18 @@ export const PropertyList = () => {
               </Dropdown>
             </ButtonGroup>
           </div>
-          <div id="propertyList" style={{ overflowY: `scroll`, height: `88.75vh`, width: `100%` }}>
+          <Element
+            id="propertyList"
+            name="propertyList"
+            style={{ overflowY: `scroll`, height: `88.75vh`, width: `100%` }}>
             {
               properties.map(property => <Link
                 to={`/property/${property.id}/detail`}
                 style={{ color: `black`, textDecoration: `none` }}>
-                <Card key={property.id} className="propertyListing mb-3">
+                <Card
+                  key={property.id}
+                  id={`property-${property.id}`}
+                  className={`propertyListing mb-3 ${clickedProperty === property.id ? `clicked-property` : ``}`}>
                   <Card.Header className="text-start">
                     <h2 className="my-0">{property.street_1}</h2>
                     {property.street_2 ? <h3 className="my-0 fw-light">Unit {property.street_2}</h3> : null}
@@ -180,7 +213,7 @@ export const PropertyList = () => {
                 </Card>
               </Link>)
             }
-          </div>
+          </Element>
         </div>
       </div>
   );

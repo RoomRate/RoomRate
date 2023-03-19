@@ -2,13 +2,14 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import 'leaflet/dist/leaflet.css';
 
-// html, body {
-//   overflow: hidden;
-// }
 
 $enable-negative-margins: true;
  
 .propertyListing:hover {
+  filter: brightness(75%);
+}
+
+.clicked-property {
   filter: brightness(85%);
 }
 

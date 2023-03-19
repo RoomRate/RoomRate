@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Form, Container, Row, Col } from 'react-bootstrap';
+import { Button, Card, Form, Row, OverlayTrigger, Popover } from 'react-bootstrap';
 import { ChatList } from './ChatList';
 import { useForm } from 'react-hook-form';
 import { ChatService } from '../../shared/services';
 import { useAuth } from '../../shared/contexts/AuthContext';
 import './chat.scss';
+import { LoadingIcon } from '../../shared/A-UI';
+import { FaEllipsisH as EllipsisIcon } from "react-icons/fa";
+import ReactTimeAgo from 'react-time-ago';
 
 export const ChatView = () => {
   document.title = `Roomrate - Chats`;
-  const [ chat, setChat ] = useState();
+  const [ activeChat, setActiveChat ] = useState();
+  const [ loadingChat, setLoadingChat ] = useState(true);
   const { currentUser } = useAuth();
   const { register, reset, handleSubmit } = useForm();
 
@@ -23,27 +27,30 @@ export const ChatView = () => {
       setWss(new WebSocket(HOST));
     }
 
-    if (chat) {
+    if (activeChat) {
       wss.onmessage = data => {
         const message = JSON.parse(data.data.toString());
         if (currentUser.id !== message.created_by) {
-          chat.messages.push(message);
-          setChat({ ...chat });
+          activeChat.messages.push(message);
+          setActiveChat({ ...activeChat });
         }
       };
     }
-  }, [ wss, chat, HOST, currentUser.id ]);
+  }, [ wss, activeChat, HOST, currentUser.id ]);
 
-  const setCurrentChat = (selected) => setChat(selected.chat);
+  const setCurrentChat = (selected) => {
+    setActiveChat(selected);
+    setLoadingChat(false);
+  };
 
   const sendMessage = async ({ message }) => {
     try {
       if (message) {
-        const { id: chat_id } = chat;
+        const { id: chat_id } = activeChat;
 
         const sentMessage = await ChatService.sendMessage({ message, user_id: currentUser.id, chat_id });
 
-        chat.messages.push(sentMessage);
+        activeChat.messages.push(sentMessage);
         reset();
 
         wss.send(JSON.stringify({
@@ -57,66 +64,85 @@ export const ChatView = () => {
     }
   };
 
-  const LEFT_WIDTH = 30;
-
   return (
-    <Container fluid>
-      <Row>
-        <Col style={{ width: `${100 - LEFT_WIDTH}%` }}>
+    <div style={{ height: `86vh`, overflow: `hidden` }}>
+      <Row style={{ padding: 0 }}>
+        <div className="col" style={{ margin: 0 }}>
           <ChatList onChatSelect={setCurrentChat} />
-        </Col>
-        <Col style={{ width: `${LEFT_WIDTH}%` }}>
+        </div>
+        <div className="col" style={{ margin: 0 }}>
           {
-            chat ?
-              <Card style={{ height: `100vh` }}>
-                <Card.Title>
-                  <div>
-                    {
-                      chat.title ?
-                        <p>{chat.title}</p> :
-                        chat.users.map((user, index, array) =>
-                          `${user.first_name} ${user.last_name}${index + 1 !== array.length ? `, ` : ``}`)
-                    }
-                  </div>
-                </Card.Title>
-                <Card.Body>
-                  {
-                    chat.messages?.length ?
-                      chat.messages.map(message =>
-                        <div className={`${currentUser.id === message.created_by ? `mine` : `yours`} messages`}>
-                          <div className="message">
-                            {message.message}
-                          </div>
-                        </div>) :
-                      `There doesn't seem to be anything here`
-                  }
-
-                  <Form onSubmit={handleSubmit(sendMessage)}>
-                    <div id="chatbar" className="input-group mb-3">
-                      <input
-                        {...register(`message`)}
-                        type="text"
-                        id="my-message"
-                        className="form-control"
-                        placeholder="Type a message..." />
-
-                      <div className="input-group-append">
-                        <Button
-                          variant="outline-primary"
-                          onClick={handleSubmit(sendMessage)}
-                          id="send-button"
-                          type="button">
-                          Send
-                        </Button>
-                      </div>
+            loadingChat ?
+              <LoadingIcon /> :
+              activeChat ?
+                <Card style={{ height: `100%`, borderRadius: 0 }}>
+                  <Card.Title>
+                    <div>
+                      {
+                        activeChat.chat.title ?
+                          <p>{activeChat.chat.title}</p> :
+                          activeChat.users.map((user, index, array) =>
+                            `${user.first_name} ${user.last_name}${index + 1 !== array.length ? `, ` : ``}`)
+                      }
                     </div>
-                  </Form>
-                </Card.Body>
-              </Card> :
-              <div />
+                  </Card.Title>
+                  <Card.Body style={{ display: `flex`, flexDirection: `column`, justifyContent: `space-between` }}>
+                    <div>
+                      {
+                        activeChat.messages?.length ?
+                          activeChat.messages.map(message =>
+                            <div className="row" style={{ margin: 0 }}>
+                              <div className={`${currentUser.id === message.created_by ? `mine` : `yours`} messages`}>
+                                <OverlayTrigger
+                                  delay={{ show: 250, hide: 400 }}
+                                  placement="top"
+                                  overlay={
+                                    <Popover>
+                                      <Popover.Body>
+                                        <EllipsisIcon />
+                                      </Popover.Body>
+                                    </Popover>
+                                  }>
+                                  <>
+                                    <div className="message">
+                                      {message.message}
+                                    </div>
+                                    <ReactTimeAgo date={message.created_at} style={{ fontSize: `12px` }} />
+                                  </>
+                                </OverlayTrigger>
+                                {/* <img src={require(`../../assets/images/DefaultPFP.png`)} alt="Profile" /> */}
+                              </div>
+                            </div>) :
+                          `There doesn't seem to be anything here`
+                      }
+                    </div>
+
+                    <Form onSubmit={handleSubmit(sendMessage)}>
+                      <div id="chatbar" className="input-group mb-3">
+                        <input
+                          {...register(`message`)}
+                          type="text"
+                          id="my-message"
+                          className="form-control"
+                          placeholder="Type a message..." />
+
+                        <div className="input-group-append">
+                          <Button
+                            variant="outline-primary"
+                            onClick={handleSubmit(sendMessage)}
+                            id="send-button"
+                            type="button">
+                            Send
+                          </Button>
+                        </div>
+                      </div>
+                    </Form>
+                  </Card.Body>
+                </Card> :
+                <div />
           }
-        </Col>
+        </div>
       </Row>
-    </Container>
+    </div>
   );
 };
