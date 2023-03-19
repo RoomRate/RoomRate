@@ -113,4 +113,15 @@ router.get(`/search`, async (req, res, next) => {
   }
 });
 
+router.get(`/:property_id/thumbnail`, async (req, res, next) => {
+  try {
+    const { property_id } = req.params;
+    const thumbnail = await PropertyService.getPropertyThumbnail({ property_id });
+
+    return res.status(200).json(thumbnail);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

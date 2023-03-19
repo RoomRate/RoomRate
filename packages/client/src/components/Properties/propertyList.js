@@ -4,26 +4,35 @@ import { Card, Dropdown, ButtonGroup, Badge } from 'react-bootstrap';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { PropertyService } from "../../shared/services";
 import { MarkerIcon } from "../../shared/A-UI";
-import { Image } from 'react-extras';
+// import { Image } from 'react-extras';
 import { LoadingIcon } from '../../shared/A-UI';
-import PROPERTY_IMAGE from "../../assets/images/placeholderproperty.jpg";
+// import PROPERTY_IMAGE from "../../assets/images/placeholderproperty.jpg";
 import { Link } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 
 export const PropertyList = () => {
+  // const { id } = useParams();
   const [ properties, setProperties ] = useState([]);
   const [ isLoading, setLoading ] = useState(true);
+  const [ thumbnails, setThumbnail ] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        setProperties(await PropertyService.getPropertyList({ all: true }));
-      }
-
-      catch (err) {
-        throw new Error(err);
-      }
-      finally {
+        const propertyList = await PropertyService.getPropertyList({ all: true });
+        { /* eslint-disable-next-line max-len */ }
+        const thumbnailPromises = propertyList.map(property => PropertyService.getPropertyThumbnail({ property_id: property.id }));
+        const thumbnail = await Promise.all(thumbnailPromises);
+        const thumbnailList = {};
+        propertyList.forEach((property, index) => {
+          thumbnailList[property.id] = thumbnail[index];
+        });
+        setProperties(propertyList);
+        setThumbnail(thumbnailList);
+      } catch (error) {
+        throw new Error(error);
+      } finally {
         setLoading(false);
       }
     };
@@ -143,10 +152,9 @@ export const PropertyList = () => {
                         className="w-50"
                         style={{ position: `relative` }}
                       >
-                        <Image
-                          url={PROPERTY_IMAGE}
-                          alt="propertyimg"
-                          className="w-100" />
+                        <img src={`data:image/jpeg;base64, ${thumbnails[property.id]}`}
+                          alt="property"
+                          style={{ height: `250px`, position: `relative` }} />
                         {property.peopleInterested !== `0` &&
                           <Badge
                             bg="danger"

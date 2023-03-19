@@ -9,8 +9,6 @@ import { useAuth } from '../../shared/contexts/AuthContext';
 import { LoadingIconProfile } from '../../shared/A-UI/LoadingIconProfile';
 import { PropertyService } from "../../shared/services";
 import { Link } from 'react-router-dom';
-import PROPERTY_IMAGE from "../../assets/images/placeholderproperty.jpg";
-import { Image } from 'react-extras';
 import { useForm, Controller } from "react-hook-form";
 import Select from 'react-select';
 import { UserService } from '../../shared/services';
@@ -25,6 +23,7 @@ export const ProfileModal = ({ onClose }) => {
   const [ pic, setPic ] = useState([]);
   const [ uid ] = useState(currentUser.uid);
   const [ userImage, setUserImage ] = useState([]);
+  const [ thumbnails, setThumbnail ] = useState([]);
 
   function uploadSingleFile(e) {
     const files = [ ...e.target.files ];
@@ -40,7 +39,16 @@ export const ProfileModal = ({ onClose }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        setProperties(await PropertyService.getPropertyList({ all: true }));
+        const propertyList = await PropertyService.getPropertyList({ all: true });
+        { /* eslint-disable-next-line max-len */ }
+        const thumbnailPromises = propertyList.map(property => PropertyService.getPropertyThumbnail({ property_id: property.id }));
+        const thumbnail = await Promise.all(thumbnailPromises);
+        const thumbnailList = {};
+        propertyList.forEach((property, index) => {
+          thumbnailList[property.id] = thumbnail[index];
+        });
+        setProperties(propertyList);
+        setThumbnail(thumbnailList);
         setUser(await UserService.getUserFromFirebaseUid({ uid }));
         setUserImage(await UserService.getUserImage({ uid }));
       }
@@ -150,8 +158,7 @@ export const ProfileModal = ({ onClose }) => {
                                 key={property.id} className="propertyListing mb-3"
                               >
                                 <div className="container">
-                                  <Image
-                                    url={PROPERTY_IMAGE}
+                                  <img src={`data:image/jpeg;base64, ${thumbnails[property.id]}`}
                                     alt="propertyimg"
                                     className="w-100" />
                                   <h6 className="my-0">{property.street_1}</h6>

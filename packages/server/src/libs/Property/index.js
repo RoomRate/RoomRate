@@ -116,3 +116,19 @@ exports.searchProperties = async ({ input }) => {
 
   return properties.rows;
 };
+
+exports.getPropertyThumbnail = async ({ property_id }) => {
+  const propertyImageKey = await knex(`property_images`)
+    .select(`image_key`)
+    .where(`property_id`, property_id)
+    .first();
+
+  if (!propertyImageKey) {
+    return null;
+  }
+
+  const propertyImage = await s3download(propertyImageKey.image_key);
+
+  return propertyImage;
+
+};
