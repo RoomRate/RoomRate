@@ -71,7 +71,6 @@ export class RoommateService {
 
   static async getPostComments(id) {
     try {
-      console.log(id);
       const response = await Axios({
         method: `GET`,
         url: `/roommate/post/comment/${id}`,

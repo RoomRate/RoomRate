@@ -40,7 +40,6 @@ export const PropertyList = () => {
       throw new Error(err);
     }
     finally {
-      console.log(filter);
       setLoading(false);
       setPropertyLoading(false);
     }
