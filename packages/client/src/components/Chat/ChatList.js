@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import { InlineError } from "../../shared/A-UI";
 import AsyncSelect from 'react-select/async';
 import { debounce } from 'lodash';
+import { CustomToggle } from "../../shared/A-UI";
 
 export const ChatList = ({ onChatSelect }) => {
   const [ chatList, setChatList ] = useState([]);
@@ -117,13 +118,13 @@ export const ChatList = ({ onChatSelect }) => {
                     textDecoration: `none`,
                     width: `100%`,
                     height: `100%`,
-                    zIndex: -1,
+                    zIndex: 1,
                   }}
                   onClick={() => getChatMessages({ chat_id: chat.chat_id })}
                 >
                   <Card
                     style={{
-                      backgroundColor: chat.chat_id === activeChat ? `#D9D9D9` : ``,
+                      backgroundColor: chat.chat_id === activeChat ? `#FFDAD9` : ``,
                       display: `flex`,
                       flexDirection: `row`,
                       alignItems: `center`,
@@ -135,7 +136,7 @@ export const ChatList = ({ onChatSelect }) => {
                     className="propertyListing"
                   >
                     <Card.Body>
-                      <div className="d-flex" style={{ padding: 0 }}>
+                      <div className="d-flex w-100" style={{ padding: 0 }}>
                         <Image url={DEFAULT_PFP} width={50} height={50} alt="chatImg" />
                         <div className="text-start ms-2">
                           <h4 style={{ textOverflow: `ellipsis` }}>{chat.chat_title}</h4>
@@ -154,20 +155,20 @@ export const ChatList = ({ onChatSelect }) => {
                               </>
                           }
                         </div>
+                        <Dropdown className="ms-auto align-self-center" align={{ md: `end` }}>
+                          <Dropdown.Toggle as={CustomToggle}>
+                            <EllipsisIcon />
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => toggleRenameChatModal({ chat })}>
+                              Rename
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => toggleAddUsersModal() }>Add User</Dropdown.Item>
+                            <Dropdown.Item onClick={() => leaveChat({ chat_id: chat.id })}>Leave</Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
                       </div>
                     </Card.Body>
-                    <DropdownButton
-                      align="end"
-                      variant="dark"
-                      title={<EllipsisIcon />}
-                      style={{ borderRadius: `100%`, marginRight: `25px`, width: `30px` }}
-                    >
-                      <Dropdown.Item onClick={() => toggleRenameChatModal({ chat })}>
-                        Rename
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => toggleAddUsersModal() }>Add User</Dropdown.Item>
-                      <Dropdown.Item onClick={() => leaveChat({ chat_id: chat.id })}>Leave</Dropdown.Item>
-                    </DropdownButton>
                   </Card>
                 </div>) :
               <p>You currently do not have any ongoing chats</p>
