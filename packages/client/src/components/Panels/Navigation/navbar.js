@@ -44,7 +44,7 @@ export const Navigation = () => {
         <Nav.Link className="links" href="/login" style={{ color: `white`, fontWeight: `bold` }}>
           Login/Signup</Nav.Link>}
       {showModal &&
-        <ProfileModal onClose={handleCloseModal}>
+        <ProfileModal id={currentUser.id} onClose={handleCloseModal}>
           <h1>Modal Content</h1>
         </ProfileModal>}
     </Navbar>

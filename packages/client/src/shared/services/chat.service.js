@@ -92,12 +92,13 @@ export class ChatService {
 
   static async createNewChat({ created_by, title }) {
     try {
+      console.log(`createNewChat`, created_by, title);
       const user = auth.currentUser;
       const token = user && await user.getIdToken();
 
       const response = await Axios({
         method: `POST`,
-        url: `/new`,
+        url: `/chat/new`,
         data: {
           created_by,
           title,
