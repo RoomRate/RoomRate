@@ -15,7 +15,7 @@ import '../../scss/roommate_finder.scss';
 import { CustomToggle } from "../../shared/A-UI";
 import { PostDetailModal } from "./PostDetailModal";
 import { useAuth } from '../../shared/contexts/AuthContext';
-// import { ProfileModal } from '../Users/ProfileModal';
+import { ProfileModal } from '../Users/ProfileModal';
 import { DebounceInput } from 'react-debounce-input';
 
 export const RoommateFinder = ({ property, propertyFilter }) => {
@@ -27,6 +27,15 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
   const [ showPostModal, setShowPostModal ] = useState(false);
   const [ postDetail, setPostDetail ] = useState(null);
   const { currentUser } = useAuth();
+  const [ showModal, setShowModal ] = useState(false);
+
+  function handleOpenModal() {
+    setShowModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const [ filter, setFilter ] = useState({});
   document.title = `RoomRate - Roommate Finder`;
@@ -129,7 +138,7 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
                   loadOptions={debounce(propertySearch, 100, { leading: true })}
                   defaultValue={
                     propertyFilter ? {
-                    // eslint-disable-next-line max-len
+                      // eslint-disable-next-line max-len
                       label: `${property.street_1}${property.street_2 ? `, Unit ${property.street_2}` : ``}`, value: property.id,
                     } : null
                   }
@@ -254,10 +263,14 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
                         </p>
                         <Card.Text>
                           <p>{post.message}</p>
-                          <p className="my-0"><Link to={`user/${post.author.id}`}>
+                          <p className="my-0"><Link onClick={handleOpenModal}>
                             {post.author.first_name} {post.author.last_name}
                           </Link>
-                          &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
+                            &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
+                          {showModal &&
+                            <ProfileModal id={post.user_id} onClose={handleCloseModal}>
+                              <h1>Modal Content</h1>
+                            </ProfileModal>}
                         </Card.Text>
                       </div>
                       {

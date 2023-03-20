@@ -14,6 +14,7 @@ import Select from 'react-select';
 import { UserService } from '../../shared/services';
 import { ChatService } from '../../shared/services';
 import { createBrowserHistory } from 'history';
+import { useNavigate } from 'react-router-dom';
 
 export const ProfileModal = ({ id, onClose }) => {
   const { control, handleSubmit, register, reset } = useForm();
@@ -26,6 +27,7 @@ export const ProfileModal = ({ id, onClose }) => {
   const [ userImage, setUserImage ] = useState([]);
   const [ thumbnails, setThumbnail ] = useState([]);
   const history = createBrowserHistory();
+  const navigate = useNavigate();
 
   function uploadSingleFile(e) {
     const files = [ ...e.target.files ];
@@ -38,7 +40,7 @@ export const ProfileModal = ({ id, onClose }) => {
   ];
 
   async function startChat() {
-    const title = `Chat with test`;
+    const title = `Chat with ${user.first_name} from ${currentUser.first_name}`;
     await ChatService.createNewChat({ created_by: currentUser.id, title });
 
     const chats = await ChatService.getChatsForUser({ user_id: currentUser.id });
@@ -47,6 +49,8 @@ export const ProfileModal = ({ id, onClose }) => {
     await ChatService.addUserToChat({ chat_id: chat.id, user_id: user.id });
     console.log(`User ${user.first_name} has been added to chat ${chat.id}`);
     history.push(`/chat`);
+
+    return navigate(`/chat`);
   }
 
   useEffect(() => {
