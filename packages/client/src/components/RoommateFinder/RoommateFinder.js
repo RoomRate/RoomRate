@@ -15,6 +15,7 @@ import '../../scss/roommate_finder.scss';
 import { CustomToggle } from "../../shared/A-UI";
 import { PostDetailModal } from "./PostDetailModal";
 import { useAuth } from '../../shared/contexts/AuthContext';
+// import { ProfileModal } from '../Users/ProfileModal';
 import { DebounceInput } from 'react-debounce-input';
 
 export const RoommateFinder = ({ property, propertyFilter }) => {
@@ -26,6 +27,7 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
   const [ showPostModal, setShowPostModal ] = useState(false);
   const [ postDetail, setPostDetail ] = useState(null);
   const { currentUser } = useAuth();
+
   const [ filter, setFilter ] = useState({});
   document.title = `RoomRate - Roommate Finder`;
 
@@ -285,6 +287,6 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
           }
         </div>
       </div>
-      {showPostModal && <PostDetailModal post={postDetail} show={showPostModal} onHide={hidePostDetailModal} /> }
+      {showPostModal && <PostDetailModal post={postDetail} show={showPostModal} onHide={hidePostDetailModal} />}
     </div>;
 };

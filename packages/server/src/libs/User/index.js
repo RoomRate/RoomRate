@@ -38,6 +38,17 @@ exports.getUserFromFirebaseUid = async ({ uid }) => {
   return user.rows[0];
 };
 
+exports.getUserDetails = async ({ id }) => {
+  const user = await knex.raw(`
+    SELECT id, first_name, last_name, email, username, bio, seeking, image_key
+    FROM users
+    WHERE id = ?
+    LIMIT 1;
+  `, [ id ]);
+
+  return user.rows[0];
+};
+
 exports.uploadImages = async ({ images, user }) => {
   await Promise.all(images.map(async image => {
     image.key = uuidv4();
@@ -50,12 +61,12 @@ exports.uploadImages = async ({ images, user }) => {
   }));
 };
 
-exports.getUserImage = async ({ uid }) => {
+exports.getUserImage = async ({ id }) => {
   const userImageKey = await knex.raw(`
     SELECT image_key
     FROM users
-    WHERE uid = ?
-  `, [ uid ]);
+    WHERE id = ?
+  `, [ id ]);
 
   const imageKey = userImageKey.rows[0].image_key;
 
