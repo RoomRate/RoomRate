@@ -46,7 +46,7 @@ export const ChatView = () => {
   const sendMessage = async ({ message }) => {
     try {
       if (message) {
-        const { id: chat_id } = activeChat;
+        const { id: chat_id } = activeChat.chat;
 
         const sentMessage = await ChatService.sendMessage({ message, user_id: currentUser.id, chat_id });
 

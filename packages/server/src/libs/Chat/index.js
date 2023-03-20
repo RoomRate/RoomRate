@@ -94,6 +94,7 @@ exports.sendMessage = async ({ message, chat_id, user_id }) => {
     message: sentMessage.message,
     chat_id: sentMessage.chat_id,
     created_by: sentMessage.created_by,
+    created_at: sentMessage.created_at,
   };
 
   return newMessage;
