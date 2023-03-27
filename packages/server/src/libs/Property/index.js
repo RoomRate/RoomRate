@@ -3,13 +3,54 @@ const knex = require(`../Database`);
 const { s3download, s3Upload } = require(`../../utils/S3`);
 const { v4: uuidv4 } = require(`uuid`);
 const moment = require(`moment`);
+const _ = require(`lodash`);
 
-exports.getPropertyList = async () => {
-  let properties = await knex.raw(`
-    SELECT *
-    FROM properties
-  `);
-  properties = await attachCoordinates({ properties: properties.rows });
+exports.getPropertyList = async ({ filter = {} }) => {
+  let orderBy = { column: `id`, order: `asc` };
+  if (filter.sortBy === `priceAsc`) {
+    orderBy = { column: `rate`, order: `asc` };
+  }
+  else if (filter.sortBy === `priceDesc`) {
+    orderBy = { column: `rate`, order: `desc` };
+  }
+  else if (filter.sortBy === `newer`) {
+    orderBy = { column: `id`, order: `desc` };
+  }
+  else if (filter.sortBy === `older`) {
+    orderBy = { column: `id`, order: `asc` };
+  }
+
+  let properties = await knex(`properties`)
+    .where(qb => {
+      if (filter.minPrice) {
+        qb.where(`rate`, `>=`, Number(filter.minPrice));
+      }
+      if (filter.maxPrice) {
+        qb.where(`rate`, `<=`, Number(filter.maxPrice));
+      }
+      if (filter.bedrooms) {
+        qb.where(`bed`, Number(filter.bedrooms));
+      }
+      if (filter.bathrooms) {
+        qb.where(`bath`, Number(filter.bathrooms));
+      }
+      if (filter.propertyType) {
+        qb.where(`propType`, filter.propertyType);
+      }
+      if (filter.search) {
+        qb.whereRaw(`CONCAT(street_1,' ',street_2) like '%${ filter.search }%'`);
+      }
+      if (filter.policies) {
+        const _policies = _.pickBy(_.mapValues(filter.policies, (value) => value === `true`), _.identity);
+        if (_policies !== {})
+        {
+          qb.whereRaw(`policies::jsonb @> ?::jsonb`, [ _policies ]);
+        }
+      }
+    })
+    .orderBy(orderBy.column, orderBy.order);
+
+  properties = await attachCoordinates({ properties });
   properties = await Promise.all(properties.map(async p => {
     const [ peopleCount ] = await knex(`roommate_posts`).count(`property_id`).where(`property_id`, p.id);
     p.peopleInterested = peopleCount.count;
@@ -86,7 +127,7 @@ exports.createProperty = async ({ property }) => {
     details: property.description,
     bed: property.bed.value,
     bath: property.bath.value,
-    rate: property.price,
+    rate: property.price.replace(`$`, ``).replace(`,`, ``),
     landlord_id: property.landlord_id,
     propType: property.propType.value,
     policies: property.policies,
@@ -115,4 +156,20 @@ exports.searchProperties = async ({ input }) => {
   `, [ `%${ input }%` ]);
 
   return properties.rows;
+};
+
+exports.getPropertyThumbnail = async ({ property_id }) => {
+  const propertyImageKey = await knex(`property_images`)
+    .select(`image_key`)
+    .where(`property_id`, property_id)
+    .first();
+
+  if (!propertyImageKey) {
+    return null;
+  }
+
+  const propertyImage = await s3download(propertyImageKey.image_key);
+
+  return propertyImage;
+
 };

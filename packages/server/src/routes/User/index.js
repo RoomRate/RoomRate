@@ -43,11 +43,23 @@ router.get(`/uid/:uid`, async (req, res, next) => {
   }
 });
 
-router.get(`/uid/:uid/image`, VerifyToken, async (req, res, next) => {
+router.get(`/id/:id`, async (req, res, next) => {
   try {
-    const { uid } = req.params;
+    const { id } = req.params;
 
-    const userImage = await UserService.getUserImage({ uid });
+    const user = await UserService.getUserDetails({ id });
+
+    return res.status(200).json(user);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get(`/id/:id/image`, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const userImage = await UserService.getUserImage({ id });
 
     return res.status(200).json(userImage);
   } catch (err) {

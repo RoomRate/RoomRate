@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Form, Row, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Button, Card, Form, InputGroup, Row, OverlayTrigger, Popover } from 'react-bootstrap';
 import { ChatList } from './ChatList';
 import { useForm } from 'react-hook-form';
 import { ChatService } from '../../shared/services';
@@ -46,7 +46,7 @@ export const ChatView = () => {
   const sendMessage = async ({ message }) => {
     try {
       if (message) {
-        const { id: chat_id } = activeChat;
+        const { id: chat_id } = activeChat.chat;
 
         const sentMessage = await ChatService.sendMessage({ message, user_id: currentUser.id, chat_id });
 
@@ -65,27 +65,29 @@ export const ChatView = () => {
   };
 
   return (
-    <div style={{ height: `86vh`, overflow: `hidden` }}>
+    <div style={{ height: `93.80vh`, overflow: `hidden` }}>
       <Row style={{ padding: 0 }}>
-        <div className="col" style={{ margin: 0 }}>
+        <div className="col-md-4" style={{ margin: 0, padding: 0 }}>
           <ChatList onChatSelect={setCurrentChat} />
         </div>
-        <div className="col" style={{ margin: 0 }}>
+        <div className="col-md-8" style={{ margin: 0, padding: 0 }}>
           {
             loadingChat ?
               <LoadingIcon /> :
               activeChat ?
-                <Card style={{ height: `100%`, borderRadius: 0 }}>
-                  <Card.Title>
-                    <div>
-                      {
-                        activeChat.chat.title ?
-                          <p>{activeChat.chat.title}</p> :
-                          activeChat.users.map((user, index, array) =>
-                            `${user.first_name} ${user.last_name}${index + 1 !== array.length ? `, ` : ``}`)
-                      }
-                    </div>
-                  </Card.Title>
+                <Card style={{ height: `93.80vh`, borderRadius: 0 }}>
+                  <Card.Header>
+                    <Card.Title>
+                      <div>
+                        {
+                          activeChat.chat.title ?
+                            <p>{activeChat.chat.title}</p> :
+                            activeChat.users.map((user, index, array) =>
+                              `${user.first_name} ${user.last_name}${index + 1 !== array.length ? `, ` : ``}`)
+                        }
+                      </div>
+                    </Card.Title>
+                  </Card.Header>
                   <Card.Body style={{ display: `flex`, flexDirection: `column`, justifyContent: `space-between` }}>
                     <div>
                       {
@@ -118,23 +120,22 @@ export const ChatView = () => {
                     </div>
 
                     <Form onSubmit={handleSubmit(sendMessage)}>
-                      <div id="chatbar" className="input-group mb-3">
-                        <input
-                          {...register(`message`)}
-                          type="text"
-                          id="my-message"
-                          className="form-control"
-                          placeholder="Type a message..." />
-
-                        <div className="input-group-append">
+                      <div id="chatbar" className="input-group">
+                        <InputGroup>
+                          <input
+                            {...register(`message`)}
+                            type="text"
+                            id="my-message"
+                            className="form-control"
+                            placeholder="Type a message..." />
                           <Button
-                            variant="outline-primary"
+                            variant="outline-danger"
                             onClick={handleSubmit(sendMessage)}
                             id="send-button"
                             type="button">
                             Send
                           </Button>
-                        </div>
+                        </InputGroup>
                       </div>
                     </Form>
                   </Card.Body>

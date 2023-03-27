@@ -94,6 +94,7 @@ exports.sendMessage = async ({ message, chat_id, user_id }) => {
     message: sentMessage.message,
     chat_id: sentMessage.chat_id,
     created_by: sentMessage.created_by,
+    created_at: sentMessage.created_at,
   };
 
   return newMessage;
@@ -121,6 +122,7 @@ exports.getChatById = async ({ chat_id }) => {
 };
 
 exports.createNewChat = async ({ created_by, title }) => {
+  console.log(`Creating new chat with title: ${ title }`);
   const response = await knex.raw(`
     INSERT INTO chats(created_by, title)
     VALUES(?, ?)

@@ -9,7 +9,7 @@ const { VerifyToken } = require(`../../utils/Middleware/VerifyToken`);
 
 router.get(`/list`, async (req, res, next) => {
   try {
-    const properties = await PropertyService.getPropertyList({ all: req.params.all });
+    const properties = await PropertyService.getPropertyList({ filter: req.query.filter });
 
     ResponseHandler(
       res,
@@ -108,6 +108,17 @@ router.get(`/search`, async (req, res, next) => {
       `Got property list`,
       properties,
     );
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get(`/:property_id/thumbnail`, async (req, res, next) => {
+  try {
+    const { property_id } = req.params;
+    const thumbnail = await PropertyService.getPropertyThumbnail({ property_id });
+
+    return res.status(200).json(thumbnail);
   } catch (err) {
     next(err);
   }

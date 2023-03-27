@@ -2,12 +2,12 @@ import { Axios } from "../utils/http.config.js";
 import { auth } from "../utils/firebase";
 
 export class PropertyService {
-  static async getPropertyList({ all }) {
+  static async getPropertyList(filter) {
     try {
       const response = await Axios({
         method: `GET`,
-        params: { all },
-        url: `/property/list`,
+        url: `/property/list?`,
+        params: { filter },
       });
 
       return response.data.data.properties;
@@ -25,6 +25,23 @@ export class PropertyService {
       });
 
       return response.data.data.property;
+    }
+    catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
+
+  static async getPropertyThumbnail({ property_id }) {
+    try {
+      const response = await Axios({
+        method: `GET`,
+        url: `/property/${property_id}/thumbnail`,
+        headers: {
+          'Content-Type': `application/json`,
+        },
+      });
+
+      return response.data;
     }
     catch (err) {
       throw new Error(`${err.response.statusText} - ${err.response.data.message}`);

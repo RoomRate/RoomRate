@@ -22,6 +22,7 @@ import StarRatings from "react-star-ratings";
 import DEFAULT_PFP from '../../assets/images/DefaultPFP.png';
 import 'swiper/scss';
 import 'swiper/scss/scrollbar';
+import { ProfileModal } from '../Users/ProfileModal';
 
 export const PropertyDetails = () => {
   const {
@@ -39,6 +40,15 @@ export const PropertyDetails = () => {
   const [ reviewRating, setReviewRating ] = useState(3);
   const [ reviewModal, setReviewModal ] = useState(false);
   const { currentUser } = useAuth();
+  const [ showModal, setShowModal ] = useState(false);
+
+  function handleOpenModal() {
+    setShowModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,7 +120,7 @@ export const PropertyDetails = () => {
                   {property.street_2 ? <h4 className="fw-light">Unit {property.street_2}</h4> : null}
                 </div>
                 <div className="text-end ms-auto">
-                  <h4>{property.rate}</h4>
+                  <h4>${property.rate}</h4>
                 </div>
               </div>
               <p className="mb-1">
@@ -121,9 +131,13 @@ export const PropertyDetails = () => {
               </p>
               <p className="mb-1">
                 <span className="fw-bold">Landlord:</span> &nbsp;
-                <Link to={`/user/${property.landlord_id}/detail`}>
+                <Link onClick={handleOpenModal}>
                   {`${property.first_name} ${property.last_name}`}
                 </Link>
+                {showModal &&
+                  <ProfileModal id={property.id} onClose={handleCloseModal}>
+                    <h1>Modal Content</h1>
+                  </ProfileModal>}
               </p>
               <p className="mb-1"><span className="fw-bold">Description:</span> {property?.details}</p>
               <p className="mb-1"><span className="fw-bold">Amenities:</span></p>
@@ -276,7 +290,7 @@ export const PropertyDetails = () => {
                         <h5 className="fw-bold mt-1">
                           {Number(reviews.reduce((acc, curr) => acc + Number(curr.rating), 0) / reviews.length)}
                         </h5>
-                      &nbsp;
+                        &nbsp;
                         <StarRatings
                           rating={Number(reviews.reduce((acc, curr) => acc + Number(curr.rating), 0) / reviews.length)}
                           starRatedColor="red"

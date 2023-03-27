@@ -1,9 +1,27 @@
 const knex = require(`../Database`);
 
-exports.getPosts = async () => {
+exports.getPosts = async ({ filter=  {}}) => {
   let posts = await knex(`roommate_posts`)
-    .orderBy(`posted_on`, `desc`)
-    .limit(10);
+  .join(`users`, `users.id`, `roommate_posts.user_id`)
+  .select(`users.first_name`, `users.last_name`, `roommate_posts.*`)
+  .where((qb) => {
+    if(filter.author) {
+      qb.whereRaw(`CONCAT(users.first_name, ' ', users.last_name) like ?`, [`%${filter.author}%`]);
+    }
+    if(filter.property) {
+      qb.where({ property_id: filter.property });
+    }
+    if(filter.search) {
+      qb.where(`message`, `like`, `%${filter.search}%`);
+    }
+    if(filter.minDate) {
+      qb.where(`posted_on`, `>=`, filter.minDate);
+    }
+    if(filter.maxDate) {
+      qb.where(`posted_on`, `<=`, filter.maxDate);
+    }
+  })
+    .orderBy(`posted_on`, `desc`);
 
   return await Promise.all(posts.map(async (post) => {
     post.author = await knex(`users`).select(`id`, `first_name`, `last_name`).where({ id: post.user_id }).first()
@@ -14,7 +32,7 @@ exports.getPosts = async () => {
 
         return comment
       })))
-  
+
     return post;
   }));
 };

@@ -131,7 +131,9 @@ router.get(`/:chat_id`, VerifyToken, async (req, res, next) => {
 
 router.post(`/new`, VerifyToken, async (req, res, next) => {
   try {
+
     const { created_by, recipient_id, title } = req.body;
+    console.log(req.body);
 
     const chat = await ChatService.createNewChat({ created_by, title });
 

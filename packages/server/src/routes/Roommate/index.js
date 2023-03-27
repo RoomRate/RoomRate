@@ -5,7 +5,7 @@ const { ResponseHandler } = require(`../../utils/ResponseHandler`);
 
 router.get(`/post`, async (req, res, next) => {
   try {
-    const posts = await RoommateService.getPosts();
+    const posts = await RoommateService.getPosts({ filter: req.query.filter });
 
     ResponseHandler(
       res,
