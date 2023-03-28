@@ -10,8 +10,7 @@ import { Link } from 'react-router-dom';
 import { useForm, Controller } from "react-hook-form";
 import Select from 'react-select';
 import { UserService } from '../../shared/services';
-import { ChatService } from '../../shared/services';
-import { createBrowserHistory } from 'history';
+// import { ChatService } from '../../shared/services';
 import { useNavigate } from 'react-router-dom';
 import defaultPFP from '../../assets/images/blank-profile-picture.webp';
 
@@ -25,7 +24,6 @@ export const ProfileModal = ({ id, onClose }) => {
   const [ pic, setPic ] = useState([]);
   const [ userImage, setUserImage ] = useState(null);
   const [ thumbnails, setThumbnail ] = useState([]);
-  const history = createBrowserHistory();
   const navigate = useNavigate();
 
   function uploadSingleFile(e) {
@@ -38,7 +36,8 @@ export const ProfileModal = ({ id, onClose }) => {
     { value: `No`, label: `No` },
   ];
 
-  async function startChat() {
+  function startChat() {
+    /*
     const title = `Chat with ${user.first_name} from ${currentUser.first_name}`;
     await ChatService.createNewChat({ created_by: currentUser.id, title });
 
@@ -47,7 +46,7 @@ export const ProfileModal = ({ id, onClose }) => {
 
     await ChatService.addUserToChat({ chat_id: chat.id, user_id: user.id });
     console.log(`User ${user.first_name} has been added to chat ${chat.id}`);
-    history.push(`/chat`);
+    */
 
     return navigate(`/chat`);
   }

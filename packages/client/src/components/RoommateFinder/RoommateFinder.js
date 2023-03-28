@@ -27,14 +27,23 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
   const [ showPostModal, setShowPostModal ] = useState(false);
   const [ postDetail, setPostDetail ] = useState(null);
   const { currentUser } = useAuth();
-  const [ showModal, setShowModal ] = useState(false);
 
-  function handleOpenModal() {
-    setShowModal(true);
-  }
+  const [ showModal, setShowModal ] = useState([]);
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  useEffect(() => {
+    setShowModal(posts.map(_ => false));
+  }, [ posts ]);
+
+  const handleOpenModal = (index) => {
+    const newShowModal = [ ...showModal ];
+    newShowModal[index] = true;
+    setShowModal(newShowModal);
+  };
+
+  const handleCloseModal = (index) => {
+    const newShowModal = [ ...showModal ];
+    newShowModal[index] = false;
+    setShowModal(newShowModal);
   };
 
   const [ filter, setFilter ] = useState({});
@@ -238,7 +247,7 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
                   <Lottie animationData={loadingIcon} loop={true} />
                 </div>
               </div> :
-              posts.map(post => <>
+              posts.map((post, index) => <>
                 <Card className="w-100 my-2 text-start">
                   <Card.Body>
                     <div className="d-flex">
@@ -263,12 +272,12 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
                         </p>
                         <Card.Text>
                           <p>{post.message}</p>
-                          <p className="my-0"><Link onClick={handleOpenModal}>
+                          <p className="my-0"><Link onClick={() => handleOpenModal(index)}>
                             {post.author.first_name} {post.author.last_name}
                           </Link>
                             &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
-                          {showModal &&
-                            <ProfileModal id={post.user_id} onClose={handleCloseModal}>
+                          {showModal[index] &&
+                            <ProfileModal id={post.author.user_id} onClose={() => handleCloseModal(index)}>
                               <h1>Modal Content</h1>
                             </ProfileModal>}
                         </Card.Text>
