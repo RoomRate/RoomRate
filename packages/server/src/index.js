@@ -23,6 +23,14 @@ if (process.env.PRODUCTION) {
   app.use(express.static(path.resolve(__dirname, `../../client/build`)));
 }
 
+app.use((req, res, next) => {
+  res.setHeader(
+    `Content-Security-Policy`,
+    `default-src 'self'; connect-src 'self' https://identitytoolkit.googleapis.com/`,
+  );
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
