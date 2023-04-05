@@ -9,11 +9,21 @@ import '../../scss/roommate_finder.scss';
 import { CustomToggle } from "../../shared/A-UI";
 import { useForm } from "react-hook-form";
 import { useAuth } from '../../shared/contexts/AuthContext';
+import { ProfileModal } from '../Users/ProfileModal';
 
 export const PostDetailModal = ({ post, show, onHide }) => {
   const { register, handleSubmit, reset } = useForm();
   const [ comments, setComments ] = useState(post.comments);
   const { currentUser } = useAuth();
+  const [ showModal, setShowModal ] = useState(false);
+
+  function handleOpenModal() {
+    setShowModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const deleteComment = async (id) => {
     await RoommateService.deleteComment(id);
@@ -60,10 +70,14 @@ export const PostDetailModal = ({ post, show, onHide }) => {
             </p>
             <Card.Text>
               <p>{post.message}</p>
-              <p className="my-0"><Link to={`user/${post.author.id}`}>
+              <p className="my-0"><Link onClick={handleOpenModal}>
                 {post.author.first_name} {post.author.last_name}
               </Link>
                 &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
+              {showModal &&
+                <ProfileModal id={post.author.user_id} onClose={handleCloseModal}>
+                  <h1>Modal Content</h1>
+                </ProfileModal>}
             </Card.Text>
           </div>
         </div>
@@ -110,7 +124,7 @@ export const PostDetailModal = ({ post, show, onHide }) => {
               </div>
               <div className="w-auto mb-2 mx-2 reply">
                 <p className="my-0 fw-bold">
-                  <Link to={`user/${c.user_id}`}>
+                  <Link>
                     {c.author.first_name} {c.author.last_name}
                   </Link>
                   &nbsp;posted <ReactTimeAgo date={c.posted_on} />

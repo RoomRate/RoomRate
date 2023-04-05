@@ -17,6 +17,8 @@ import { PostDetailModal } from "./PostDetailModal";
 import { useAuth } from '../../shared/contexts/AuthContext';
 import { ProfileModal } from '../Users/ProfileModal';
 import { DebounceInput } from 'react-debounce-input';
+import defaultPFP from '../../assets/images/blank-profile-picture.webp';
+// import { UserService } from '../../shared/services';
 
 export const RoommateFinder = ({ property, propertyFilter }) => {
   const [ isLoading, setLoading ] = useState(true);
@@ -52,12 +54,11 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
   const fetchData = useCallback(async () => {
     try {
       setPostLoading(true);
-      setPosts(await RoommateService.getPosts(filter));
-    }
-    catch (err) {
+      const fetchedPosts = await RoommateService.getPosts(filter);
+      setPosts(fetchedPosts);
+    } catch (err) {
       throw new Error(err);
-    }
-    finally {
+    } finally {
       setPostLoading(false);
       setLoading(false);
     }
@@ -252,12 +253,15 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
                   <Card.Body>
                     <div className="d-flex">
                       <div className="mr-4">
-                        <Image
-                          url={DEFAULT_PFP}
-                          fallbackUrl={DEFAULT_PFP}
-                          className="avatar rounded img-fluid me-2"
-                          alt="user profile avatar"
-                          width={50} />
+
+                        <img
+                          src={post.author.userImage ? `data:image/jpeg;base64, ${post.author.userImage}` :
+                            defaultPFP}
+                          className="avatar rounded-circle img-fluid me-2"
+                          style={{ width: `50px`, height: `50px`, border: `1px solid black` }}
+                          alt="user_image"
+                        />
+
                       </div>
                       <div className="w-100 mx-2">
                         <p className="my-0 fw-bold">{post.title}
