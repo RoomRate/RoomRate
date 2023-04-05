@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Card, CloseButton, Dropdown, Modal } from "react-bootstrap";
 import { RoommateService } from "../../shared/services";
-import { Image } from 'react-extras';
 import { Link } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
-import DEFAULT_PFP from '../../assets/images/DefaultPFP.png';
 import '../../scss/roommate_finder.scss';
 import { CustomToggle } from "../../shared/A-UI";
 import { useForm } from "react-hook-form";
 import { useAuth } from '../../shared/contexts/AuthContext';
 import { ProfileModal } from '../Users/ProfileModal';
+import defaultPFP from '../../assets/images/blank-profile-picture.webp';
+import { UserService } from '../../shared/services';
 
 export const PostDetailModal = ({ post, show, onHide }) => {
   const { register, handleSubmit, reset } = useForm();
   const [ comments, setComments ] = useState(post.comments);
   const { currentUser } = useAuth();
   const [ showModal, setShowModal ] = useState(false);
+  const [ userImage, setUserImage ] = useState(null);
 
   function handleOpenModal() {
     setShowModal(true);
@@ -24,6 +25,20 @@ export const PostDetailModal = ({ post, show, onHide }) => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const pfp = await UserService.getUserImage({ id: currentUser.id });
+        setUserImage(pfp || null);
+      }
+
+      catch (err) {
+        throw new Error(err);
+      }
+    };
+    fetchData();
+  }, [ currentUser.id ]);
 
   const deleteComment = async (id) => {
     await RoommateService.deleteComment(id);
@@ -50,12 +65,13 @@ export const PostDetailModal = ({ post, show, onHide }) => {
       <Card.Body>
         <div className="d-flex">
           <div className="mr-4">
-            <Image
-              url={DEFAULT_PFP}
-              fallbackUrl={DEFAULT_PFP}
-              className="avatar rounded img-fluid me-2"
-              alt="user profile avatar"
-              width={50} />
+            <img
+              src={post.author.userImage ? `data:image/jpeg;base64, ${post.author.userImage}` :
+                defaultPFP}
+              className="avatar rounded-circle img-fluid me-2"
+              style={{ width: `50px`, height: `50px`, border: `1px solid black` }}
+              alt="user_image"
+            />
           </div>
           <div className="w-100 mx-2">
             <p className="my-0 fw-bold">{post.title}
@@ -85,12 +101,13 @@ export const PostDetailModal = ({ post, show, onHide }) => {
       <Card.Footer>
         <div className="d-flex pb-2 mb-2 border-bottom" >
           <div className="mt-2">
-            <Image
-              url={DEFAULT_PFP}
-              fallbackUrl={DEFAULT_PFP}
-              className="avatar rounded img-fluid"
-              alt="user profile avatar"
-              width={50} />
+            <img
+              src={userImage ? `data:image/jpeg;base64, ${userImage}` :
+                defaultPFP}
+              className="rounded-circle"
+              style={{ width: `50px`, height: `50px`, border: `1px solid black` }}
+              alt="user_image"
+            />
           </div>
           <form id="newReply" onSubmit={handleSubmit(addComment)} className="w-100 mx-2">
             <textarea
@@ -115,12 +132,13 @@ export const PostDetailModal = ({ post, show, onHide }) => {
           comments.length > 0 ?
             comments.map(c => <div className="d-flex">
               <div className="mr-4">
-                <Image
-                  url={DEFAULT_PFP}
-                  fallbackUrl={DEFAULT_PFP}
-                  className="avatar rounded img-fluid me-2"
-                  alt="user profile avatar"
-                  width={40} />
+                <img
+                  src={c.author.userImage ? `data:image/jpeg;base64, ${c.author.userImage}` :
+                    defaultPFP}
+                  className="avatar rounded-circle img-fluid me-2"
+                  style={{ width: `40px`, height: `40px`, border: `1px solid black` }}
+                  alt="user_image"
+                />
               </div>
               <div className="w-auto mb-2 mx-2 reply">
                 <p className="my-0 fw-bold">

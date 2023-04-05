@@ -36,10 +36,18 @@ exports.getPosts = async ({ filter=  {}}) => {
     };
     // post.author = await knex(`users`).select(`id`, `first_name`, `last_name`).where({ id: post.user_id }).first()
     post.property = await knex(`properties`).select(`id`, `street_1`, `street_2`).where({ id: post.property_id }).first()
+    /*
     post.comments = await knex(`post_comments`).where({ post_id: post.id }).orderBy(`posted_on`, `desc`).then(async (comments) => 
       Promise.all(comments.map(async comment => {
         comment.author = await knex(`users`).select(`id`, `first_name`, `last_name`).where({ id: comment.user_id }).first()
 
+        return comment
+      })))
+      */
+      post.comments = await knex(`post_comments`).where({ post_id: post.id }).orderBy(`posted_on`, `desc`).then(async (comments) => 
+      Promise.all(comments.map(async comment => {
+        comment.author = await knex(`users`).select(`id`, `first_name`, `last_name`, `image_key`).where({ id: comment.user_id }).first()
+        comment.author.userImage = await s3download(comment.author.image_key)
         return comment
       })))
     return post;

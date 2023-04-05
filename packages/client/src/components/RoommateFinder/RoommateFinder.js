@@ -3,14 +3,12 @@ import { Button, Card, Dropdown } from "react-bootstrap";
 import Lottie from 'lottie-react';
 import { RoommateService } from "../../shared/services";
 import { useForm } from "react-hook-form";
-import { Image } from 'react-extras';
 import { TfiCommentAlt } from "react-icons/tfi";
 import { Link } from 'react-router-dom';
 import { debounce } from 'lodash';
 import AsyncSelect from 'react-select/async';
 import ReactTimeAgo from 'react-time-ago';
 import loadingIcon from '../../assets/images/loadingIcon.json';
-import DEFAULT_PFP from '../../assets/images/DefaultPFP.png';
 import '../../scss/roommate_finder.scss';
 import { CustomToggle } from "../../shared/A-UI";
 import { PostDetailModal } from "./PostDetailModal";
@@ -18,7 +16,7 @@ import { useAuth } from '../../shared/contexts/AuthContext';
 import { ProfileModal } from '../Users/ProfileModal';
 import { DebounceInput } from 'react-debounce-input';
 import defaultPFP from '../../assets/images/blank-profile-picture.webp';
-// import { UserService } from '../../shared/services';
+import { UserService } from '../../shared/services';
 
 export const RoommateFinder = ({ property, propertyFilter }) => {
   const [ isLoading, setLoading ] = useState(true);
@@ -29,6 +27,7 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
   const [ showPostModal, setShowPostModal ] = useState(false);
   const [ postDetail, setPostDetail ] = useState(null);
   const { currentUser } = useAuth();
+  const [ userImage, setUserImage ] = useState(null);
 
   const [ showModal, setShowModal ] = useState([]);
 
@@ -56,6 +55,8 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
       setPostLoading(true);
       const fetchedPosts = await RoommateService.getPosts(filter);
       setPosts(fetchedPosts);
+      const pfp = await UserService.getUserImage({ id: currentUser.id });
+      setUserImage(pfp || null);
     } catch (err) {
       throw new Error(err);
     } finally {
@@ -192,12 +193,13 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
             <Card.Body>
               <div className="d-flex mb-n1" >
                 <div className="mt-2">
-                  <Image
-                    url={DEFAULT_PFP}
-                    fallbackUrl={DEFAULT_PFP}
-                    className="avatar rounded img-fluid"
-                    alt="user profile avatar"
-                    width={50} />
+                  <img
+                    src={userImage ? `data:image/jpeg;base64, ${userImage}` :
+                      defaultPFP}
+                    className="rounded-circle"
+                    style={{ width: `50px`, height: `50px`, border: `1px solid black` }}
+                    alt="user_image"
+                  />
                 </div>
                 <form id="newPost" onSubmit={handleSubmit(createPost)} className="w-100 mx-2">
                   <div className="d-flex mb-2">
@@ -253,7 +255,6 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
                   <Card.Body>
                     <div className="d-flex">
                       <div className="mr-4">
-
                         <img
                           src={post.author.userImage ? `data:image/jpeg;base64, ${post.author.userImage}` :
                             defaultPFP}
@@ -261,7 +262,6 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
                           style={{ width: `50px`, height: `50px`, border: `1px solid black` }}
                           alt="user_image"
                         />
-
                       </div>
                       <div className="w-100 mx-2">
                         <p className="my-0 fw-bold">{post.title}
