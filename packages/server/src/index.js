@@ -31,7 +31,7 @@ app.use(helmet({
   directives: {
     defaultSrc: [ `'self'`, `https://*.firebaseio.com` ],
     // eslint-disable-next-line max-len
-    scriptSrc: [ `'self'`, `https://apis.google.com https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com` ],
+    scriptSrc: [ `'self'`, `https://identitytoolkit.googleapis.com https://apis.google.com https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com` ],
   },
 }));
 app.use(compression());
