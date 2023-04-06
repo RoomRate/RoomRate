@@ -15,15 +15,32 @@ export const PostDetailModal = ({ post, show, onHide }) => {
   const { register, handleSubmit, reset } = useForm();
   const [ comments, setComments ] = useState(post.comments);
   const { currentUser } = useAuth();
-  const [ showModal, setShowModal ] = useState(false);
+  const [ showAuthorModal, setShowAuthorModal ] = useState(false);
   const [ userImage, setUserImage ] = useState(null);
+  const [ showModal, setShowModal ] = useState([]);
 
-  function handleOpenModal() {
-    setShowModal(true);
+  useEffect(() => {
+    setShowModal(comments.map(_ => false));
+  }, [ comments ]);
+
+  const handleOpenModal = (index) => {
+    const newShowModal = [ ...showModal ];
+    newShowModal[index] = true;
+    setShowModal(newShowModal);
+  };
+
+  const handleCloseModal = (index) => {
+    const newShowModal = [ ...showModal ];
+    newShowModal[index] = false;
+    setShowModal(newShowModal);
+  };
+
+  function handleOpenAuthorModal() {
+    setShowAuthorModal(true);
   }
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleCloseAuthorModal = () => {
+    setShowAuthorModal(false);
   };
 
   useEffect(() => {
@@ -86,12 +103,12 @@ export const PostDetailModal = ({ post, show, onHide }) => {
             </p>
             <Card.Text>
               <p>{post.message}</p>
-              <p className="my-0"><Link onClick={handleOpenModal}>
+              <p className="my-0"><Link onClick={handleOpenAuthorModal}>
                 {post.author.first_name} {post.author.last_name}
               </Link>
                 &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
-              {showModal &&
-                <ProfileModal id={post.author.user_id} onClose={handleCloseModal}>
+              {showAuthorModal &&
+                <ProfileModal id={post.author.user_id} onClose={handleCloseAuthorModal}>
                   <h1>Modal Content</h1>
                 </ProfileModal>}
             </Card.Text>
@@ -130,7 +147,7 @@ export const PostDetailModal = ({ post, show, onHide }) => {
         <div className="d-flex reply-container" />
         {
           comments.length > 0 ?
-            comments.map(c => <div className="d-flex">
+            comments.map((c, index) => <div className="d-flex">
               <div className="mr-4">
                 <img
                   src={c.author.userImage ? `data:image/jpeg;base64, ${c.author.userImage}` :
@@ -142,10 +159,14 @@ export const PostDetailModal = ({ post, show, onHide }) => {
               </div>
               <div className="w-auto mb-2 mx-2 reply">
                 <p className="my-0 fw-bold">
-                  <Link>
+                  <Link onClick={() => handleOpenModal(index)}>
                     {c.author.first_name} {c.author.last_name}
                   </Link>
                   &nbsp;posted <ReactTimeAgo date={c.posted_on} />
+                  {showModal[index] &&
+                    <ProfileModal id={c.author.id} onClose={() => handleCloseModal(index)}>
+                      <h1>Modal Content</h1>
+                    </ProfileModal>}
                 </p>
                 <Card.Text>
                   <p>{c.message}</p>

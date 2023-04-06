@@ -28,7 +28,6 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
   const [ postDetail, setPostDetail ] = useState(null);
   const { currentUser } = useAuth();
   const [ userImage, setUserImage ] = useState(null);
-
   const [ showModal, setShowModal ] = useState([]);
 
   useEffect(() => {
@@ -63,7 +62,7 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
       setPostLoading(false);
       setLoading(false);
     }
-  }, [ filter ]);
+  }, [ filter, currentUser.id ]);
 
   useEffect(() => {
     fetchData();
