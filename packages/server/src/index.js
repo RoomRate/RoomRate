@@ -1,6 +1,6 @@
 const express = require(`express`);
 const config = require(`config`);
-const helmet = require(`helmet`);
+const helmet = require(`helmet-csp`);
 const morgan = require(`morgan`);
 const fs = require(`fs`);
 const path = require(`path`);
