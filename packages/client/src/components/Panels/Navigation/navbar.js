@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { Image } from 'react-extras';
 import logo from '../../../assets/images/RoomRateLogoInvert.png';
@@ -6,10 +6,12 @@ import user from '../../../assets/images/DefaultPFP.png';
 import '../../../scss/custom.scss';
 import { ProfileModal } from '../../Users/ProfileModal.js';
 import { useAuth } from '../../../shared/contexts/AuthContext';
+import { UserService } from '../../../shared/services';
 
 export const Navigation = () => {
   const [ showModal, setShowModal ] = useState(false);
   const { currentUser } = useAuth();
+  const [ userImage, setUserImage ] = useState(null);
 
   function handleOpenModal() {
     setShowModal(true);
@@ -18,6 +20,21 @@ export const Navigation = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+
+  useEffect(() => {
+    if (currentUser) { // add a check to see if currentUser is not null or undefined
+      const fetchData = async () => {
+        try {
+          const pfp = await UserService.getUserImage({ id: currentUser.id });
+          setUserImage(pfp || null);
+        }
+        catch (err) {
+          throw new Error(err);
+        }
+      };
+      fetchData();
+    }
+  }, [ currentUser?.id ]);
 
   return (
     <Navbar expand="lg" className="px-4">
@@ -39,7 +56,13 @@ export const Navigation = () => {
       </Navbar.Collapse>
       {currentUser ?
         <Nav.Link onClick={handleOpenModal}>
-          <Image url={user} alt="User" height="30" className="mr-3" />
+          <img
+            src={userImage ? `data:image/jpeg;base64, ${userImage}` :
+              user}
+            className="rounded-circle"
+            style={{ width: `40px`, height: `40px`, border: `1px solid black` }}
+            alt="user_image"
+          />
         </Nav.Link> :
         <Nav.Link className="links" href="/login" style={{ color: `white`, fontWeight: `bold` }}>
           Login/Signup</Nav.Link>}
