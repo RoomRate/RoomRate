@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+// import { Form } from "react-bootstrap";
 import { Col, Row, Card } from "react-bootstrap";
 import { ScrollMenu } from 'react-horizontal-scrolling-menu';
+// import EdiText from 'react-editext';
 import { useAuth } from '../../shared/contexts/AuthContext';
 import { LoadingIconProfile } from '../../shared/A-UI/LoadingIconProfile';
 import { PropertyService } from "../../shared/services";
@@ -10,9 +12,9 @@ import { Link } from 'react-router-dom';
 import { useForm, Controller } from "react-hook-form";
 import Select from 'react-select';
 import { UserService } from '../../shared/services';
-// import { ChatService } from '../../shared/services';
+import { ChatService } from '../../shared/services';
+import { createBrowserHistory } from 'history';
 import { useNavigate } from 'react-router-dom';
-import defaultPFP from '../../assets/images/blank-profile-picture.webp';
 
 export const ProfileModal = ({ id, onClose }) => {
   const { control, handleSubmit, register, reset } = useForm();
@@ -22,8 +24,9 @@ export const ProfileModal = ({ id, onClose }) => {
   const [ isLoading, setLoading ] = useState(true);
   const [ isEditing, setIsEditing ] = useState(false);
   const [ pic, setPic ] = useState([]);
-  const [ userImage, setUserImage ] = useState(null);
+  const [ userImage, setUserImage ] = useState([]);
   const [ thumbnails, setThumbnail ] = useState([]);
+  const history = createBrowserHistory();
   const navigate = useNavigate();
 
   function uploadSingleFile(e) {
@@ -36,8 +39,7 @@ export const ProfileModal = ({ id, onClose }) => {
     { value: `No`, label: `No` },
   ];
 
-  function startChat() {
-    /*
+  async function startChat() {
     const title = `Chat with ${user.first_name} from ${currentUser.first_name}`;
     await ChatService.createNewChat({ created_by: currentUser.id, title });
 
@@ -46,7 +48,7 @@ export const ProfileModal = ({ id, onClose }) => {
 
     await ChatService.addUserToChat({ chat_id: chat.id, user_id: user.id });
     console.log(`User ${user.first_name} has been added to chat ${chat.id}`);
-    */
+    history.push(`/chat`);
 
     return navigate(`/chat`);
   }
@@ -66,8 +68,7 @@ export const ProfileModal = ({ id, onClose }) => {
         setProperties(propertyList);
         setThumbnail(thumbnailList);
         setUser(await UserService.getUserDetails({ id }));
-        const pfp = await UserService.getUserImage({ id });
-        setUserImage(pfp || null);
+        setUserImage(await UserService.getUserImage({ id }));
       }
 
       catch (err) {
@@ -128,7 +129,7 @@ export const ProfileModal = ({ id, onClose }) => {
                         <div id="profilePic" style={{ textAlign: `center` }}>
                           <img
                             src={userImage ? `data:image/jpeg;base64, ${userImage}` :
-                              defaultPFP}
+                              `../../assets/images/placeholderprofile.jpg`}
                             className="rounded-circle"
                             style={{ width: `225px`, height: `225px`, border: `1px solid black` }}
                             alt="user_image"
@@ -153,7 +154,7 @@ export const ProfileModal = ({ id, onClose }) => {
                     {id === currentUser.id ?
                       <>
                         <Button variant="secondary" onClick={handleOpenEdit}>Edit</Button>
-                        &nbsp;
+                      &nbsp;
                         <Button variant="primary">Logout</Button>
                       </> :
                       <Button variant="primary" onClick={startChat}>Message</Button>}
@@ -204,7 +205,7 @@ export const ProfileModal = ({ id, onClose }) => {
                         <div className="container" id="profilePic">
                           <img
                             src={userImage ? `data:image/jpeg;base64, ${userImage}` :
-                              defaultPFP}
+                              `../../assets/images/blank-profile-picture.webp`}
                             className="rounded-circle"
                             style={{ width: `225px`, height: `200px`, border: `1px solid black` }}
                             alt="user_image"
