@@ -26,13 +26,13 @@ if (process.env.PRODUCTION) {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // app.use(cors());
-app.use(helmet({
-  directives: {
-    defaultSrc: [ `'self'`, `https://*.firebaseio.com` ],
-    // eslint-disable-next-line max-len
-    scriptSrc: [ `'self'`, `https://apis.google.com https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com` ],
-  },
-}));
+// app.use(helmet({
+//   directives: {
+//     defaultSrc: [ `'self'`, `https://*.firebaseio.com` ],
+//     // eslint-disable-next-line max-len
+//     scriptSrc: [ `'self'`, `https://apis.google.com https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com` ],
+//   },
+// }));
 app.use(compression());
 app.use(cookieParser(config.get(`session.secret`) || process.env.SESSION_SECRET));
 
