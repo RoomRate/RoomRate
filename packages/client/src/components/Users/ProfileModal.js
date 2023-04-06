@@ -13,7 +13,6 @@ import { useForm, Controller } from "react-hook-form";
 import Select from 'react-select';
 import { UserService } from '../../shared/services';
 import { ChatService } from '../../shared/services';
-import { createBrowserHistory } from 'history';
 import { useNavigate } from 'react-router-dom';
 
 export const ProfileModal = ({ id, onClose }) => {
@@ -39,19 +38,16 @@ export const ProfileModal = ({ id, onClose }) => {
     { value: `No`, label: `No` },
   ];
 
-  async function startChat() {
+
+  const startChat = async () => {
     const title = `Chat with ${user.first_name} from ${currentUser.first_name}`;
-    await ChatService.createNewChat({ created_by: currentUser.id, title });
-
-    const chats = await ChatService.getChatsForUser({ user_id: currentUser.id });
-    const chat = chats.find((c) => c.title === title);
-
-    await ChatService.addUserToChat({ chat_id: chat.id, user_id: user.id });
-    console.log(`User ${user.first_name} has been added to chat ${chat.id}`);
-    history.push(`/chat`);
+    console.log(user);
+    const chat = await ChatService.createNewChat({ created_by: currentUser.id, title, recipient_id: user.id });
+    console.log(chat);
+    localStorage.setItem(`lastOpenedChat`, chat.id);
 
     return navigate(`/chat`);
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {

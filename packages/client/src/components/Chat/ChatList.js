@@ -103,7 +103,7 @@ export const ChatList = ({ onChatSelect }) => {
 
   const handleChatTitleChange = (e) => setChatTitle(e.target.value);
 
-  return <>
+  return <div style={{ height: `97vh`, overflowY: `scroll` }}>
     {
       loadingChatList ?
         <LoadingIcon /> :
@@ -118,7 +118,7 @@ export const ChatList = ({ onChatSelect }) => {
                     textDecoration: `none`,
                     width: `100%`,
                     height: `100%`,
-                    zIndex: 1,
+                    zIndex: -999,
                   }}
                   onClick={() => getChatMessages({ chat_id: chat.chat_id })}
                 >
@@ -155,16 +155,20 @@ export const ChatList = ({ onChatSelect }) => {
                               </>
                           }
                         </div>
-                        <Dropdown className="ms-auto align-self-center" align={{ md: `end` }}>
+                        <Dropdown className="ms-auto align-self-center" align={{ md: `end` }} style={{ zIndex: 999 }}>
                           <Dropdown.Toggle as={CustomToggle}>
-                            <EllipsisIcon />
+                            <EllipsisIcon style={{ zIndex: 999 }} />
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => toggleRenameChatModal({ chat })}>
+                            <Dropdown.Item onClick={() => toggleRenameChatModal({ chat })} style={{ zIndex: 999 }}>
                               Rename
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={() => toggleAddUsersModal() }>Add User</Dropdown.Item>
-                            <Dropdown.Item onClick={() => leaveChat({ chat_id: chat.id })}>Leave</Dropdown.Item>
+                            <Dropdown.Item onClick={() => toggleAddUsersModal() } style={{ zIndex: 999 }} >
+                              Add User
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => leaveChat({ chat_id: chat.id })} style={{ zIndex: 999 }}>
+                              Leave
+                            </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
                       </div>
@@ -219,5 +223,5 @@ export const ChatList = ({ onChatSelect }) => {
         </Form>
       </Modal.Body>
     </Modal>
-  </>;
+  </div>;
 };

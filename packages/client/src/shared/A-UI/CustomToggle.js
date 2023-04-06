@@ -11,5 +11,6 @@ export const CustomToggle = React.forwardRef(({ onClick }, ref) =>
         e.preventDefault();
         onClick(e);
       }}
+      style={{ zIndex: 999 }}
     />
   </button>);

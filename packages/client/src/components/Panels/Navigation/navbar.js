@@ -19,6 +19,22 @@ export const Navigation = () => {
     setShowModal(false);
   };
 
+
+  useEffect(() => {
+    if (currentUser) {
+      const fetchData = async () => {
+        try {
+          const pfp = await UserService.getUserImage({ id: currentUser.id });
+          setUserImage(pfp || null);
+        }
+        catch (err) {
+          throw new Error(err);
+        }
+      };
+      fetchData();
+    }
+  }, [ currentUser?.id ]);
+
   return (
     <Navbar expand="lg" className="px-4">
       <Navbar.Brand>
