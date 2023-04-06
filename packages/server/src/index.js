@@ -1,6 +1,6 @@
 const express = require(`express`);
 const config = require(`config`);
-const helmet = require(`helmet`);
+const helmet = require(`helmet-csp`);
 const morgan = require(`morgan`);
 const fs = require(`fs`);
 const path = require(`path`);
@@ -25,8 +25,16 @@ if (process.env.PRODUCTION) {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
-app.use(helmet());
+// app.use(cors());
+// app.use(helmet());
+// app.use(helmet({
+//   directives: {
+//     // eslint-disable-next-line max-len
+//     connectSrc: [ `'self` `auth.firebase.com s-usc1c-nss-139.firebaseio.com https://identitytoolkit.googleapis.com https://apis.google.com https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com` ],
+//     // eslint-disable-next-line max-len
+//     scriptSrc: [ `'self'`, `auth.firebase.com s-usc1c-nss-139.firebaseio.com https://identitytoolkit.googleapis.com https://apis.google.com https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com` ],
+//   },
+// }));
 app.use(compression());
 app.use(cookieParser(config.get(`session.secret`) || process.env.SESSION_SECRET));
 

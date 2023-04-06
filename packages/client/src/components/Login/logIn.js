@@ -27,7 +27,8 @@ export const LogIn = () => {
     }
   }, [ currentUser, navigate ]);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data, e) => {
+    e.preventDefault();
     try {
       const { email, password } = data;
 
