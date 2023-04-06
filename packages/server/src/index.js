@@ -1,6 +1,6 @@
 const express = require(`express`);
 const config = require(`config`);
-const helmet = require(`helmet`);
+const helmet = require(`helmet-csp`);
 const morgan = require(`morgan`);
 const fs = require(`fs`);
 const path = require(`path`);
@@ -23,18 +23,16 @@ if (process.env.PRODUCTION) {
   app.use(express.static(path.resolve(__dirname, `../../client/build`)));
 }
 
-app.use((req, res, next) => {
-  res.setHeader(
-    `Content-Security-Policy`,
-    `default-src 'self'; connect-src 'self' https://identitytoolkit.googleapis.com/`,
-  );
-  next();
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
-app.use(helmet());
+// app.use(cors());
+app.use(helmet({
+  directives: {
+    defaultSrc: [ `'self'`, `https://*.firebaseio.com` ],
+    // eslint-disable-next-line max-len
+    scriptSrc: [ `'self'`, `https://apis.google.com https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com` ],
+  },
+}));
 app.use(compression());
 app.use(cookieParser(config.get(`session.secret`) || process.env.SESSION_SECRET));
 
