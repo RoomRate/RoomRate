@@ -35,7 +35,6 @@ export const LogIn = () => {
       await login(email, password);
       reset();
     } catch (err) {
-      console.log(err);
       console.log(`Invalid username or password`);
     }
   };
