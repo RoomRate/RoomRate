@@ -29,6 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 // app.use(helmet());
 app.use(helmet({
   directives: {
+    connectSrc: [ `'self` `auth.firebase.com s-usc1c-nss-139.firebaseio.com` ],
     // eslint-disable-next-line max-len
     scriptSrc: [ `'self'`, `https://identitytoolkit.googleapis.com https://apis.google.com https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com` ],
   },
