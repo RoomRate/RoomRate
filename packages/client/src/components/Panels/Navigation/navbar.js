@@ -22,7 +22,7 @@ export const Navigation = () => {
   };
 
   useEffect(() => {
-    if (currentUser) { // add a check to see if currentUser is not null or undefined
+    if (currentUser) {
       const fetchData = async () => {
         try {
           const pfp = await UserService.getUserImage({ id: currentUser.id });

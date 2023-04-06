@@ -90,9 +90,9 @@ export class ChatService {
     }
   }
 
-  static async createNewChat({ created_by, title }) {
+  static async createNewChat({ created_by, recipient_id, title }) {
     try {
-      console.log(`createNewChat`, created_by, title);
+      console.log(`createNewChat`, created_by, title, recipient_id);
       const user = auth.currentUser;
       const token = user && await user.getIdToken();
 
@@ -101,6 +101,7 @@ export class ChatService {
         url: `/chat/new`,
         data: {
           created_by,
+          recipient_id,
           title,
         },
         headers: {

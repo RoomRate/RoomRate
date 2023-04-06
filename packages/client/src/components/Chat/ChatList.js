@@ -103,7 +103,7 @@ export const ChatList = ({ onChatSelect }) => {
 
   const handleChatTitleChange = (e) => setChatTitle(e.target.value);
 
-  return <>
+  return <div style={{ height: `100vh`, overflowY: `scroll` }}>
     {
       loadingChatList ?
         <LoadingIcon /> :
@@ -219,5 +219,5 @@ export const ChatList = ({ onChatSelect }) => {
         </Form>
       </Modal.Body>
     </Modal>
-  </>;
+  </div>;
 };
