@@ -310,11 +310,20 @@ export const PropertyDetails = () => {
                         <h5 className="fw-light text-secondary mt-1">{reviews.length} reviews</h5>
                       </div>
                     </div>
-                    <Button
-                      className="btn-danger ms-auto h-50 mt-3"
-                      onClick={showReviewModal}>
-                      Write a review
-                    </Button>
+                    {
+                      currentUser ?
+                        <Button
+                          className="btn-danger ms-auto h-50 mt-3"
+                          onClick={showReviewModal}>
+                          Write a review
+                        </Button> :
+                        <p className="ms-auto mt-4">
+                          <a className="fw-bold" href="/login">Log in</a>
+                            &nbsp;or&nbsp;
+                          <a className="fw-bold" href="/login/signup">Sign Up</a>
+                            &nbsp;to leave a review!
+                        </p>
+                    }
                   </div>
                 </Card>
                 <div className="row">

@@ -252,13 +252,12 @@ export const RoommateFinder = () => {
                 <Card.Body>
                   <div className="d-flex justify-content-center" >
                     <div className="my-4">
-                      {
-                        <p>
-                          <a className="fw-bold" href="/login">Log in</a>
+                      <p>
+                        <a className="fw-bold" href="/login">Log in</a>
                           &nbsp;or&nbsp;
-                          <a className="fw-bold" href="/login/signup">Sign Up</a>
-                          &nbsp;to create a post!</p>
-                      }
+                        <a className="fw-bold" href="/login/signup">Sign Up</a>
+                          &nbsp;to create a post!
+                      </p>
                     </div>
                   </div>
                 </Card.Body>
