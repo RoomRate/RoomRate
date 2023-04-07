@@ -70,6 +70,10 @@ exports.getUserImage = async ({ id }) => {
 
   const imageKey = userImageKey.rows[0].image_key;
 
+  if (!imageKey) {
+    return null;
+  }
+
   const userImage = await s3download(imageKey);
 
   return userImage;
