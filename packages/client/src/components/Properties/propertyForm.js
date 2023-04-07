@@ -285,7 +285,7 @@ export const PropertyForm = () => {
           </Row>
 
           <div style={{ textAlign: `center` }}>
-            <br /><Button type="submit" style={{
+            <br /><Button variant="danger" type="submit" style={{
               width: `50%`,
             }}>Add My Property</Button><br /><br />
             <p>By clicking Add My Property above, I agree that I will provide
