@@ -17,6 +17,7 @@ export const PostDetailModal = ({ post, show, onHide }) => {
 
   const deleteComment = async (id) => {
     await RoommateService.deleteComment(id);
+    setComments(await RoommateService.getPostComments(post.id));
   };
 
   const addComment = async (comment) => {
@@ -29,7 +30,7 @@ export const PostDetailModal = ({ post, show, onHide }) => {
 
   return <Modal show={show} onHide={onHide} size="xl">
     <Card className="w-100 text-start">
-      <Card.Header>
+      <Card.Header className="header-custom">
         <div className="d-flex justify-content-between align-items-center">
           <Modal.Title className="w-100 ms-5 text-center">
             {post.author.first_name} {post.author.last_name}'s Post
@@ -122,7 +123,6 @@ export const PostDetailModal = ({ post, show, onHide }) => {
               <Dropdown className="reply-option">
                 <Dropdown.Toggle as={CustomToggle} />
                 <Dropdown.Menu>
-                  <Dropdown.Item>Edit</Dropdown.Item>
                   <Dropdown.Item onClick={() => deleteComment(c.id)}>Delete</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>

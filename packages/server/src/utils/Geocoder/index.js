@@ -1,4 +1,6 @@
 const NodeGeocoder = require(`node-geocoder`);
+const config = require(`config`);
+const geolib = require(`geolib`);
 
 const options = {
   provider: `google`,
@@ -7,14 +9,16 @@ const options = {
 
 const geocoder = NodeGeocoder(options);
 
-exports.attachCoordinates = async ({ properties }) => {
-  properties = await Promise.all(properties.map(async (p) => {
-    const returned = await geocoder.geocode(p.street_1);
-    p.lat = returned[0].latitude;
-    p.lng = returned[0].longitude;
+exports.attachCoordinates = async ({ property }) => {
+  const returned = await geocoder.geocode(property.street_1);
+  const [{ latitude }] = returned;
+  const [{ longitude }] = returned;
 
-    return p;
-  }));
+  const distance = await geolib.getDistance(
+    { latitude, longitude },
+    config.get(`campus_coordinates`),
+  );
+  const distanceInMiles = (distance * 0.000621371).toFixed(2);
 
-  return properties;
+  return { latitude, longitude, distanceInMiles };
 };

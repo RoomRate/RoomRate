@@ -118,7 +118,7 @@ export const SignUp = () => {
               <div className="invalid-feedback">{errors.confirmPwd?.message}</div><br />
 
               <div className="text-center">
-                <Button variant="primary" type="submit" className="text-center">REGISTER</Button>
+                <Button variant="danger" type="submit" className="text-center">REGISTER</Button>
               </div><br />
             </form>
           </div>

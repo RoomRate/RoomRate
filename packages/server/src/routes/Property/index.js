@@ -24,8 +24,8 @@ router.get(`/list`, async (req, res, next) => {
 router.get(`/:id/detail`, async (req, res, next) => {
   try {
     const [ property, images ] = await Promise.all([
-      await PropertyService.getPropertyDetail({ id: req.params.id }),
-      await PropertyService.getPropertyImages({ id: req.params.id }),
+      PropertyService.getPropertyDetail({ id: req.params.id }),
+      PropertyService.getPropertyImages({ id: req.params.id }),
     ]);
     property.images = images;
 

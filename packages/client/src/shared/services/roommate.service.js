@@ -96,4 +96,17 @@ export class RoommateService {
       throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
     }
   }
+
+  static async deleteComment(id) {
+    try {
+      await Axios({
+        method: `DELETE`,
+        url: `/roommate/post/comment/${id}`,
+      });
+
+      return;
+    } catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
 }

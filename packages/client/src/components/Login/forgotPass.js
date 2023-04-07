@@ -49,7 +49,7 @@ export const ForgotPassword = () => {
               />
               <div className="invalid-feedback">{errors.email?.message}</div><br />
               <div className="text-center">
-                <Button variant="primary" type="submit" className="text-center">RESET PASSWORD</Button>
+                <Button variant="danger" type="submit" className="text-center">RESET PASSWORD</Button>
               </div><br />
             </form>
           </div>

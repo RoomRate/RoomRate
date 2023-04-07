@@ -33,6 +33,7 @@ router.post(`/post/new`, async (req, res, next) => {
 
 router.delete(`/post/:id`, async (req, res, next) => {
   try {
+    await RoommateService.deletePostComments(req.params.id);
     await RoommateService.deletePost(req.params.id);
 
     ResponseHandler(

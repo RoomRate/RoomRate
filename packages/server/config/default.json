@@ -39,5 +39,9 @@
         "token_uri": "",
         "auth_provider_x509_cert_url": "",
         "client_x509_cert_url": ""
+    },
+    "campus_coordinates": {
+        "latitude": 39.131402309297805,
+        "longitude": -84.51615684482724
     }
 }

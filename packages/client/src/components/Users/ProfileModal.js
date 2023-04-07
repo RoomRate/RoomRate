@@ -149,9 +149,9 @@ export const ProfileModal = ({ id, onClose }) => {
                       <>
                         <Button variant="secondary" onClick={handleOpenEdit}>Edit</Button>
                       &nbsp;
-                        <Button variant="primary">Logout</Button>
+                        <Button variant="danger">Logout</Button>
                       </> :
-                      <Button variant="primary" onClick={startChat}>Message</Button>}
+                      <Button variant="danger" onClick={startChat}>Message</Button>}
                   </div>
                 </Modal.Body>
                 <Modal.Footer>
@@ -256,7 +256,7 @@ export const ProfileModal = ({ id, onClose }) => {
                     </Row>
                   </div>
                   <div style={{ textAlign: `right` }}>
-                    <br /><Button variant="primary" type="submit">
+                    <br /><Button variant="danger" type="submit">
                       Save
                     </Button>
 

@@ -53,7 +53,7 @@ export const UserForm = () => {
             />
           </Row>
 
-          <Button variant="primary" type="submit">Submit Profile</Button>
+          <Button variant="danger" type="submit">Submit Profile</Button>
         </form>
       </div>
     </>

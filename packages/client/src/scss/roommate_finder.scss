@@ -6,3 +6,19 @@
   font-family: Arial, sans-serif;
   color: #333;
 }
+
+a {
+  color: #dc3545;
+}
+
+a:hover {
+  color: #7e1b25;
+}
+
+.header-custom {
+  background-color: #dc3545;
+
+  .modal-title {
+    color: #fff;
+  }
+}

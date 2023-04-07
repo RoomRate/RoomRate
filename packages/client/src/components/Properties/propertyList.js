@@ -1,16 +1,15 @@
 /* eslint-disable no-unused-expressions */
+/* eslint-disable default-case */
 import React, { useEffect, useState, useCallback } from 'react';
 import { Card, Dropdown, ButtonGroup, Badge } from 'react-bootstrap';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { PropertyService } from "../../shared/services";
 import { MarkerIcon } from "../../shared/A-UI";
-// import { Image } from 'react-extras';
 import loadingIcon from '../../assets/images/loadingIcon.json';
 import { LoadingIcon } from '../../shared/A-UI';
 import { Link } from 'react-router-dom';
 import { scroller, Element } from 'react-scroll';
 import Lottie from 'lottie-react';
-import Select from 'react-select';
 import { DebounceInput } from 'react-debounce-input';
 
 export const PropertyList = () => {
@@ -19,7 +18,8 @@ export const PropertyList = () => {
   const [ clickedProperty, setClickedProperty ] = useState(null);
   const [ thumbnails, setThumbnail ] = useState({});
   const [ isPropertyLoading, setPropertyLoading ] = useState(true);
-  const [ filter, setFilter ] = useState({ policies: {} });
+  const [ filter, setFilter ] = useState({ policies: {}, type: [] });
+
   document.title = `RoomRate - Properties`;
 
   const fetchData = useCallback(async () => {
@@ -53,7 +53,7 @@ export const PropertyList = () => {
     <Marker
       key={p.id}
       icon={MarkerIcon}
-      position={[ p.lat, p.lng ]}
+      position={[ p.coords.latitude, p.coords.longitude ]}
       eventHandlers={{
         click: () => {
           scrollToPropertyFromMarker({ property_id: p.id });
@@ -119,14 +119,7 @@ export const PropertyList = () => {
     fetchData();
   };
 
-  const selectFilterChange = ({ value }, { name }) => {
-    const _filter = filter;
-    _filter[name] = value;
-    setFilter(_filter);
-    fetchData();
-  };
-
-  const checkBoxFilterChange = (e) => {
+  const policiesCheckBoxFilterChange = (e) => {
     const _filter = filter.policies;
     _filter[e.target.name] = e.target.checked;
     const newFilter = { ...filter, policies: _filter };
@@ -134,19 +127,41 @@ export const PropertyList = () => {
     fetchData();
   };
 
-  const sortOptions = [
-    { value: `priceAsc`, label: `Price Ascending` },
-    { value: `priceDesc`, label: `Price Descending` },
-    { value: `newer`, label: `Newest` },
-    { value: `older`, label: `Oldest` },
-  ];
-
-  const propertyOptions = [
-    { value: `Full House`, label: `Full House` },
-    { value: `Split House`, label: `Split House` },
-    { value: `Apartment`, label: `Apartment` },
-    { value: `Sublease`, label: `Sublease` },
-  ];
+  const houseTypeCheckBoxFilterChange = (e) => {
+    const _filter = filter;
+    switch (e.target.name) {
+      case `fullHouse`:
+        if (e.target.checked) {
+          _filter.type.push(`Full House`);
+        } else {
+          _filter.type.splice(_filter.type.indexOf(`Full House`), 1);
+        }
+        break;
+      case `splitHouse`:
+        if (e.target.checked) {
+          _filter.type.push(`Split House`);
+        } else {
+          _filter.type.splice(_filter.type.indexOf(`Split House`), 1);
+        }
+        break;
+      case `apartment`:
+        if (e.target.checked) {
+          _filter.type.push(`Apartment`);
+        } else {
+          _filter.type.splice(_filter.type.indexOf(`Apartment`), 1);
+        }
+        break;
+      case `sublease`:
+        if (e.target.checked) {
+          _filter.type.push(`Sublease`);
+        } else {
+          _filter.type.splice(_filter.type.indexOf(`Sublease`), 1);
+        }
+        break;
+    }
+    setFilter(_filter);
+    fetchData();
+  };
 
   return (
     isLoading ?
@@ -173,14 +188,16 @@ export const PropertyList = () => {
                 <Dropdown.Toggle className="rounded-0 btn-lg" variant="secondary" id="dropdown-basic">
                   Price Range
                 </Dropdown.Toggle>
-                <Dropdown.Menu>
+                <Dropdown.Menu style={{ width: `300px` }}>
                   <div className="d-flex mx-1">
+                    <p className="mb-0 me-1">$</p>
                     <DebounceInput type="number"
                       className="w-100"
                       name="minPrice"
                       debounceTimeout={300}
                       onChange={filterChange} />
-                    -
+                    <p className="mb-0 mx-1">-</p>
+                    <p className="mb-0 me-1">$</p>
                     <DebounceInput type="number"
                       className="w-100"
                       name="maxPrice"
@@ -200,6 +217,7 @@ export const PropertyList = () => {
                       name="bedrooms"
                       debounceTimeout={300}
                       onChange={filterChange} />
+                    <p className="mb-0 ms-1">beds</p>
                   </div>
                 </Dropdown.Menu>
               </Dropdown>
@@ -214,6 +232,7 @@ export const PropertyList = () => {
                       name="bathrooms"
                       debounceTimeout={300}
                       onChange={filterChange} />
+                    <p className="mb-0 ms-1">baths</p>
                   </div>
                 </Dropdown.Menu>
               </Dropdown>
@@ -224,39 +243,39 @@ export const PropertyList = () => {
                 <Dropdown.Menu>
                   <div className="mx-1">
                     <div>
-                      <input type="checkbox" name="pets" onChange={checkBoxFilterChange} />
+                      <input type="checkbox" name="pets" onChange={policiesCheckBoxFilterChange} />
                       <label htmlFor="pets">&nbsp;Pets Allowed</label>
                     </div>
                     <div>
-                      <input type="checkbox" name="heat" onChange={checkBoxFilterChange} />
+                      <input type="checkbox" name="heat" onChange={policiesCheckBoxFilterChange} />
                       <label htmlFor="heat">&nbsp;Central Heating</label>
                     </div>
                     <div>
-                      <input type="checkbox" name="ac" onChange={checkBoxFilterChange} />
+                      <input type="checkbox" name="ac" onChange={policiesCheckBoxFilterChange} />
                       <label htmlFor="ac">&nbsp;Air Conditioning</label>
                     </div>
                     <div>
-                      <input type="checkbox" name="internet" onChange={checkBoxFilterChange} />
+                      <input type="checkbox" name="internet" onChange={policiesCheckBoxFilterChange} />
                       <label htmlFor="internet">&nbsp;Internet Included</label>
                     </div>
                     <div>
-                      <input type="checkbox" name="parking" onChange={checkBoxFilterChange} />
+                      <input type="checkbox" name="parking" onChange={policiesCheckBoxFilterChange} />
                       <label htmlFor="parking">&nbsp;Parking</label>
                     </div>
                     <div>
-                      <input type="checkbox" name="laundry" onChange={checkBoxFilterChange} />
+                      <input type="checkbox" name="laundry" onChange={policiesCheckBoxFilterChange} />
                       <label htmlFor="laundry">&nbsp;Laundry Onsite</label>
                     </div>
                     <div>
-                      <input type="checkbox" name="utilities" onChange={checkBoxFilterChange} />
+                      <input type="checkbox" name="utilities" onChange={policiesCheckBoxFilterChange} />
                       <label htmlFor="utilities">&nbsp;Utilities Included</label>
                     </div>
                     <div>
-                      <input type="checkbox" name="wheelchair" onChange={checkBoxFilterChange} />
+                      <input type="checkbox" name="wheelchair" onChange={policiesCheckBoxFilterChange} />
                       <label htmlFor="wheelchair">&nbsp;Disabled friendly</label>
                     </div>
                     <div>
-                      <input type="checkbox" name="furnished" onChange={checkBoxFilterChange} />
+                      <input type="checkbox" name="furnished" onChange={policiesCheckBoxFilterChange} />
                       <label htmlFor="furnished">&nbsp;Pre-furnished</label>
                     </div>
                   </div>
@@ -267,25 +286,45 @@ export const PropertyList = () => {
                   Type
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Select
-                    className="mx-1"
-                    name="property"
-                    options={propertyOptions}
-                    onChange={selectFilterChange}
-                  />
+                  <div className="mx-1">
+                    <div>
+                      <input type="checkbox" name="fullHouse" onChange={houseTypeCheckBoxFilterChange} />
+                      <label htmlFor="fullHouse">&nbsp;Full House</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" name="splitHouse" onChange={houseTypeCheckBoxFilterChange} />
+                      <label htmlFor="splitHouse">&nbsp;Split House</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" name="apartment" onChange={houseTypeCheckBoxFilterChange} />
+                      <label htmlFor="Appartment">&nbsp;Apartment</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" name="sublease" onChange={houseTypeCheckBoxFilterChange} />
+                      <label htmlFor="sublease">&nbsp;Sublease</label>
+                    </div>
+                  </div>
                 </Dropdown.Menu>
               </Dropdown>
               <Dropdown>
                 <Dropdown.Toggle className="rounded-0 btn-lg" variant="secondary" id="dropdown-basic">
-                  Sort By
+                  Distance
                 </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Select
-                    className="mx-1"
-                    name="sortBy"
-                    options={sortOptions}
-                    onChange={selectFilterChange}
-                  />
+                <Dropdown.Menu style={{ width: `200px` }}>
+                  <div className="d-flex mx-1">
+                    <DebounceInput type="number"
+                      className="w-100"
+                      name="minPrice"
+                      debounceTimeout={300}
+                      onChange={filterChange} />
+                    <p className="mb-0 mx-1">-</p>
+                    <DebounceInput type="number"
+                      className="w-100"
+                      name="maxPrice"
+                      debounceTimeout={300}
+                      onChange={filterChange} />
+                    <p className="mb-0 ms-1">miles</p>
+                  </div>
                 </Dropdown.Menu>
               </Dropdown>
               <Dropdown>
@@ -345,7 +384,8 @@ export const PropertyList = () => {
                         </div>
                         <div className="w-50 text-start ms-2">
                           <h3 className="my-0">${property.rate}</h3 >
-                          <h3 className="my-0">{property.bed} Bed, {property.bath} Bath</h3 >
+                          <h3 className="my-0">{property.bed} Bed, {property.bath} Bath</h3>
+                          <p className="my-0 fw-bold">Type: {property.propType}</p>
                           <br />
                           <p>
                             {

@@ -5,5 +5,5 @@
   "packageFile": "{packages/*/,}package.json",
   "packageManager": "npm",
   "target": "minor",
-  "reject": ["yup","react-geocode"]
+  "reject": ["yup","react-geocode", "rc-slider"]
 }

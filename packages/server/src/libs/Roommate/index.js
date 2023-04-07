@@ -66,7 +66,7 @@ exports.postComment = async (comment) => {
       posted_on: new Date(),
     },
   );
-}
+};
 
 exports.getComments = async (id) => {
   return await knex(`post_comments`).where({ post_id: id }).orderBy(`posted_on`, `desc`).then(async (comments) => 
@@ -75,4 +75,12 @@ exports.getComments = async (id) => {
 
     return comment
   })))
-}
+};
+
+exports.deletePostComments = async (id) => {
+  await knex(`post_comments`).where({ post_id: id }).del();
+};
+
+exports.deleteComment = async (id) => {
+  await knex(`post_comments`).where({ id }).del();
+};

@@ -34,8 +34,8 @@ exports.getPropertyList = async ({ filter = {} }) => {
       if (filter.bathrooms) {
         qb.where(`bath`, Number(filter.bathrooms));
       }
-      if (filter.propertyType) {
-        qb.where(`propType`, filter.propertyType);
+      if (filter.type) {
+        qb.whereIn(`propType`, filter.type);
       }
       if (filter.search) {
         qb.whereRaw(`CONCAT(street_1,' ',street_2) like '%${ filter.search }%'`);
@@ -50,29 +50,41 @@ exports.getPropertyList = async ({ filter = {} }) => {
     })
     .orderBy(orderBy.column, orderBy.order);
 
-  properties = await attachCoordinates({ properties });
   properties = await Promise.all(properties.map(async p => {
-    const [ peopleCount ] = await knex(`roommate_posts`).count(`property_id`).where(`property_id`, p.id);
-    p.peopleInterested = peopleCount.count;
+    const [ coords, peopleCount ] = await Promise.all([
+      attachCoordinates({ property: p }),
+      knex(`roommate_posts`).count(`property_id`).where(`property_id`, p.id),
+    ]);
+
+    p.coords = coords;
+    p.peopleInterested = peopleCount[0].count;
 
     return p;
   }));
+
+  if (filter.minDistance) {
+    properties = properties.filter(p => Number(p.coords.distanceInMiles) >= Number(filter.minDistance));
+  }
+  if (filter.maxDistance) {
+    properties = properties.filter(p => Number(p.coords.distanceInMiles) <= Number(filter.maxDistance));
+  }
 
   return properties;
 };
 
 exports.getPropertyDetail = async ({ id }) => {
-  let property = await knex.raw(`
-    SELECT *
-    FROM properties
-    JOIN users ON users.id = properties.landlord_id
-    WHERE properties.id = ?
-  `, [ id ]);
+  const property = await knex(`properties`).where(`id`, id).first();
+  const [ coords, peopleInterested, landlord ] = await Promise.all([
+    attachCoordinates({ property }),
+    knex(`roommate_posts`).count(`property_id`).where(`property_id`, id),
+    knex(`users`).where(`id`, property.landlord_id).first(),
+  ]);
 
-  property = await attachCoordinates({ properties: property.rows });
-  property[0].peopleInterested = await knex(`roommate_posts`).count(`property_id`).where(`property_id`, id);
+  property.coords = coords;
+  property.peopleInterested = peopleInterested;
+  property.landlord = landlord;
 
-  return property[0];
+  return property;
 };
 
 exports.getReviews = async ({ id }) => {

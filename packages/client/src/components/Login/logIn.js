@@ -84,7 +84,7 @@ export const LogIn = () => {
               </div>
 
               <div className="text-center">
-                <Button variant="primary" type="submit" className="text-center">SIGN IN</Button>
+                <Button variant="danger" type="submit" className="text-center">SIGN IN</Button>
               </div><br />
 
               <div className="text-center">

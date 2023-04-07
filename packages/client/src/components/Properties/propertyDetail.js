@@ -14,7 +14,6 @@ import { MarkerIcon, InlineError } from "../../shared/A-UI";
 import Lottie from 'lottie-react';
 import loadingIcon from "../../assets/images/loadingIcon.json";
 import { useAuth } from "../../shared/contexts/AuthContext";
-import { Swiper, SwiperSlide } from 'swiper/react';
 import { Image } from 'react-extras';
 import ReactTimeAgo from 'react-time-ago';
 import 'swiper/css';
@@ -132,7 +131,7 @@ export const PropertyDetails = () => {
               <p className="mb-1">
                 <span className="fw-bold">Landlord:</span> &nbsp;
                 <Link onClick={handleOpenModal}>
-                  {`${property.first_name} ${property.last_name}`}
+                  {`${property.landlord.first_name} ${property.landlord.last_name}`}
                 </Link>
                 {showModal &&
                   <ProfileModal id={property.id} onClose={handleCloseModal}>
@@ -140,6 +139,11 @@ export const PropertyDetails = () => {
                   </ProfileModal>}
               </p>
               <p className="mb-1"><span className="fw-bold">Description:</span> {property?.details}</p>
+              <p className="mb-1">
+                <span className="fw-bold">Distance to Campus:</span> {property.coords.distanceInMiles === 1 ?
+                  `${property.coords.distanceInMiles} mile` :
+                  `${property.coords.distanceInMiles} miles`}
+              </p>
               <p className="mb-1"><span className="fw-bold">Amenities:</span></p>
               <div className="row">
                 {
@@ -239,21 +243,25 @@ export const PropertyDetails = () => {
           <div className="d-flex justify-content-center">
             {
               Number(property?.peopleInterested[0]?.count) > 0 ?
-                <Button variant="danger" className="me-2" style={{ width: `30%` }}>
-                  {/* eslint-disable-next-line max-len */}
-                  Meet {property?.peopleInterested[0]?.count} more {Number(property?.peopleInterested[0]?.count) > 1 ? `people` : `person`} interested in this property
-                </Button> : null
+                <Link to={`/roommate-finder`} state={{ propertyFilter: property }}>
+                  <Button variant="danger" className="me-2">
+                    {/* eslint-disable-next-line max-len */}
+                    Meet {property?.peopleInterested[0]?.count} more {Number(property?.peopleInterested[0]?.count) > 1 ? `people` : `person`} interested in this property
+                  </Button>
+                </Link> : null
             }
-            <Button variant="danger" style={{ width: `30%` }}>
-              Looking for roommates for this property?
-            </Button>
+            <Link to={`/roommate-finder`} state={{ property }}>
+              <Button variant="danger">
+                Looking for roommates for this property?
+              </Button>
+            </Link>
           </div>
           <br />
           <div id="propertyMap" style={{ maxHeight: `90vh`, overflow: `hidden` }}>
             <h4>Map</h4>
             <MapContainer
               style={{ height: `40vh` }}
-              center={[ property.lat, property.lng ]}
+              center={[ property.coords.latitude, property.coords.longitude ]}
               zoom={20}
             >
               <TileLayer
@@ -262,7 +270,7 @@ export const PropertyDetails = () => {
               />
               <Marker
                 icon={MarkerIcon}
-                position={[ property?.lat, property?.lng ]}>
+                position={[ property.coords.latitude, property.coords.longitude ]}>
                 <Popup>
                   <div>
                     <div className="tooltip-header">
@@ -309,13 +317,11 @@ export const PropertyDetails = () => {
                     </Button>
                   </div>
                 </Card>
-                <Swiper
-                  slidesPerView={3}
-                  spaceBetween={10}>
+                <div className="row">
                   {
                     reviews.map(review =>
-                      <SwiperSlide>
-                        <Card className="text-start">
+                      <div className="col-md-4 px-0">
+                        <Card className="text-start mx-1 mb-2">
                           <Card.Header className="pb-0 px-0">
                             <div className="d-flex w-100">
                               <div className="mx-2 mt-1">
@@ -348,9 +354,9 @@ export const PropertyDetails = () => {
                             <p className="mx-2 mt-1">{review.message}</p>
                           </Card.Text>
                         </Card>
-                      </SwiperSlide>)
+                      </div>)
                   }
-                </Swiper>
+                </div>
               </> : <div>
                 <Button className="btn-danger" onClick={showReviewModal}>Be the first to leave a review</Button>
               </div>

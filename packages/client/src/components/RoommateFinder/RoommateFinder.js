@@ -17,8 +17,12 @@ import { PostDetailModal } from "./PostDetailModal";
 import { useAuth } from '../../shared/contexts/AuthContext';
 import { ProfileModal } from '../Users/ProfileModal';
 import { DebounceInput } from 'react-debounce-input';
+import { useLocation } from 'react-router-dom';
 
-export const RoommateFinder = ({ property, propertyFilter }) => {
+export const RoommateFinder = () => {
+  const location = useLocation();
+  const property = location.state?.property || null;
+  const propertyFilter = location.state?.propertyFilter || null;
   const [ isLoading, setLoading ] = useState(true);
   const [ isPostLoading, setPostLoading ] = useState(false);
   const [ posts, setPosts ] = useState([]);
@@ -28,6 +32,8 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
   const [ postDetail, setPostDetail ] = useState(null);
   const { currentUser } = useAuth();
   const [ showModal, setShowModal ] = useState(false);
+  const [ filter, setFilter ] = useState(propertyFilter ? { property: propertyFilter.id } : {});
+  document.title = `RoomRate - Roommate Finder`;
 
   function handleOpenModal() {
     setShowModal(true);
@@ -36,9 +42,6 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
-  const [ filter, setFilter ] = useState({});
-  document.title = `RoomRate - Roommate Finder`;
 
   const fetchData = useCallback(async () => {
     try {
@@ -62,13 +65,13 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
     post.property = newPostProperty;
     post.author = currentUser.id;
     await RoommateService.createPost(post);
-    setPosts(await RoommateService.getPosts());
+    fetchData();
     reset();
   };
 
   const deletePost = async (id) => {
     await RoommateService.deletePost(id);
-    setPosts(await RoommateService.getPosts());
+    fetchData();
   };
 
   const propertySearch = async (input) => {
@@ -78,7 +81,11 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
   };
 
   const handlePropertyChange = (_property) => {
-    setNewPostProperty(_property.value);
+    if (_property) {
+      setNewPostProperty(_property.value);
+    } else {
+      setNewPostProperty(null);
+    }
   };
 
   const showPostDetailModal = (post) => {
@@ -94,11 +101,19 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
     fetchData();
   };
 
-  const selectFilterChange = ({ value }, { name }) => {
-    const _filter = filter;
-    _filter[name] = value;
-    setFilter(_filter);
-    fetchData();
+  const selectFilterChange = (v, { name }) => {
+    if (v) {
+      const _filter = filter;
+      _filter[name] = v.value;
+      setFilter(_filter);
+      fetchData();
+    }
+    else {
+      const _filter = filter;
+      delete _filter[name];
+      setFilter(_filter);
+      fetchData();
+    }
   };
 
   return isLoading ?
@@ -139,10 +154,11 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
                   defaultValue={
                     propertyFilter ? {
                       // eslint-disable-next-line max-len
-                      label: `${property.street_1}${property.street_2 ? `, Unit ${property.street_2}` : ``}`, value: property.id,
+                      label: `${propertyFilter.street_1}${propertyFilter.street_2 ? `, Unit ${propertyFilter.street_2}` : ``}`, value: propertyFilter.id,
                     } : null
                   }
                   onChange={selectFilterChange}
+                  isClearable
                 />
               </div>
             </div>
@@ -179,57 +195,74 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
         </div>
         <div className="col-md-9">
           <Card className="w-100 my-2 text-start">
-            <Card.Body>
-              <div className="d-flex mb-n1" >
-                <div className="mt-2">
-                  <Image
-                    url={DEFAULT_PFP}
-                    fallbackUrl={DEFAULT_PFP}
-                    className="avatar rounded img-fluid"
-                    alt="user profile avatar"
-                    width={50} />
-                </div>
-                <form id="newPost" onSubmit={handleSubmit(createPost)} className="w-100 mx-2">
-                  <div className="d-flex mb-2">
-                    <input
-                      className="w-100 me-2"
-                      placeholder="Title"
-                      {...register(`title`, { required: true })}
-                      defaultValue="Looking for roommates"
-                    />
-                    <span className="mt-2">for</span>
-                    <AsyncSelect
-                      className="w-100 ms-2"
-                      cacheOptions
-                      noOptionsMessage={() => `Search for property...`}
-                      loadOptions={debounce(propertySearch, 100, { leading: true })}
-                      defaultValue={
-                        property ? {
-                          // eslint-disable-next-line max-len
-                          label: `${property.street_1}${property.street_2 ? `, Unit ${property.street_2}` : ``}`, value: property.id,
-                        } : null
-                      }
-                      onChange={handlePropertyChange}
-                    />
+            {
+              currentUser ?
+                <Card.Body>
+                  <div className="d-flex mb-n1" >
+                    <div className="mt-2">
+                      <Image
+                        url={DEFAULT_PFP}
+                        fallbackUrl={DEFAULT_PFP}
+                        className="avatar rounded img-fluid"
+                        alt="user profile avatar"
+                        width={50} />
+                    </div>
+                    <form id="newPost" onSubmit={handleSubmit(createPost)} className="w-100 mx-2">
+                      <div className="d-flex mb-2">
+                        <input
+                          className="w-100 me-2"
+                          placeholder="Title"
+                          {...register(`title`, { required: true })}
+                          defaultValue="Looking for roommates"
+                        />
+                        <span className="mt-2">for</span>
+                        <AsyncSelect
+                          className="w-100 ms-2"
+                          cacheOptions
+                          noOptionsMessage={() => `Search for property...`}
+                          loadOptions={debounce(propertySearch, 100, { leading: true })}
+                          defaultValue={
+                            property ? {
+                              // eslint-disable-next-line max-len
+                              label: `${property.street_1}${property.street_2 ? `, Unit ${property.street_2}` : ``}`, value: property.id,
+                            } : null
+                          }
+                          onChange={handlePropertyChange}
+                          isClearable
+                        />
+                      </div>
+                      <textarea
+                        className="w-100"
+                        placeholder="Create post"
+                        {...register(`message`)}
+                      />
+                    </form>
+                    <div className="d-flex align-items-center">
+                      <Button
+                        className="btn-primary align-self-center"
+                        form="newPost"
+                        type="submit"
+                        variant="danger"
+                      >
+                        Post
+                      </Button>
+                    </div>
                   </div>
-                  <textarea
-                    className="w-100"
-                    placeholder="Create post"
-                    {...register(`message`)}
-                  />
-                </form>
-                <div className="d-flex align-items-center">
-                  <Button
-                    className="btn-primary align-self-center"
-                    form="newPost"
-                    type="submit"
-                    variant="danger"
-                  >
-                    Post
-                  </Button>
-                </div>
-              </div>
-            </Card.Body>
+                </Card.Body> :
+                <Card.Body>
+                  <div className="d-flex justify-content-center" >
+                    <div className="my-4">
+                      {
+                        <p>
+                          <a className="fw-bold" href="/login">Log in</a>
+                          &nbsp;or&nbsp;
+                          <a className="fw-bold" href="/login/signup">Sign Up</a>
+                          &nbsp;to create a post!</p>
+                      }
+                    </div>
+                  </div>
+                </Card.Body>
+            }
           </Card>
           {
             isPostLoading ?
@@ -278,7 +311,6 @@ export const RoommateFinder = ({ property, propertyFilter }) => {
                           <Dropdown className="ms-auto">
                             <Dropdown.Toggle as={CustomToggle} />
                             <Dropdown.Menu>
-                              <Dropdown.Item>Edit</Dropdown.Item>
                               <Dropdown.Item onClick={() => deletePost(post.id)}>Delete</Dropdown.Item>
                             </Dropdown.Menu>
                           </Dropdown>
