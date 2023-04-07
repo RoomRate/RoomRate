@@ -14,6 +14,7 @@ import Select from 'react-select';
 import { UserService } from '../../shared/services';
 import { ChatService } from '../../shared/services';
 import { useNavigate } from 'react-router-dom';
+import defaultPFP from '../../assets/images/blank-profile-picture.webp';
 
 export const ProfileModal = ({ id, onClose }) => {
   const { control, handleSubmit, register, reset } = useForm();
@@ -23,7 +24,7 @@ export const ProfileModal = ({ id, onClose }) => {
   const [ isLoading, setLoading ] = useState(true);
   const [ isEditing, setIsEditing ] = useState(false);
   const [ pic, setPic ] = useState([]);
-  const [ userImage, setUserImage ] = useState([]);
+  const [ userImage, setUserImage ] = useState(null);
   const [ thumbnails, setThumbnail ] = useState([]);
   const navigate = useNavigate();
 
@@ -39,9 +40,7 @@ export const ProfileModal = ({ id, onClose }) => {
 
   const startChat = async () => {
     const title = `Chat with ${user.first_name} from ${currentUser.first_name}`;
-    console.log(user);
     const chat = await ChatService.createNewChat({ created_by: currentUser.id, title, recipient_id: user.id });
-    console.log(chat);
     localStorage.setItem(`lastOpenedChat`, chat.id);
 
     return navigate(`/chat`);
@@ -62,7 +61,8 @@ export const ProfileModal = ({ id, onClose }) => {
         setProperties(propertyList);
         setThumbnail(thumbnailList);
         setUser(await UserService.getUserDetails({ id }));
-        setUserImage(await UserService.getUserImage({ id }));
+        const pfp = await UserService.getUserImage({ id });
+        setUserImage(pfp || null);
       }
 
       catch (err) {
@@ -123,7 +123,7 @@ export const ProfileModal = ({ id, onClose }) => {
                         <div id="profilePic" style={{ textAlign: `center` }}>
                           <img
                             src={userImage ? `data:image/jpeg;base64, ${userImage}` :
-                              `../../assets/images/placeholderprofile.jpg`}
+                              defaultPFP}
                             className="rounded-circle"
                             style={{ width: `225px`, height: `225px`, border: `1px solid black` }}
                             alt="user_image"
@@ -199,7 +199,7 @@ export const ProfileModal = ({ id, onClose }) => {
                         <div className="container" id="profilePic">
                           <img
                             src={userImage ? `data:image/jpeg;base64, ${userImage}` :
-                              `../../assets/images/blank-profile-picture.webp`}
+                              defaultPFP}
                             className="rounded-circle"
                             style={{ width: `225px`, height: `200px`, border: `1px solid black` }}
                             alt="user_image"

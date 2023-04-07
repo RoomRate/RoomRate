@@ -134,7 +134,7 @@ export const PropertyDetails = () => {
                   {`${property.landlord.first_name} ${property.landlord.last_name}`}
                 </Link>
                 {showModal &&
-                  <ProfileModal id={property.id} onClose={handleCloseModal}>
+                  <ProfileModal id={property.landlord_id} onClose={handleCloseModal}>
                     <h1>Modal Content</h1>
                   </ProfileModal>}
               </p>
