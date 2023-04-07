@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { Image } from 'react-extras';
 import logo from '../../../assets/images/RoomRateLogoInvert.png';
@@ -6,9 +6,11 @@ import user from '../../../assets/images/DefaultPFP.png';
 import '../../../scss/custom.scss';
 import { ProfileModal } from '../../Users/ProfileModal.js';
 import { useAuth } from '../../../shared/contexts/AuthContext';
+import { UserService } from '../../../shared/services';
 
 export const Navigation = () => {
   const [ showModal, setShowModal ] = useState(false);
+  const [ userImage, setUserImage ] = useState(false);
   const { currentUser } = useAuth();
 
   function handleOpenModal() {
@@ -18,7 +20,6 @@ export const Navigation = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
 
   useEffect(() => {
     if (currentUser) {
@@ -55,7 +56,12 @@ export const Navigation = () => {
       </Navbar.Collapse>
       {currentUser ?
         <Nav.Link onClick={handleOpenModal}>
-          <Image url={user} alt="Profile" height="30" />
+          <img
+            src={userImage ? `data:image/jpeg;base64, ${userImage}` : user}
+            className="rounded-circle"
+            style={{ width: `40px`, height: `40px`, border: `1px solid black` }}
+            alt="user_image"
+          />
         </Nav.Link> :
         <Nav.Link className="links" href="/login" style={{ color: `white`, fontWeight: `bold` }}>
           Login/Signup</Nav.Link>}

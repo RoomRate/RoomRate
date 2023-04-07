@@ -25,7 +25,6 @@ export const ProfileModal = ({ id, onClose }) => {
   const [ pic, setPic ] = useState([]);
   const [ userImage, setUserImage ] = useState([]);
   const [ thumbnails, setThumbnail ] = useState([]);
-  const history = createBrowserHistory();
   const navigate = useNavigate();
 
   function uploadSingleFile(e) {
@@ -37,7 +36,6 @@ export const ProfileModal = ({ id, onClose }) => {
     { value: `Yes`, label: `Yes` },
     { value: `No`, label: `No` },
   ];
-
 
   const startChat = async () => {
     const title = `Chat with ${user.first_name} from ${currentUser.first_name}`;
