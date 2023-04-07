@@ -57,8 +57,10 @@ export const RoommateFinder = () => {
       setPostLoading(true);
       const fetchedPosts = await RoommateService.getPosts(filter);
       setPosts(fetchedPosts);
-      const pfp = await UserService.getUserImage({ id: currentUser.id });
-      setUserImage(pfp || null);
+      if (currentUser) {
+        const pfp = await UserService.getUserImage({ id: currentUser.id });
+        setUserImage(pfp || null);
+      }
     }
     catch (err) {
       throw new Error(err);
@@ -67,7 +69,7 @@ export const RoommateFinder = () => {
       setPostLoading(false);
       setLoading(false);
     }
-  }, [ filter, currentUser.id ]);
+  }, [ filter, currentUser ]);
 
   useEffect(() => {
     fetchData();
