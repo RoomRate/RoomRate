@@ -79,6 +79,8 @@ exports.getUserImage = async ({ id }) => {
   return userImage;
 };
 
+exports.getImageByKey = async ({ image_key }) => await s3download(image_key);
+
 exports.updateUser = async ({ data }) => {
   const { uid, first_name, last_name, seeking, bio } = data;
   const userId = await knex(`users`)
