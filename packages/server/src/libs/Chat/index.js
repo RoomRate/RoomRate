@@ -199,6 +199,6 @@ exports.renameChat = async ({ chat_id, title }) => {
   await knex.raw(`
     UPDATE chats
     SET title = ?
-    WHERE chat_id = ?;
+    WHERE id = ?;
   `, [ title, chat_id ]);
 };

@@ -1,20 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Form, InputGroup, Row, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Button, Card, Form, InputGroup, Row, OverlayTrigger, Popover, Dropdown, Modal } from 'react-bootstrap';
 import { ChatList } from './ChatList';
 import { useForm } from 'react-hook-form';
-import { ChatService } from '../../shared/services';
+import { ChatService, UserService } from '../../shared/services';
 import { useAuth } from '../../shared/contexts/AuthContext';
 import './chat.scss';
 import { LoadingIcon } from '../../shared/A-UI';
-import { FaEllipsisH as EllipsisIcon } from "react-icons/fa";
+import { FaEllipsisV as EllipsisIcon } from "react-icons/fa";
 import ReactTimeAgo from 'react-time-ago';
+import { CustomToggle } from "../../shared/A-UI";
+import { InlineError } from "../../shared/A-UI";
+import AsyncSelect from 'react-select/async';
+import { debounce } from 'lodash';
 
 export const ChatView = () => {
   document.title = `Roomrate - Chats`;
   const [ activeChat, setActiveChat ] = useState();
   const [ loadingChat, setLoadingChat ] = useState(true);
   const { currentUser } = useAuth();
-  const { register, reset, handleSubmit } = useForm();
+  const [ showRenameChatModal, setShowRenameChatModal ] = useState(false);
+  const [ showAddUsersModal, setShowAddUsersModal ] = useState(false);
+  // const [ chatBeingUpdated, setChatBeingUpdated ] = useState();
+  const [ chatTitle, setChatTitle ] = useState();
+  const [ chatId, setChatId ] = useState();
+  const {
+    formState: {
+      errors,
+    },
+    register,
+    reset,
+    handleSubmit,
+  } = useForm();
 
   const HOST = process.env.NODE_ENV === `production` ?
     window.location.origin.replace(/^http/, `ws`) :
@@ -64,6 +80,43 @@ export const ChatView = () => {
     }
   };
 
+  const searchUsers = async (q) => {
+    const users = await UserService.searchUsers({ q });
+
+    return users;
+  };
+
+  const toggleRenameChatModal = ({ chat_id, title } = {}) => {
+    // setChatBeingUpdated(chat);
+    console.log(`toggleRenameChatModal`, chat_id, title);
+    setChatTitle(title);
+    setChatId(chat_id);
+    setShowRenameChatModal(!showRenameChatModal);
+  };
+
+  const toggleAddUsersModal = () => setShowAddUsersModal(!showAddUsersModal);
+
+  const leaveChat = async ({ chat_id }) => {
+    await ChatService.removeUserFromChat({ chat_id, user_id: currentUser.id });
+
+    // TODO remove the chat from the UI / change the current "selected chat"
+  };
+
+  const renameChat = async () => {
+    await ChatService.changeTitle({ chat_id: chatId, title: chatTitle });
+    reset();
+    setShowRenameChatModal(false);
+    window.location.reload();
+  };
+
+  const addUserToChat = async (data) => {
+    const { id: user_id, chat_id } = data.user;
+
+    await ChatService.addUserToChat({ chat_id, user_id });
+  };
+
+  const handleChatTitleChange = (e) => setChatTitle(e.target.value);
+
   return (
     <div style={{ height: `93.80vh`, overflow: `hidden` }}>
       <Row style={{ padding: 0 }}>
@@ -78,13 +131,30 @@ export const ChatView = () => {
                 <Card style={{ height: `93.80vh`, borderRadius: 0 }}>
                   <Card.Header>
                     <Card.Title>
-                      <div>
+                      <div className="d-flex justify-content-between align-items-center">
                         {
                           activeChat.chat.title ?
-                            <p>{activeChat.chat.title}</p> :
+                            <p>{activeChat.chat.title} {activeChat.chat.id}</p> :
                             activeChat.users.map((user, index, array) =>
                               `${user.first_name} ${user.last_name}${index + 1 !== array.length ? `, ` : ``}`)
                         }
+                        <Dropdown className="align-self-center">
+                          <Dropdown.Toggle as={CustomToggle}>
+                            <EllipsisIcon />
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu style={{ left: `-250%` }}>
+                            { /* eslint-disable-next-line max-len */ }
+                            <Dropdown.Item onClick={() => toggleRenameChatModal({ chat_id: activeChat.chat.id, title: activeChat.chat.title })}>
+                              Rename
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => toggleAddUsersModal()}>
+                              Add User
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => leaveChat({ chat_id: activeChat.chat.id })}>
+                              Leave Chat
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
                       </div>
                     </Card.Title>
                   </Card.Header>
@@ -142,6 +212,59 @@ export const ChatView = () => {
                 </Card> :
                 <div />
           }
+
+          <Modal show={showRenameChatModal} onHide={toggleRenameChatModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Rename Chat</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form onSubmit={renameChat}>
+                <div>
+                  <Form.Control
+                    id="title"
+                    {...register(`title`, { required: true })}
+                    value={chatTitle}
+                    onChange={handleChatTitleChange}
+                  />
+                  <InlineError
+                    errors={errors}
+                    name="title"
+                    message="Chat name cannot be empty"
+                  />
+                </div>
+                <div className="w-100 text-end">
+                  <br />
+                  <Button variant="danger" type="submit">
+                    Save Changes
+                  </Button>
+                </div>
+              </Form>
+            </Modal.Body>
+          </Modal>
+
+          <Modal show={showAddUsersModal} onHide={toggleAddUsersModal} >
+            <Modal.Header closeButton>
+              <Modal.Title>Add Users to Chat</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form onSubmit={handleSubmit(addUserToChat)}>
+                <div>
+                  <AsyncSelect
+                    className="w-100 ms-2"
+                    cacheOptions
+                    noOptionsMessage={() => `Search for user...`}
+                    loadOptions={debounce(searchUsers, 100, { leading: true })}
+                    {...register(`user`, { required: true })}
+                  />
+                  <InlineError errors={errors} name="user" message="Please select a user to add" />
+                </div>
+                <div className="w-100 text-end">
+                  <Button variant="danger" type="submit">Add User</Button>
+                </div>
+              </Form>
+            </Modal.Body>
+          </Modal>
+
         </div>
       </Row>
     </div>

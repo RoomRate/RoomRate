@@ -47,6 +47,7 @@
     "npm-check-updates": "^16.7.10",
     "qs": "^6.11.1",
     "rc-slider": "9.7.5",
+    "react-avatar-group": "^1.0.2",
     "react-bootstrap": "^2.7.0",
     "react-currency-input-field": "^3.6.10",
     "react-debounce-input": "^3.3.0",

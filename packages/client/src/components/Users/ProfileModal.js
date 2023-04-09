@@ -15,6 +15,7 @@ import { UserService } from '../../shared/services';
 import { ChatService } from '../../shared/services';
 import { useNavigate } from 'react-router-dom';
 import defaultPFP from '../../assets/images/blank-profile-picture.webp';
+import { getAuth, signOut } from "firebase/auth";
 
 export const ProfileModal = ({ id, onClose }) => {
   const { control, handleSubmit, register, reset } = useForm();
@@ -97,6 +98,13 @@ export const ProfileModal = ({ id, onClose }) => {
     reset();
   };
 
+  const signUserOut = () => {
+    const auth = getAuth();
+    signOut(auth).then(() => {
+      window.location.reload();
+    });
+  };
+
   return (
     isLoading ?
       <LoadingIconProfile /> :
@@ -149,7 +157,7 @@ export const ProfileModal = ({ id, onClose }) => {
                       <>
                         <Button variant="secondary" onClick={handleOpenEdit}>Edit</Button>
                       &nbsp;
-                        <Button variant="danger">Logout</Button>
+                        <Button variant="danger" onClick={signUserOut}>Logout</Button>
                       </> :
                       <Button variant="danger" onClick={startChat}>Message</Button>}
                   </div>

@@ -157,6 +157,7 @@ router.post(`/:chat_id/user/:user_id/add`, VerifyToken, async (req, res, next) =
 
     if (await ChatService.isUserInChat({ chat_id, user_id })) {
       throw new Error(`This user is already in this chat`);
+      console.log(`all good`);
     }
 
     await ChatService.addUserToChat({ chat_id, user_id });
@@ -171,7 +172,7 @@ router.post(`/:chat_id/user/:user_id/add`, VerifyToken, async (req, res, next) =
   }
 });
 
-router.delete(`/:chat_id/user/:id/remove`, VerifyToken, async (req, res, next) => {
+router.delete(`/:chat_id/user/:user_id/remove`, VerifyToken, async (req, res, next) => {
   try {
     const { chat_id, user_id } = req.params;
 
@@ -233,6 +234,7 @@ router.put(`/:chat_id/title`, VerifyToken, async (req, res, next) => {
       title,
     );
   } catch (err) {
+    console.error(`Error updating chat title: ${ err.message }`);
     next(err);
   }
 });

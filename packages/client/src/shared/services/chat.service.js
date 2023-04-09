@@ -73,6 +73,7 @@ export class ChatService {
     try {
       const user = auth.currentUser;
       const token = user && await user.getIdToken();
+      // console.log(`getChatUsers`, chat_id, user_id);
 
       const response = await Axios({
         method: `GET`,
@@ -92,7 +93,6 @@ export class ChatService {
 
   static async createNewChat({ created_by, recipient_id, title }) {
     try {
-      console.log(`createNewChat`, created_by, title, recipient_id);
       const user = auth.currentUser;
       const token = user && await user.getIdToken();
 
