@@ -7,7 +7,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const { ResponseHandler } = require(`../../utils/ResponseHandler`);
 
-router.get(`/:id`, VerifyToken, async (req, res, next) => {
+router.get(`/:id`, async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -48,6 +48,7 @@ router.get(`/id/:id`, async (req, res, next) => {
     const { id } = req.params;
 
     const user = await UserService.getUserDetails({ id });
+    user.profilePicture = await UserService.getImageByKey({ image_key: user.image_key });
 
     return res.status(200).json(user);
   } catch (err) {

@@ -117,4 +117,25 @@ export class PropertyService {
       throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
     }
   }
+
+  static async getPropertiesForUser({ user_id }) {
+    const user = auth.currentUser;
+    const token = user && await user.getIdToken();
+
+    try {
+      const response = await Axios({
+        method: `GET`,
+        url: `/property/user/${user_id}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ContentType: `multipart/form-data`,
+        },
+      });
+
+      return response.data;
+    }
+    catch (err) {
+      throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
+    }
+  }
 }

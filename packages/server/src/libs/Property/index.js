@@ -185,3 +185,22 @@ exports.getPropertyThumbnail = async ({ property_id }) => {
   return propertyImage;
 
 };
+
+exports.getPropertiesForUser = async ({ user_id }) => {
+  let properties = await knex(`properties`)
+    .where(`landlord_id`, user_id);
+
+  properties = await Promise.all(properties.map(async p => {
+    const [ coords, thumbnail ] = await Promise.all([
+      attachCoordinates({ property: p }),
+      this.getPropertyThumbnail({ property_id: p.id }),
+    ]);
+
+    p.coords = coords;
+    p.thumbnail = thumbnail;
+
+    return p;
+  }));
+
+  return properties;
+};
