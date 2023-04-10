@@ -124,4 +124,15 @@ router.get(`/:property_id/thumbnail`, async (req, res, next) => {
   }
 });
 
+router.get(`/user/:user_id`, async (req, res, next) => {
+  try {
+    const { user_id } = req.params;
+    const properties = await PropertyService.getPropertiesForUser({ user_id });
+
+    return res.status(200).json(properties);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

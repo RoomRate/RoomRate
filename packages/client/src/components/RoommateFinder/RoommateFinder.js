@@ -3,14 +3,12 @@ import { Button, Card, Dropdown } from "react-bootstrap";
 import Lottie from 'lottie-react';
 import { RoommateService } from "../../shared/services";
 import { useForm } from "react-hook-form";
-import { Image } from 'react-extras';
 import { TfiCommentAlt } from "react-icons/tfi";
 import { Link } from 'react-router-dom';
 import { debounce } from 'lodash';
 import AsyncSelect from 'react-select/async';
 import ReactTimeAgo from 'react-time-ago';
 import loadingIcon from '../../assets/images/loadingIcon.json';
-import DEFAULT_PFP from '../../assets/images/DefaultPFP.png';
 import '../../scss/roommate_finder.scss';
 import { CustomToggle } from "../../shared/A-UI";
 import { PostDetailModal } from "./PostDetailModal";
@@ -18,6 +16,8 @@ import { useAuth } from '../../shared/contexts/AuthContext';
 import { ProfileModal } from '../Users/ProfileModal';
 import { DebounceInput } from 'react-debounce-input';
 import { useLocation } from 'react-router-dom';
+import defaultPFP from '../../assets/images/blank-profile-picture.webp';
+import { UserService } from '../../shared/services';
 
 export const RoommateFinder = () => {
   const location = useLocation();
@@ -31,22 +31,36 @@ export const RoommateFinder = () => {
   const [ showPostModal, setShowPostModal ] = useState(false);
   const [ postDetail, setPostDetail ] = useState(null);
   const { currentUser } = useAuth();
-  const [ showModal, setShowModal ] = useState(false);
+  const [ showModal, setShowModal ] = useState([]);
   const [ filter, setFilter ] = useState(propertyFilter ? { property: propertyFilter.id } : {});
+  const [ userImage, setUserImage ] = useState(null);
   document.title = `RoomRate - Roommate Finder`;
 
-  function handleOpenModal() {
-    setShowModal(true);
-  }
+  useEffect(() => {
+    setShowModal(posts.map(_ => false));
+  }, [ posts ]);
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleOpenModal = (index) => {
+    const newShowModal = [ ...showModal ];
+    newShowModal[index] = true;
+    setShowModal(newShowModal);
+  };
+
+  const handleCloseModal = (index) => {
+    const newShowModal = [ ...showModal ];
+    newShowModal[index] = false;
+    setShowModal(newShowModal);
   };
 
   const fetchData = useCallback(async () => {
     try {
       setPostLoading(true);
-      setPosts(await RoommateService.getPosts(filter));
+      const fetchedPosts = await RoommateService.getPosts(filter);
+      setPosts(fetchedPosts);
+      if (currentUser) {
+        const pfp = await UserService.getUserImage({ id: currentUser.id });
+        setUserImage(pfp || null);
+      }
     }
     catch (err) {
       throw new Error(err);
@@ -55,7 +69,7 @@ export const RoommateFinder = () => {
       setPostLoading(false);
       setLoading(false);
     }
-  }, [ filter ]);
+  }, [ filter, currentUser ]);
 
   useEffect(() => {
     fetchData();
@@ -200,12 +214,13 @@ export const RoommateFinder = () => {
                 <Card.Body>
                   <div className="d-flex mb-n1" >
                     <div className="mt-2">
-                      <Image
-                        url={DEFAULT_PFP}
-                        fallbackUrl={DEFAULT_PFP}
-                        className="avatar rounded img-fluid"
-                        alt="user profile avatar"
-                        width={50} />
+                      <img
+                        src={userImage ? `data:image/jpeg;base64, ${userImage}` :
+                          defaultPFP}
+                        className="rounded-circle"
+                        style={{ width: `50px`, height: `50px`, border: `1px solid black` }}
+                        alt="user_image"
+                      />
                     </div>
                     <form id="newPost" onSubmit={handleSubmit(createPost)} className="w-100 mx-2">
                       <div className="d-flex mb-2">
@@ -270,64 +285,66 @@ export const RoommateFinder = () => {
                   <Lottie animationData={loadingIcon} loop={true} />
                 </div>
               </div> :
-              posts.map(post => <>
-                <Card className="w-100 my-2 text-start">
-                  <Card.Body>
-                    <div className="d-flex">
-                      <div className="mr-4">
-                        <Image
-                          url={DEFAULT_PFP}
-                          fallbackUrl={DEFAULT_PFP}
-                          className="avatar rounded img-fluid me-2"
-                          alt="user profile avatar"
-                          width={50} />
+              posts.length ?
+                posts.map((post, index) => <>
+                  <Card className="w-100 my-2 text-start">
+                    <Card.Body>
+                      <div className="d-flex">
+                        <div className="mr-4">
+                          <img
+                            src={post.author.userImage ? `data:image/jpeg;base64, ${post.author.userImage}` :
+                              defaultPFP}
+                            className="avatar rounded-circle img-fluid me-2"
+                            style={{ width: `50px`, height: `50px`, border: `1px solid black` }}
+                            alt="user_image"
+                          />
+                        </div>
+                        <div className="w-100 mx-2">
+                          <p className="my-0 fw-bold">{post.title}
+                            {
+                              post.property ?
+                                <span className="text-dark"> for <Link to={`/property/${post.property.id}/detail`}>
+                                  {post.property.street_1}, Unit {post.property.street_2}
+                                </Link>
+                                </span> :
+                                null
+                            }
+                          </p>
+                          <Card.Text>
+                            <p>{post.message}</p>
+                            <p className="my-0"><Link onClick={() => handleOpenModal(index)}>
+                              {post.author.first_name} {post.author.last_name}
+                            </Link>
+                              &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
+                            {showModal[index] &&
+                              <ProfileModal id={post.author.user_id} onClose={() => handleCloseModal(index)}>
+                                <h1>Modal Content</h1>
+                              </ProfileModal>}
+                          </Card.Text>
+                        </div>
+                        {
+                          currentUser?.id === post.author.id &&
+                            <Dropdown className="ms-auto">
+                              <Dropdown.Toggle as={CustomToggle} />
+                              <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => deletePost(post.id)}>Delete</Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                        }
                       </div>
-                      <div className="w-100 mx-2">
-                        <p className="my-0 fw-bold">{post.title}
-                          {
-                            post.property ?
-                              <span className="text-dark"> for <Link to={`/property/${post.property.id}/detail`}>
-                                {post.property.street_1}, Unit {post.property.street_2}
-                              </Link>
-                              </span> :
-                              null
-                          }
-                        </p>
-                        <Card.Text>
-                          <p>{post.message}</p>
-                          <p className="my-0"><Link onClick={handleOpenModal}>
-                            {post.author.first_name} {post.author.last_name}
-                          </Link>
-                            &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
-                          {showModal &&
-                            <ProfileModal id={post.user_id} onClose={handleCloseModal}>
-                              <h1>Modal Content</h1>
-                            </ProfileModal>}
-                        </Card.Text>
-                      </div>
-                      {
-                        currentUser?.id === post.author.id &&
-                          <Dropdown className="ms-auto">
-                            <Dropdown.Toggle as={CustomToggle} />
-                            <Dropdown.Menu>
-                              <Dropdown.Item onClick={() => deletePost(post.id)}>Delete</Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-                      }
-                    </div>
-                  </Card.Body>
-                  {
-                    <Card.Footer className="d-flex bg-white justify-content-center">
-                      <button
-                        className="btn btn-stealth"
-                        onClick={() => showPostDetailModal(post)}
-                      ><TfiCommentAlt /> {post.comments.length > 0 ? post.comments.length === 1 ?
-                          `${post.comments.length} Reply` : `${post.comments.length} Replies` :
-                          `No Replies`}</button>
-                    </Card.Footer>
-                  }
-                </Card>
-              </>)
+                    </Card.Body>
+                    {
+                      <Card.Footer className="d-flex bg-white justify-content-center">
+                        <button
+                          className="btn btn-stealth"
+                          onClick={() => showPostDetailModal(post)}
+                        ><TfiCommentAlt /> {post.comments.length > 0 ? post.comments.length === 1 ?
+                            `${post.comments.length} Reply` : `${post.comments.length} Replies` :
+                            `No Replies`}</button>
+                      </Card.Footer>
+                    }
+                  </Card>
+                </>) : `No posts found`
           }
         </div>
       </div>
