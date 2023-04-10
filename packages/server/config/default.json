@@ -43,5 +43,9 @@
     "campus_coordinates": {
         "latitude": 39.131402309297805,
         "longitude": -84.51615684482724
-    }
+    },
+    "geocoder": {
+        "provider": "google",
+        "apiKey": "AIzaSyD57Cr3iJeGL2RlcokSm-v_T96C1NzW2Ts"
+      }
 }
