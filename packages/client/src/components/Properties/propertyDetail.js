@@ -3,7 +3,7 @@ import { Button, Carousel, Card, Form, Modal } from "react-bootstrap";
 import { PropertyService } from "../../shared/services";
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer, Marker, Popup } from 'react-leaflet';
 import { BsWifi, BsThermometerSun, BsThermometerSnow } from "react-icons/bs";
 import { FaDog, FaWheelchair } from "react-icons/fa";
 import { AiFillCar } from "react-icons/ai";
@@ -22,6 +22,7 @@ import DEFAULT_PFP from '../../assets/images/DefaultPFP.png';
 import 'swiper/scss';
 import 'swiper/scss/scrollbar';
 import { ProfileModal } from '../Users/ProfileModal';
+import ReactLeafletGoogleLayer from 'react-leaflet-google-layer';
 
 export const PropertyDetails = () => {
   const {
@@ -262,12 +263,9 @@ export const PropertyDetails = () => {
             <MapContainer
               style={{ height: `40vh` }}
               center={[ property.coords.latitude, property.coords.longitude ]}
-              zoom={20}
+              zoom={18}
             >
-              <TileLayer
-                attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
+              <ReactLeafletGoogleLayer apiKey={process.env.REACT_APP_GOOGLE_API_KEY} />
               <Marker
                 icon={MarkerIcon}
                 position={[ property.coords.latitude, property.coords.longitude ]}>
