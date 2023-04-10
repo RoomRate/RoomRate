@@ -36,7 +36,6 @@ export const ProfileModal = ({ id, onClose }) => {
   ];
 
   const startChat = async () => {
-    localStorage.setItem(`lastOpenedChat`, 36);
     const existingChat = await ChatService.getChatByUsers({ user_id: currentUser.id, recipient_id: user.id });
     console.log(existingChat);
     if (existingChat) {

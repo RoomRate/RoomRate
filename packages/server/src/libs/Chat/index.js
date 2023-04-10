@@ -65,45 +65,21 @@ exports.getChatsForUser = async ({ user_id }) => {
 
   return chats;
 };
-/*
+
 exports.getChatByUsers = async ({ user_id, recipient_id }) => {
   const response = await knex.raw(`
-    SELECT chat_id
-    FROM chat_users
-    WHERE user_id = ? OR user_id = ?
-    GROUP BY chat_id
-    HAVING COUNT(*) = 2;
+  SELECT chat_id
+  FROM chat_users
+  WHERE user_id IN ( ?, ? )
+  AND deleted_at IS null
+  GROUP BY chat_id
+  HAVING COUNT(DISTINCT user_id) = 2;
     `, [ user_id, recipient_id ]);
 
   if (response.rows.length === 0) {
     return null;
   }
-
-  return response.rows[0].chat_id;
-};
-*/
-
-exports.getChatByUsers = async ({ user_id, recipient_id }) => {
-  const response = await knex.raw(`
-  SELECT cu1.chat_id
-  FROM chat_users cu1
-  LEFT JOIN chat_users cu2 ON cu1.chat_id = cu2.chat_id
-  AND cu2.user_id = ?
-  WHERE cu1.user_id = ?
-  AND cu1.chat_id IN (
-    SELECT chat_id
-    FROM chat_users
-    WHERE deleted_at IS NULL
-  )
-  AND cu1.deleted_at IS NULL
-  AND cu2.deleted_at IS NULL
-  GROUP BY cu1.chat_id
-  HAVING COUNT(*) = 2;
-    `, [ user_id, recipient_id ]);
-
-  if (response.rows.length === 0) {
-    return null;
-  }
+  console.log(response);
 
   return response.rows[0].chat_id;
 };

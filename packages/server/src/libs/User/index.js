@@ -96,14 +96,9 @@ exports.updateUser = async ({ data }) => {
 };
 
 exports.searchUsers = async ({ q }) => {
-  console.log(`lib:`, q);
-  const user = await knex.raw(`
-    SELECT id, first_name, last_name, email
-    FROM users
-    WHERE LOWER(email) ILIKE '%?%'
-    OR LOWER(first_name) || ' ' || LOWER(last_name) ILIKE '%?%'
-    LIMIT 300;
-  `, [ q.toLowerCase() ]);
+  const user = await knex(`users`)
+    .where(`email`, `ILIKE`, `%${ q.toLowerCase() }%`)
+    .orWhereRaw(`LOWER(CONCAT(first_name, ' ', last_name)) ILIKE ?`, [ `%${ q.toLowerCase() }%` ]);
 
-  return user.rows;
+  return user;
 };

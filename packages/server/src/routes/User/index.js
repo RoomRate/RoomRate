@@ -7,6 +7,19 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const { ResponseHandler } = require(`../../utils/ResponseHandler`);
 
+router.get(`/search`, VerifyToken, async (req, res, next) => {
+  try {
+    const { q } = req.query;
+
+    const users = await UserService.searchUsers({ q });
+
+    return res.status(200).json(users);
+  } catch (err) {
+    console.log(`Error searching users:`, err);
+    next(err);
+  }
+});
+
 router.get(`/:id`, async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -82,20 +95,6 @@ router.put(`/update`, VerifyToken, upload.array(`pictures`, 10), async (req, res
       `User updated successfully`,
       { id: userId[0] },
     );
-  } catch (err) {
-    next(err);
-  }
-});
-
-router.get(`/search`, VerifyToken, async (req, res, next) => {
-  console.log(`searching users`);
-  console.log(`Searching for users with query:`, req.query.q);
-  try {
-    const { q } = req.query;
-
-    const users = await UserService.searchUsers({ q });
-
-    return res.status(200).json(users);
   } catch (err) {
     next(err);
   }
