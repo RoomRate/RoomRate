@@ -36,11 +36,21 @@ export const ProfileModal = ({ id, onClose }) => {
   ];
 
   const startChat = async () => {
+    localStorage.setItem(`lastOpenedChat`, 36);
+    const existingChat = await ChatService.getChatByUsers({ user_id: currentUser.id, recipient_id: user.id });
+    console.log(existingChat);
+    if (existingChat) {
+      localStorage.setItem(`lastOpenedChat`, existingChat);
+
+      return navigate(`/chat`);
+    }
+
     const title = `Chat with ${user.first_name} from ${currentUser.first_name}`;
-    const chat = await ChatService.createNewChat({ created_by: currentUser.id, title, recipient_id: user.id });
-    localStorage.setItem(`lastOpenedChat`, chat.id);
+    const newChat = await ChatService.createNewChat({ created_by: currentUser.id, title, recipient_id: user.id });
+    localStorage.setItem(`lastOpenedChat`, newChat.id);
 
     return navigate(`/chat`);
+
   };
 
   useEffect(() => {

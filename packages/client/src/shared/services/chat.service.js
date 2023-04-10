@@ -91,6 +91,28 @@ export class ChatService {
     }
   }
 
+  static async getChatByUsers({ user_id, recipient_id }) {
+    console.log(`getChatByUsers`, user_id, recipient_id);
+    try {
+      const user = auth.currentUser;
+      const token = user && await user.getIdToken();
+
+      const response = await Axios({
+        method: `GET`,
+        url: `/chat/${user_id}/and/${recipient_id}`,
+        headers: {
+          'Content-Type': `application/json`,
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      return response.data.data;
+    }
+    catch (err) {
+      throw new Error(`Failed to get chat by users`);
+    }
+  }
+
   static async createNewChat({ created_by, recipient_id, title }) {
     try {
       const user = auth.currentUser;

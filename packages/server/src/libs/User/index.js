@@ -96,6 +96,7 @@ exports.updateUser = async ({ data }) => {
 };
 
 exports.searchUsers = async ({ q }) => {
+  console.log(`lib:`, q);
   const user = await knex.raw(`
     SELECT id, first_name, last_name, email
     FROM users
@@ -106,3 +107,18 @@ exports.searchUsers = async ({ q }) => {
 
   return user.rows;
 };
+
+/*
+exports.searchUsers = async ({ q }) => {
+  console.log(`lib:`, q);
+  const users = await knex.raw(`
+    SELECT id, first_name, last_name, email
+    FROM users
+    WHERE LOWER(email) LIKE ?
+    OR LOWER(first_name) || ' ' || LOWER(last_name) LIKE ?
+    LIMIT 300;
+  `, [ `%${ q.toLowerCase() }%`, `%${ q.toLowerCase() }%` ]);
+
+  return users.rows;
+};
+*/

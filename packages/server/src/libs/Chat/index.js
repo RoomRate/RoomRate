@@ -63,6 +63,23 @@ exports.getChatsForUser = async ({ user_id }) => {
   return chats;
 };
 
+exports.getChatByUsers = async ({ user_id, recipient_id }) => {
+  const response = await knex.raw(`
+    SELECT chat_id
+    FROM chat_users
+    WHERE user_id = ? OR user_id = ?
+    GROUP BY chat_id
+    HAVING COUNT(*) = 2;
+    `, [ user_id, recipient_id ]);
+
+  if (response.rows.length === 0) {
+    return null;
+  }
+  console.log(response.rows[0].chat_id);
+
+  return response.rows[0].chat_id;
+};
+
 exports.getMessagesForChat = async ({ chat_id }) => {
   const { rows: messages } = await knex.raw(`
     SELECT 

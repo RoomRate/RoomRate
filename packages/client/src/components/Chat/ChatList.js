@@ -65,20 +65,6 @@ export const ChatList = ({ onChatSelect }) => {
     }
   };
 
-  const toggleAddUsersModal = () => setShowAddUsersModal(!showAddUsersModal);
-
-  const toggleRenameChatModal = ({ chat }) => {
-    setChatBeingUpdated(chat);
-    setChatTitle(chat.chat_title);
-    setShowRenameChatModal(!showRenameChatModal);
-  };
-
-  const searchUsers = async (q) => {
-    const users = await UserService.searchUsers({ q });
-    console.log(users);
-
-    return users;
-  };
   /*
   const getChatUsers = async ({ chat_id }) => {
     setUsersInChat(await ChatService.getChatUsers({ chat_id, user_id: currentUser.id }));
@@ -87,7 +73,6 @@ export const ChatList = ({ onChatSelect }) => {
     return usersInChat;
   };
 */
-  const handleChatTitleChange = (e) => setChatTitle(e.target.value);
 
   return <div style={{ height: `97vh`, overflowY: `scroll` }}>
     {

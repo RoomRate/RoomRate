@@ -20,6 +20,22 @@ router.get(`/list`, VerifyToken, async (req, res, next) => {
   }
 });
 
+router.get(`/:user_id/and/:recipient_id`, VerifyToken, async (req, res, next) => {
+  try {
+    const { user_id, recipient_id } = req.params;
+
+    const chat = await ChatService.getChatByUsers({ user_id, recipient_id });
+
+    return ResponseHandler(
+      res,
+      `Successfully fetched chat`,
+      chat,
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get(`/:chat_id/messages`, VerifyToken, async (req, res, next) => {
   try {
     const { chat_id } = req.params;

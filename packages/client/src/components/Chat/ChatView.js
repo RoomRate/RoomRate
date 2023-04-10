@@ -81,7 +81,9 @@ export const ChatView = () => {
   };
 
   const searchUsers = async (q) => {
+    console.log(`searching for users with query:`, q);
     const users = await UserService.searchUsers({ q });
+    console.log(`found users:`, users);
 
     return users;
   };

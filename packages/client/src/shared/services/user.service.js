@@ -61,13 +61,14 @@ export class UserService {
   }
 
   static async searchUsers({ q }) {
+    console.log(`q`, q);
     try {
       const user = auth.currentUser;
       const token = user && await user.getIdToken();
 
       const response = await Axios({
         method: `GET`,
-        url: `/user/search?=${q}`,
+        url: `/user/search?q=${q}`,
         headers: {
           'Content-Type': `application/json`,
           'Authorization': `Bearer ${token}`,
@@ -77,6 +78,7 @@ export class UserService {
       return response.data;
     }
     catch (err) {
+      console.error(err); // add this line to log the error
       throw new Error(`Failed to search users`);
     }
   }

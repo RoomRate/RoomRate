@@ -88,6 +88,8 @@ router.put(`/update`, VerifyToken, upload.array(`pictures`, 10), async (req, res
 });
 
 router.get(`/search`, VerifyToken, async (req, res, next) => {
+  console.log(`searching users`);
+  console.log(`Searching for users with query:`, req.query.q);
   try {
     const { q } = req.query;
 
