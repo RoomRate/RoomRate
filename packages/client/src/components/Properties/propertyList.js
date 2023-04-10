@@ -2,7 +2,7 @@
 /* eslint-disable default-case */
 import React, { useEffect, useState, useCallback } from 'react';
 import { Card, Dropdown, ButtonGroup, Badge } from 'react-bootstrap';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer, Marker, Popup } from 'react-leaflet';
 import { PropertyService } from "../../shared/services";
 import { MarkerIcon } from "../../shared/A-UI";
 import loadingIcon from '../../assets/images/loadingIcon.json';
@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { scroller, Element } from 'react-scroll';
 import Lottie from 'lottie-react';
 import { DebounceInput } from 'react-debounce-input';
+import ReactLeafletGoogleLayer from 'react-leaflet-google-layer';
 
 export const PropertyList = () => {
   const [ properties, setProperties ] = useState([]);
@@ -171,12 +172,9 @@ export const PropertyList = () => {
           <MapContainer
             style={{ height: `93.75vh` }}
             center={[ 39.130949, -84.51746 ]}
-            zoom={12}
+            zoom={14}
           >
-            <TileLayer
-              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+            <ReactLeafletGoogleLayer apiKey={process.env.REACT_APP_GOOGLE_API_KEY} />
             {renderPropertyMarkers()}
             <div />
           </MapContainer>
@@ -369,7 +367,7 @@ export const PropertyList = () => {
                       key={property.id}
                       id={`property-${property.id}`}
                       className={`propertyListing mb-3 ${clickedProperty === property.id ? `clicked-property` : ``}`}>
-                      <Card.Header className="text-start">
+                      <Card.Header className="text-start header-custom">
                         <h2 className="my-0">{property.street_1}</h2>
                         {property.street_2 ? <h3 className="my-0 fw-light">Unit {property.street_2}</h3> : null}
                       </Card.Header>
