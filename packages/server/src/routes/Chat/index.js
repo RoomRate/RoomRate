@@ -32,6 +32,7 @@ router.get(`/:user_id/and/:recipient_id`, VerifyToken, async (req, res, next) =>
       chat,
     );
   } catch (err) {
+    console.lo;
     next(err);
   }
 });
