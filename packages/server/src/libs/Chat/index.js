@@ -16,7 +16,9 @@ exports.getChatsForUser = async ({ user_id }) => {
       last_message.message AS last_message,
       last_message.created_by AS last_message_user_id,
       last_message.created_at,
-      STRING_AGG(users.first_name || ' ' || users.last_name, ', ') as users
+      STRING_AGG(users.first_name || ' ' || users.last_name, ', ') as users,
+      COUNT(*) FILTER (WHERE chat_users.deleted_at IS NOT NULL) AS deleted_count,
+      COUNT(*) AS total_count
     FROM chats
     JOIN chat_users ON chats.id = chat_users.chat_id
     JOIN users ON chat_users.user_id = users.id
@@ -29,10 +31,9 @@ exports.getChatsForUser = async ({ user_id }) => {
         WHERE chat_id = cm.chat_id
       )
     ) AS last_message ON chats.id = last_message.chat_id
-    JOIN chat_users cu ON chats.id = cu.chat_id
     WHERE chat_users.user_id = ?
-    AND (cu.deleted_at IS NULL OR cu.deleted_at > CURRENT_TIMESTAMP)
     GROUP BY chats.id, chats.title, last_message.message, last_message.created_by, last_message.created_at
+    HAVING COUNT(*) FILTER (WHERE chat_users.deleted_at IS NOT NULL) < COUNT(*)
     ORDER BY last_message.created_at DESC;
   `, [ user_id ]);
 
@@ -64,7 +65,7 @@ exports.getChatsForUser = async ({ user_id }) => {
 
   return chats;
 };
-
+/*
 exports.getChatByUsers = async ({ user_id, recipient_id }) => {
   const response = await knex.raw(`
     SELECT chat_id
@@ -72,6 +73,32 @@ exports.getChatByUsers = async ({ user_id, recipient_id }) => {
     WHERE user_id = ? OR user_id = ?
     GROUP BY chat_id
     HAVING COUNT(*) = 2;
+    `, [ user_id, recipient_id ]);
+
+  if (response.rows.length === 0) {
+    return null;
+  }
+
+  return response.rows[0].chat_id;
+};
+*/
+
+exports.getChatByUsers = async ({ user_id, recipient_id }) => {
+  const response = await knex.raw(`
+  SELECT cu1.chat_id
+  FROM chat_users cu1
+  LEFT JOIN chat_users cu2 ON cu1.chat_id = cu2.chat_id
+  AND cu2.user_id = ?
+  WHERE cu1.user_id = ?
+  AND cu1.chat_id IN (
+    SELECT chat_id
+    FROM chat_users
+    WHERE deleted_at IS NULL
+  )
+  AND cu1.deleted_at IS NULL
+  AND cu2.deleted_at IS NULL
+  GROUP BY cu1.chat_id
+  HAVING COUNT(*) = 2;
     `, [ user_id, recipient_id ]);
 
   if (response.rows.length === 0) {

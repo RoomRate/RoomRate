@@ -24,12 +24,12 @@ export const ChatView = () => {
   const [ chatTitle, setChatTitle ] = useState();
   const [ chatId, setChatId ] = useState();
   const {
+    handleSubmit,
     formState: {
       errors,
     },
     register,
     reset,
-    handleSubmit,
   } = useForm();
 
   const HOST = process.env.NODE_ENV === `production` ?
