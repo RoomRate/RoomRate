@@ -367,7 +367,7 @@ export const PropertyList = () => {
                       key={property.id}
                       id={`property-${property.id}`}
                       className={`propertyListing mb-3 ${clickedProperty === property.id ? `clicked-property` : ``}`}>
-                      <Card.Header className="text-start">
+                      <Card.Header className="text-start header-custom">
                         <h2 className="my-0">{property.street_1}</h2>
                         {property.street_2 ? <h3 className="my-0 fw-light">Unit {property.street_2}</h3> : null}
                       </Card.Header>
