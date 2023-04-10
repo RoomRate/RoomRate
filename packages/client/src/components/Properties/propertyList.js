@@ -195,14 +195,16 @@ export const PropertyList = () => {
                       className="w-100"
                       name="minPrice"
                       debounceTimeout={300}
-                      onChange={filterChange} />
+                      onChange={filterChange}
+                      min={0} />
                     <p className="mb-0 mx-1">-</p>
                     <p className="mb-0 me-1">$</p>
                     <DebounceInput type="number"
                       className="w-100"
                       name="maxPrice"
                       debounceTimeout={300}
-                      onChange={filterChange} />
+                      onChange={filterChange}
+                      min={0} />
                   </div>
                 </Dropdown.Menu>
               </Dropdown>
@@ -216,7 +218,9 @@ export const PropertyList = () => {
                       className="w-100"
                       name="bedrooms"
                       debounceTimeout={300}
-                      onChange={filterChange} />
+                      onChange={filterChange}
+                      min={0}
+                    />
                     <p className="mb-0 ms-1">beds</p>
                   </div>
                 </Dropdown.Menu>
@@ -231,7 +235,8 @@ export const PropertyList = () => {
                       className="w-100"
                       name="bathrooms"
                       debounceTimeout={300}
-                      onChange={filterChange} />
+                      onChange={filterChange}
+                      min={0} />
                     <p className="mb-0 ms-1">baths</p>
                   </div>
                 </Dropdown.Menu>
@@ -314,15 +319,19 @@ export const PropertyList = () => {
                   <div className="d-flex mx-1">
                     <DebounceInput type="number"
                       className="w-100"
-                      name="minPrice"
+                      name="minDistance"
                       debounceTimeout={300}
-                      onChange={filterChange} />
+                      onChange={filterChange}
+                      step={0.1}
+                      min={0} />
                     <p className="mb-0 mx-1">-</p>
                     <DebounceInput type="number"
                       className="w-100"
-                      name="maxPrice"
+                      name="maxDistance"
                       debounceTimeout={300}
-                      onChange={filterChange} />
+                      onChange={filterChange}
+                      step={0.1}
+                      min={0} />
                     <p className="mb-0 ms-1">miles</p>
                   </div>
                 </Dropdown.Menu>
@@ -386,6 +395,7 @@ export const PropertyList = () => {
                           <h3 className="my-0">${property.rate}</h3 >
                           <h3 className="my-0">{property.bed} Bed, {property.bath} Bath</h3>
                           <p className="my-0 fw-bold">Type: {property.propType}</p>
+                          <p className="my-0">Distance: {property.coords.distanceInMiles} miles</p>
                           <br />
                           <p>
                             {
