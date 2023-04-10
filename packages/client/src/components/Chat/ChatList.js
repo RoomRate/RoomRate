@@ -24,7 +24,6 @@ export const ChatList = ({ onChatSelect }) => {
   const [ chatTitle, setChatTitle ] = useState();
   const [ activeChat, setActiveChat ] = useState(parseInt(localStorage.getItem(`lastOpenedChat`)));
   const [ loadingChatList, setLoadingChatList ] = useState(true);
-  const [ userImage, setUserImage ] = useState(null);
   const { currentUser } = useAuth();
   const {
     formState: {
@@ -65,15 +64,6 @@ export const ChatList = ({ onChatSelect }) => {
     }
   };
 
-  /*
-  const getChatUsers = async ({ chat_id }) => {
-    setUsersInChat(await ChatService.getChatUsers({ chat_id, user_id: currentUser.id }));
-    console.log(usersInChat);
-
-    return usersInChat;
-  };
-*/
-
   return <div style={{ height: `97vh`, overflowY: `scroll` }}>
     {
       loadingChatList ?
@@ -112,11 +102,9 @@ export const ChatList = ({ onChatSelect }) => {
                           avatars={[
                             ...(chat.users || []).map(user => ({
                               avatar: `${user.first_name} ${user.last_name}`,
-                              initials: `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`,
                             })),
                             {
                               avatar: `${currentUser.first_name} ${currentUser.last_name}`,
-                              initials: `${currentUser.first_name.charAt(0)}${currentUser.last_name.charAt(0)}`,
                             },
                           ]}
                           size={35}

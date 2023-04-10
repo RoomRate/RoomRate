@@ -60,6 +60,7 @@ export const ChatView = () => {
   };
 
   const sendMessage = async ({ message }) => {
+    console.log(`sending message:`, message);
     try {
       if (message) {
         const { id: chat_id } = activeChat.chat;
@@ -102,6 +103,8 @@ export const ChatView = () => {
     await ChatService.removeUserFromChat({ chat_id, user_id: currentUser.id });
 
     // TODO remove the chat from the UI / change the current "selected chat"
+    window.location.reload();
+    // localStorage.setItem(`lastOpenedChat`, chat_id);
   };
 
   const renameChat = async () => {
@@ -136,7 +139,7 @@ export const ChatView = () => {
                       <div className="d-flex justify-content-between align-items-center">
                         {
                           activeChat.chat.title ?
-                            <p>{activeChat.chat.title} {activeChat.chat.id}</p> :
+                            <h4>{activeChat.chat.title}</h4> :
                             activeChat.users.map((user, index, array) =>
                               `${user.first_name} ${user.last_name}${index + 1 !== array.length ? `, ` : ``}`)
                         }

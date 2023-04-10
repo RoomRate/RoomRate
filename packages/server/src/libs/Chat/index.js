@@ -29,7 +29,9 @@ exports.getChatsForUser = async ({ user_id }) => {
         WHERE chat_id = cm.chat_id
       )
     ) AS last_message ON chats.id = last_message.chat_id
+    JOIN chat_users cu ON chats.id = cu.chat_id
     WHERE chat_users.user_id = ?
+    AND (cu.deleted_at IS NULL OR cu.deleted_at > CURRENT_TIMESTAMP)
     GROUP BY chats.id, chats.title, last_message.message, last_message.created_by, last_message.created_at
     ORDER BY last_message.created_at DESC;
   `, [ user_id ]);
@@ -75,7 +77,6 @@ exports.getChatByUsers = async ({ user_id, recipient_id }) => {
   if (response.rows.length === 0) {
     return null;
   }
-  console.log(response.rows[0].chat_id);
 
   return response.rows[0].chat_id;
 };

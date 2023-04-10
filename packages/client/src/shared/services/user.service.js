@@ -78,7 +78,7 @@ export class UserService {
       return response.data;
     }
     catch (err) {
-      console.error(err); // add this line to log the error
+      console.error(err);
       throw new Error(`Failed to search users`);
     }
   }
