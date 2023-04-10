@@ -3,8 +3,8 @@ const config = require(`config`);
 const geolib = require(`geolib`);
 
 const options = {
-  provider: `google`,
-  apiKey: `AIzaSyD57Cr3iJeGL2RlcokSm-v_T96C1NzW2Ts`,
+  provider: config.get(`geocoder.provider`),
+  apiKey: config.get(`geocoder.apiKey`),
 };
 
 const geocoder = NodeGeocoder(options);
