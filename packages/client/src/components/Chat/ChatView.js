@@ -85,19 +85,18 @@ export const ChatView = () => {
 
   const searchUsers = async (q) => {
     const users = await UserService.searchUsers({ q });
+    console.log(users);
 
     return users.map(u => ({ value: u.id, label: `${u.first_name} ${u.last_name}` }));
   };
 
   const toggleRenameChatModal = ({ chat_id, title } = {}) => {
-    // setChatBeingUpdated(chat);
-    console.log(`toggleRenameChatModal`, chat_id, title);
     setChatTitle(title);
     setChatId(chat_id);
     setShowRenameChatModal(!showRenameChatModal);
   };
 
-  const toggleAddUsersModal = ({ chat_id }) => {
+  const toggleAddUsersModal = ({ chat_id } = {}) => {
     setChatId(chat_id);
     setShowAddUsersModal(!showAddUsersModal);
   };
@@ -105,7 +104,6 @@ export const ChatView = () => {
   const leaveChat = async ({ chat_id }) => {
     await ChatService.removeUserFromChat({ chat_id, user_id: currentUser.id });
     setActiveChat(null);
-    // TODO remove the chat from the UI / change the current "selected chat"
     window.location.reload();
     localStorage.setItem(`lastOpenedChat`, null);
   };
@@ -116,13 +114,14 @@ export const ChatView = () => {
     setShowRenameChatModal(false);
     window.location.reload();
   };
-  /*
-  const addUserToChat = async (data, chatId) => {
-    const { id: user_id, chat_id } = data.user;
 
-    await ChatService.addUserToChat({ chat_id: chatId, user_id });
+  const addUserToChat = async (data) => {
+    console.log(data.value);
+
+    await ChatService.addUserToChat({ chat_id: chatId, user_id: data.value });
+    window.location.reload();
   };
-*/
+
   const handleChatTitleChange = (e) => setChatTitle(e.target.value);
 
   return (
@@ -256,18 +255,18 @@ export const ChatView = () => {
               <Modal.Title>Add Users to Chat</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form onSubmit={handleSubmit()}>
+              <Form onSubmit={handleSubmit(addUserToChat)}>
                 <div>
                   <AsyncSelect
                     cacheOptions
                     noOptionsMessage={() => `Search for user...`}
+                    onChange={addUserToChat}
                     loadOptions={debounce(searchUsers, 100, { leading: true })}
-                    {...register(`user`, { required: true })}
                   />
                   <InlineError errors={errors} name="user" message="Please select a user to add" />
                 </div>
                 <div className="w-100 text-end">
-                  <br /><Button variant="danger" type="submit">Add User</Button>
+                  <br /><Button variant="danger" type="submit" >Add User</Button>
                 </div>
               </Form>
             </Modal.Body>
