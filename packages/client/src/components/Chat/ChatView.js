@@ -62,8 +62,8 @@ export const ChatView = () => {
   };
 
   const sendMessage = async ({ message }) => {
-    console.log(`sending message:`, message);
     try {
+      console.log(message);
       if (message) {
         const { id: chat_id } = activeChat.chat;
 
@@ -85,7 +85,6 @@ export const ChatView = () => {
 
   const searchUsers = async (q) => {
     const users = await UserService.searchUsers({ q });
-    console.log(users);
 
     return users.map(u => ({ value: u.id, label: `${u.first_name} ${u.last_name}` }));
   };
@@ -116,8 +115,6 @@ export const ChatView = () => {
   };
 
   const addUserToChat = async (data) => {
-    console.log(data.value);
-
     await ChatService.addUserToChat({ chat_id: chatId, user_id: data.value });
     window.location.reload();
   };
@@ -206,6 +203,7 @@ export const ChatView = () => {
                               id="my-message"
                               className="form-control"
                               placeholder="Type a message..." />
+                            {console.log(errors)}
                             <Button
                               variant="outline-danger"
                               onClick={handleSubmit(sendMessage)}
@@ -230,7 +228,7 @@ export const ChatView = () => {
                 <div>
                   <Form.Control
                     id="title"
-                    {...register(`title`, { required: true })}
+                    {...register(`title`)}
                     value={chatTitle}
                     onChange={handleChatTitleChange}
                   />

@@ -79,7 +79,6 @@ exports.getChatByUsers = async ({ user_id, recipient_id }) => {
   if (response.rows.length === 0) {
     return null;
   }
-  console.log(response);
 
   return response.rows[0].chat_id;
 };

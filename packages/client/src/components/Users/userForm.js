@@ -14,8 +14,7 @@ export const UserForm = () => {
     <>
       <div className="container">
         <h1>Create Your Profile:</h1>
-        <form onSubmit={handleSubmit((data) => {
-          console.log(data);
+        <form onSubmit={handleSubmit(() => {
         })}>
 
           <Row>

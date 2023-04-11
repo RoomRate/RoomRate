@@ -92,7 +92,6 @@ export class ChatService {
   }
 
   static async getChatByUsers({ user_id, recipient_id }) {
-    console.log(`getChatByUsers`, user_id, recipient_id);
     try {
       const user = auth.currentUser;
       const token = user && await user.getIdToken();

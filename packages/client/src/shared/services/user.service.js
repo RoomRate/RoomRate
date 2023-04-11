@@ -61,7 +61,6 @@ export class UserService {
   }
 
   static async searchUsers({ q }) {
-    console.log(`q`, q);
     try {
       const user = auth.currentUser;
       const token = user && await user.getIdToken();

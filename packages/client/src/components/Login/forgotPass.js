@@ -16,8 +16,7 @@ export const ForgotPassword = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: yupResolver(formSchema),
   });
-  const onSubmit = (data) => {
-    console.log({ data });
+  const onSubmit = () => {
     reset();
   };
 

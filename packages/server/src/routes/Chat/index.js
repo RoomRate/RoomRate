@@ -174,7 +174,6 @@ router.post(`/:chat_id/user/:user_id/add`, VerifyToken, async (req, res, next) =
 
     if (await ChatService.isUserInChat({ chat_id, user_id })) {
       throw new Error(`This user is already in this chat`);
-      console.log(`all good`);
     }
 
     await ChatService.addUserToChat({ chat_id, user_id });
