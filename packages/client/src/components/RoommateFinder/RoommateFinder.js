@@ -285,65 +285,66 @@ export const RoommateFinder = () => {
                   <Lottie animationData={loadingIcon} loop={true} />
                 </div>
               </div> :
-              posts.map((post, index) => <>
-                <Card className="w-100 my-2 text-start">
-                  <Card.Body>
-                    <div className="d-flex">
-                      <div className="mr-4">
-                        <img
-                          src={post.author.userImage ? `data:image/jpeg;base64, ${post.author.userImage}` :
-                            defaultPFP}
-                          className="avatar rounded-circle img-fluid me-2"
-                          style={{ width: `50px`, height: `50px`, border: `1px solid black` }}
-                          alt="user_image"
-                        />
+              posts.length ?
+                posts.map((post, index) => <>
+                  <Card className="w-100 my-2 text-start">
+                    <Card.Body>
+                      <div className="d-flex">
+                        <div className="mr-4">
+                          <img
+                            src={post.author.userImage ? `data:image/jpeg;base64, ${post.author.userImage}` :
+                              defaultPFP}
+                            className="avatar rounded-circle img-fluid me-2"
+                            style={{ width: `50px`, height: `50px`, border: `1px solid black` }}
+                            alt="user_image"
+                          />
+                        </div>
+                        <div className="w-100 mx-2">
+                          <p className="my-0 fw-bold">{post.title}
+                            {
+                              post.property ?
+                                <span className="text-dark"> for <Link to={`/property/${post.property.id}/detail`}>
+                                  {post.property.street_1}, Unit {post.property.street_2}
+                                </Link>
+                                </span> :
+                                null
+                            }
+                          </p>
+                          <Card.Text>
+                            <p>{post.message}</p>
+                            <p className="my-0"><Link onClick={() => handleOpenModal(index)}>
+                              {post.author.first_name} {post.author.last_name}
+                            </Link>
+                              &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
+                            {showModal[index] &&
+                              <ProfileModal id={post.author.user_id} onClose={() => handleCloseModal(index)}>
+                                <h1>Modal Content</h1>
+                              </ProfileModal>}
+                          </Card.Text>
+                        </div>
+                        {
+                          currentUser?.id === post.author.id &&
+                            <Dropdown className="ms-auto">
+                              <Dropdown.Toggle as={CustomToggle} />
+                              <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => deletePost(post.id)}>Delete</Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                        }
                       </div>
-                      <div className="w-100 mx-2">
-                        <p className="my-0 fw-bold">{post.title}
-                          {
-                            post.property ?
-                              <span className="text-dark"> for <Link to={`/property/${post.property.id}/detail`}>
-                                {post.property.street_1}, Unit {post.property.street_2}
-                              </Link>
-                              </span> :
-                              null
-                          }
-                        </p>
-                        <Card.Text>
-                          <p>{post.message}</p>
-                          <p className="my-0"><Link onClick={() => handleOpenModal(index)}>
-                            {post.author.first_name} {post.author.last_name}
-                          </Link>
-                            &nbsp; posted <ReactTimeAgo date={post.posted_on} /></p>
-                          {showModal[index] &&
-                            <ProfileModal id={post.author.user_id} onClose={() => handleCloseModal(index)}>
-                              <h1>Modal Content</h1>
-                            </ProfileModal>}
-                        </Card.Text>
-                      </div>
-                      {
-                        currentUser?.id === post.author.id &&
-                          <Dropdown className="ms-auto">
-                            <Dropdown.Toggle as={CustomToggle} />
-                            <Dropdown.Menu>
-                              <Dropdown.Item onClick={() => deletePost(post.id)}>Delete</Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-                      }
-                    </div>
-                  </Card.Body>
-                  {
-                    <Card.Footer className="d-flex bg-white justify-content-center">
-                      <button
-                        className="btn btn-stealth"
-                        onClick={() => showPostDetailModal(post)}
-                      ><TfiCommentAlt /> {post.comments.length > 0 ? post.comments.length === 1 ?
-                          `${post.comments.length} Reply` : `${post.comments.length} Replies` :
-                          `No Replies`}</button>
-                    </Card.Footer>
-                  }
-                </Card>
-              </>)
+                    </Card.Body>
+                    {
+                      <Card.Footer className="d-flex bg-white justify-content-center">
+                        <button
+                          className="btn btn-stealth"
+                          onClick={() => showPostDetailModal(post)}
+                        ><TfiCommentAlt /> {post.comments.length > 0 ? post.comments.length === 1 ?
+                            `${post.comments.length} Reply` : `${post.comments.length} Replies` :
+                            `No Replies`}</button>
+                      </Card.Footer>
+                    }
+                  </Card>
+                </>) : `No posts found`
           }
         </div>
       </div>

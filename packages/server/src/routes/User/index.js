@@ -61,7 +61,7 @@ router.get(`/id/:id`, async (req, res, next) => {
     const { id } = req.params;
 
     const user = await UserService.getUserDetails({ id });
-    user.profilePicture = await UserService.getImageByKey({ image_key: user.image_key });
+    user.profilePicture = user.image_key ? await UserService.getImageByKey({ image_key: user.image_key }) : null;
 
     return res.status(200).json(user);
   } catch (err) {

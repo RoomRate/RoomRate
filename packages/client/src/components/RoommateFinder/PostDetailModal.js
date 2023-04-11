@@ -55,7 +55,7 @@ export const PostDetailModal = ({ post, show, onHide }) => {
       }
     };
     fetchData();
-  }, [ currentUser.id ]);
+  }, [ currentUser?.id ]);
 
   const deleteComment = async (id) => {
     await RoommateService.deleteComment(id);
@@ -117,34 +117,47 @@ export const PostDetailModal = ({ post, show, onHide }) => {
         </div>
       </Card.Body>
       <Card.Footer>
-        <div className="d-flex pb-2 mb-2 border-bottom" >
-          <div className="mt-2">
-            <img
-              src={userImage ? `data:image/jpeg;base64, ${userImage}` :
-                defaultPFP}
-              className="rounded-circle"
-              style={{ width: `50px`, height: `50px`, border: `1px solid black` }}
-              alt="user_image"
-            />
-          </div>
-          <form id="newReply" onSubmit={handleSubmit(addComment)} className="w-100 mx-2">
-            <textarea
-              className="w-100"
-              placeholder="Create post"
-              {...register(`reply`, { required: true })}
-            />
-          </form>
-          <div className="d-flex align-items-center">
-            <Button
-              className="btn-primary align-self-center"
-              form="newReply"
-              type="submit"
-              variant="danger"
-            >
-              Reply
-            </Button>
-          </div>
-        </div>
+        {
+          currentUser ?
+            <>
+              <div className="d-flex pb-2 mb-2 border-bottom" >
+                <div className="mt-2">
+                  <img
+                    src={userImage ? `data:image/jpeg;base64, ${userImage}` :
+                      defaultPFP}
+                    className="rounded-circle"
+                    style={{ width: `50px`, height: `50px`, border: `1px solid black` }}
+                    alt="user_image"
+                  />
+                </div>
+                <form id="newReply" onSubmit={handleSubmit(addComment)} className="w-100 mx-2">
+                  <textarea
+                    className="w-100"
+                    placeholder="Create post"
+                    {...register(`reply`, { required: true })}
+                  />
+                </form>
+                <div className="d-flex align-items-center">
+                  <Button
+                    className="btn-primary align-self-center"
+                    form="newReply"
+                    type="submit"
+                    variant="danger"
+                  >
+                    Reply
+                  </Button>
+                </div>
+              </div>
+            </> :
+            <div className="d-flex justify-content-center align-items-center d-flex pb-2 mb-2 border-bottom">
+              <p className="mt-4">
+                <a className="fw-bold" href="/login">Log in</a>
+                            &nbsp;or&nbsp;
+                <a className="fw-bold" href="/login/signup">Sign Up</a>
+                            &nbsp;to leave a review!
+              </p>
+            </div>
+        }
         <div className="d-flex reply-container" />
         {
           comments.length > 0 ?

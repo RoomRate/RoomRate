@@ -55,9 +55,11 @@
     "react-hook-form": "^7.38.0",
     "react-horizontal-scrolling-menu": "^3.2.5",
     "react-leaflet": "^4.1.0",
+    "react-leaflet-google-layer": "^2.2.0",
     "react-time-ago": "^7.2.1",
     "sass": "^1.55.0",
     "swiper": "^9.1.0",
+    "typescript": "^4.9.5",
     "uuid": "^9.0.0",
     "yup": "^0.32.11"
   },
