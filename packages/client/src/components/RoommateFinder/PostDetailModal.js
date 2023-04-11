@@ -186,12 +186,15 @@ export const PostDetailModal = ({ post, show, onHide }) => {
                   <p>{c.message}</p>
                 </Card.Text>
               </div>
-              <Dropdown className="reply-option">
-                <Dropdown.Toggle as={CustomToggle} />
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => deleteComment(c.id)}>Delete</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+              {
+                currentUser?.id === c.author.id &&
+                  <Dropdown className="reply-option">
+                    <Dropdown.Toggle as={CustomToggle} />
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={() => deleteComment(c.id)}>Delete</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+              }
             </div>) :
             <div className="d-flex justify-content-center">
               <h5>No replies yet</h5>
