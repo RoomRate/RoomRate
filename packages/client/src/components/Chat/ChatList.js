@@ -14,6 +14,7 @@ import { InlineError } from "../../shared/A-UI";
 import AsyncSelect from 'react-select/async';
 import { debounce } from 'lodash';
 import { CustomToggle } from "../../shared/A-UI";
+import AvatarGroup from 'react-avatar-group';
 
 export const ChatList = ({ onChatSelect }) => {
   const [ chatList, setChatList ] = useState([]);
@@ -63,46 +64,6 @@ export const ChatList = ({ onChatSelect }) => {
     }
   };
 
-  const toggleAddUsersModal = () => setShowAddUsersModal(!showAddUsersModal);
-
-  const toggleRenameChatModal = ({ chat }) => {
-    setChatBeingUpdated(chat);
-    setChatTitle(chat.chat_title);
-    setShowRenameChatModal(!showRenameChatModal);
-  };
-
-  const leaveChat = async (chat_id) => {
-    await ChatService.removeUserFromChat({ chat_id, user_id: currentUser.id });
-
-    // TODO remove the chat from the UI / change the current "selected chat"
-  };
-
-  const searchUsers = async (q) => {
-    const users = await UserService.searchUsers({ q });
-
-    return users;
-  };
-
-  const addUserToChat = async (data) => {
-    const { id: user_id, chat_id } = data.user;
-
-    await ChatService.addUserToChat({ chat_id, user_id });
-  };
-
-  const renameChat = async (data) => {
-    const { title, chat_id } = data;
-
-    await ChatService.changeTitle({ chat_id, title });
-
-    reset();
-    setChatTitle(``);
-    setChatBeingUpdated(null);
-
-    // TODO update UI
-  };
-
-  const handleChatTitleChange = (e) => setChatTitle(e.target.value);
-
   return <div style={{ height: `97vh`, overflowY: `scroll` }}>
     {
       loadingChatList ?
@@ -137,7 +98,17 @@ export const ChatList = ({ onChatSelect }) => {
                   >
                     <Card.Body>
                       <div className="d-flex w-100" style={{ padding: 0 }}>
-                        <Image url={DEFAULT_PFP} width={50} height={50} alt="chatImg" />
+                        <AvatarGroup
+                          avatars={[
+                            ...(chat.users || []).map(user => ({
+                              avatar: `${user.first_name} ${user.last_name}`,
+                            })),
+                            {
+                              avatar: `${currentUser.first_name} ${currentUser.last_name}`,
+                            },
+                          ]}
+                          size={35}
+                        />
                         <div className="text-start ms-2">
                           <h4 style={{ textOverflow: `ellipsis` }}>{chat.chat_title}</h4>
                           {
@@ -155,22 +126,6 @@ export const ChatList = ({ onChatSelect }) => {
                               </>
                           }
                         </div>
-                        <Dropdown className="ms-auto align-self-center" align={{ md: `end` }} style={{ zIndex: 999 }}>
-                          <Dropdown.Toggle as={CustomToggle}>
-                            <EllipsisIcon style={{ zIndex: 999 }} />
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => toggleRenameChatModal({ chat })} style={{ zIndex: 999 }}>
-                              Rename
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => toggleAddUsersModal() } style={{ zIndex: 999 }} >
-                              Add User
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => leaveChat({ chat_id: chat.id })} style={{ zIndex: 999 }}>
-                              Leave
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
                       </div>
                     </Card.Body>
                   </Card>
@@ -179,49 +134,5 @@ export const ChatList = ({ onChatSelect }) => {
           }
         </div>
     }
-
-    <Modal show={showAddUsersModal} onHide={toggleAddUsersModal} >
-      <Modal.Header closeButton>
-        <Modal.Title>Add Users to Chat</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form onSubmit={handleSubmit(addUserToChat)}>
-          <div>
-            <AsyncSelect
-              className="w-100 ms-2"
-              cacheOptions
-              noOptionsMessage={() => `Search for user...`}
-              loadOptions={debounce(searchUsers, 100, { leading: true })}
-              {...register(`user`, { required: true })}
-            />
-            <InlineError errors={errors} name="user" message="Please select a user to add" />
-          </div>
-          <div className="w-100 text-end">
-            <Button variant="danger" type="submit">Add User</Button>
-          </div>
-        </Form>
-      </Modal.Body>
-    </Modal>
-
-    <Modal show={showRenameChatModal} onHide={toggleRenameChatModal}>
-      <Modal.Header closeButton>
-        <Modal.Title>Rename Chat</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form onSubmit={handleSubmit(renameChat)}>
-          <div>
-            <Form.Control
-              id="title"
-              {...register(`title`, { required: true })}
-              value={chatTitle}
-              onChange={handleChatTitleChange} />
-            <InlineError errors={errors} name="user" message="Chat name cannot be empty" />
-          </div>
-          <div className="w-100 text-end">
-            <Button variant="danger" type="submit">Save Changes</Button>
-          </div>
-        </Form>
-      </Modal.Body>
-    </Modal>
-  </div>;
+  </div >;
 };

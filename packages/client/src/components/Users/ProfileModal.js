@@ -13,6 +13,7 @@ import { ChatService } from '../../shared/services';
 import { useNavigate } from 'react-router-dom';
 import defaultPFP from '../../assets/images/blank-profile-picture.webp';
 import { LoadingIcon } from '../../shared/A-UI';
+import { getAuth, signOut } from "firebase/auth";
 
 export const ProfileModal = ({ id, onClose }) => {
   const { control, handleSubmit, register, reset } = useForm();
@@ -35,11 +36,20 @@ export const ProfileModal = ({ id, onClose }) => {
   ];
 
   const startChat = async () => {
+    const existingChat = await ChatService.getChatByUsers({ user_id: currentUser.id, recipient_id: user.id });
+    console.log(existingChat);
+    if (existingChat) {
+      localStorage.setItem(`lastOpenedChat`, existingChat);
+
+      return navigate(`/chat`);
+    }
+
     const title = `Chat with ${user.first_name} from ${currentUser.first_name}`;
-    const chat = await ChatService.createNewChat({ created_by: currentUser.id, title, recipient_id: user.id });
-    localStorage.setItem(`lastOpenedChat`, chat.id);
+    const newChat = await ChatService.createNewChat({ created_by: currentUser.id, title, recipient_id: user.id });
+    localStorage.setItem(`lastOpenedChat`, newChat.id);
 
     return navigate(`/chat`);
+
   };
 
   useEffect(() => {
@@ -87,6 +97,13 @@ export const ProfileModal = ({ id, onClose }) => {
     }));
     UserService.updateUser(formData);
     reset();
+  };
+
+  const signUserOut = () => {
+    const auth = getAuth();
+    signOut(auth).then(() => {
+      window.location.reload();
+    });
   };
 
   return (
@@ -147,7 +164,7 @@ export const ProfileModal = ({ id, onClose }) => {
                     <>
                       <Button variant="secondary" onClick={handleOpenEdit}>Edit</Button>
                       &nbsp;
-                      <Button variant="danger">Logout</Button>
+                      <Button variant="danger" onClick={signUserOut}>Logout</Button>
                     </> :
                     <Button variant="danger" onClick={startChat}>Message</Button>}
                 </div>

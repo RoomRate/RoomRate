@@ -16,7 +16,9 @@ exports.getChatsForUser = async ({ user_id }) => {
       last_message.message AS last_message,
       last_message.created_by AS last_message_user_id,
       last_message.created_at,
-      STRING_AGG(users.first_name || ' ' || users.last_name, ', ') as users
+      STRING_AGG(users.first_name || ' ' || users.last_name, ', ') as users,
+      COUNT(*) FILTER (WHERE chat_users.deleted_at IS NOT NULL) AS deleted_count,
+      COUNT(*) AS total_count
     FROM chats
     JOIN chat_users ON chats.id = chat_users.chat_id
     JOIN users ON chat_users.user_id = users.id
@@ -31,6 +33,7 @@ exports.getChatsForUser = async ({ user_id }) => {
     ) AS last_message ON chats.id = last_message.chat_id
     WHERE chat_users.user_id = ?
     GROUP BY chats.id, chats.title, last_message.message, last_message.created_by, last_message.created_at
+    HAVING COUNT(*) FILTER (WHERE chat_users.deleted_at IS NOT NULL) < COUNT(*)
     ORDER BY last_message.created_at DESC;
   `, [ user_id ]);
 
@@ -61,6 +64,24 @@ exports.getChatsForUser = async ({ user_id }) => {
   }
 
   return chats;
+};
+
+exports.getChatByUsers = async ({ user_id, recipient_id }) => {
+  const response = await knex.raw(`
+  SELECT chat_id
+  FROM chat_users
+  WHERE user_id IN ( ?, ? )
+  AND deleted_at IS null
+  GROUP BY chat_id
+  HAVING COUNT(DISTINCT user_id) = 2;
+    `, [ user_id, recipient_id ]);
+
+  if (response.rows.length === 0) {
+    return null;
+  }
+  console.log(response);
+
+  return response.rows[0].chat_id;
 };
 
 exports.getMessagesForChat = async ({ chat_id }) => {
@@ -199,6 +220,6 @@ exports.renameChat = async ({ chat_id, title }) => {
   await knex.raw(`
     UPDATE chats
     SET title = ?
-    WHERE chat_id = ?;
+    WHERE id = ?;
   `, [ title, chat_id ]);
 };

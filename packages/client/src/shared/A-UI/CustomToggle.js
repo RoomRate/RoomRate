@@ -1,9 +1,9 @@
 import React from 'react';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
 export const CustomToggle = React.forwardRef(({ onClick }, ref) =>
   <button className="btn-stealth">
-    <BsThreeDots
+    <BsThreeDotsVertical
       className="m-2"
       href="a"
       ref={ref}
