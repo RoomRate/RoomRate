@@ -323,7 +323,7 @@ export const RoommateFinder = () => {
                           </Card.Text>
                         </div>
                         {
-                          currentUser?.id === post.author.id &&
+                          currentUser?.id === post.author.user_id &&
                             <Dropdown className="ms-auto">
                               <Dropdown.Toggle as={CustomToggle} />
                               <Dropdown.Menu>
