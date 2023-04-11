@@ -14,7 +14,6 @@ import { MarkerIcon, InlineError } from "../../shared/A-UI";
 import Lottie from 'lottie-react';
 import loadingIcon from "../../assets/images/loadingIcon.json";
 import { useAuth } from "../../shared/contexts/AuthContext";
-import { Image } from 'react-extras';
 import ReactTimeAgo from 'react-time-ago';
 import 'swiper/css';
 import StarRatings from "react-star-ratings";
@@ -332,12 +331,13 @@ export const PropertyDetails = () => {
                           <Card.Header className="pb-0 px-0">
                             <div className="d-flex w-100">
                               <div className="mx-2 mt-1">
-                                <Image
-                                  url={DEFAULT_PFP}
-                                  fallbackUrl={DEFAULT_PFP}
+                                <img
+                                  src={review.userImage ? `data:image/jpeg;base64, ${review.userImage}` :
+                                    DEFAULT_PFP}
                                   className="avatar rounded img-fluid"
+                                  width={50}
                                   alt="user profile avatar"
-                                  width={50} />
+                                />
                               </div>
                               <div>
                                 <p className="fw-bold m-0">{`${review.first_name} ${review.last_name}`}</p>

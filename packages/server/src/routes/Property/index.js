@@ -6,6 +6,7 @@ const multer = require(`multer`);
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const { VerifyToken } = require(`../../utils/Middleware/VerifyToken`);
+const UserService = require(`../../libs/User`);
 
 router.get(`/list`, async (req, res, next) => {
   try {
@@ -42,6 +43,11 @@ router.get(`/:id/detail`, async (req, res, next) => {
 router.get(`/:id/reviews`, async (req, res, next) => {
   try {
     const reviews = await PropertyService.getReviews({ id: req.params.id });
+
+    await Promise.all(reviews.map(async review => {
+      review.userImage = await UserService.getImageByKey({ image_key: review.image_key });
+    }));
+
 
     ResponseHandler(
       res,

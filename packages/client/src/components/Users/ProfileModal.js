@@ -181,14 +181,14 @@ export const ProfileModal = ({ id, onClose }) => {
                             arrowRight={<div style={{ fontSize: `30px` }}>{` > `}</div>}>
                             {
                               properties
-                                .filter(property => property.landlord_id === user.id)
+                                .filter(property => property.landlord_id === user?.id)
                                 .map(property => <Link
-                                  to={`/property/${property.id}/detail`}
+                                  to={`/property/${property?.id}/detail`}
                                   style={{ color: `black`, textDecoration: `none` }}
                                   onClick={onClose} >
                                   <Card
                                     style={{ width: `275px`, height: `230px` }}
-                                    key={property.id} className="propertyListing mb-3"
+                                    key={property?.id} className="propertyListing mb-3"
                                   >
                                     <div className="container">
                                       <img src={`data:image/jpeg;base64, ${property.thumbnail}`}
