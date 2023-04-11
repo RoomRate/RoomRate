@@ -143,7 +143,7 @@ export const ProfileModal = ({ id, onClose }) => {
                 </div>
                 <br />
                 <div style={{ textAlign: `right` }}>
-                  {id === currentUser.id ?
+                  {id === currentUser?.id ?
                     <>
                       <Button variant="secondary" onClick={handleOpenEdit}>Edit</Button>
                       &nbsp;
