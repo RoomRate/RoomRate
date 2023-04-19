@@ -2,7 +2,7 @@ const { initializeApp, cert } = require(`firebase-admin/app`);
 const { getAuth } = require(`firebase-admin/auth`);
 const config = require(`config`);
 
-const serviceAccountKey = process.env.NODE_ENV === `production` ?
+const serviceAccountKey = process.env.NODE_ENV !== `production` ?
   config.get(`firebase`) :
   {
     type: process.env.TYPE,
